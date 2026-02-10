@@ -328,8 +328,7 @@
     "downloads": {
       "title": "Wöchentliche Downloads",
       "analyze": "Downloads analysieren",
-      "community_distribution": "Community-Adoptionsverteilung ansehen",
-      "modal_title": "Downloads"
+      "community_distribution": "Community-Adoptionsverteilung ansehen"
     },
     "install_scripts": {
       "title": "Installationsskripte",
@@ -959,9 +958,6 @@
         "types_none": "Keine",
         "vulnerabilities_summary": "{count} ({critical}C/{high}H)",
         "up_to_you": "Deine Entscheidung!"
-      },
-      "trends": {
-        "title": "Wöchentliche Downloads"
       }
     }
   },
