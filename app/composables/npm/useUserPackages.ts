@@ -1,5 +1,5 @@
 import type { NpmSearchResponse, NpmSearchResult } from '#shared/types'
-import { emptySearchResponse } from './useNpmSearch'
+import { emptySearchResponse } from './search-utils'
 
 /** Default page size for incremental loading (npm registry path) */
 const PAGE_SIZE = 50 as const
@@ -22,7 +22,13 @@ const MAX_RESULTS = 250
  * ```
  */
 export function useUserPackages(username: MaybeRefOrGetter<string>) {
+  const route = useRoute()
   const { searchProvider } = useSearchProvider()
+  const searchProviderValue = computed(() => {
+    const p = normalizeSearchParam(route.query.p)
+    if (p === 'npm' || searchProvider.value === 'npm') return 'npm'
+    return 'algolia'
+  })
   // this is only used in npm path, but we need to extract it when the composable runs
   const { $npmRegistry } = useNuxtApp()
   const { searchByOwner } = useAlgoliaSearch()
@@ -32,7 +38,7 @@ export function useUserPackages(username: MaybeRefOrGetter<string>) {
 
   /** Tracks which provider actually served the current data (may differ from
    *  searchProvider when Algolia returns empty and we fall through to npm) */
-  const activeProvider = shallowRef<'npm' | 'algolia'>(searchProvider.value)
+  const activeProvider = shallowRef<'npm' | 'algolia'>(searchProviderValue.value)
 
   const cache = shallowRef<{
     username: string
@@ -43,14 +49,14 @@ export function useUserPackages(username: MaybeRefOrGetter<string>) {
   const isLoadingMore = shallowRef(false)
 
   const asyncData = useLazyAsyncData(
-    () => `user-packages:${searchProvider.value}:${toValue(username)}`,
+    () => `user-packages:${searchProviderValue.value}:${toValue(username)}`,
     async ({ $npmRegistry }, { signal }) => {
       const user = toValue(username)
       if (!user) {
-        return emptySearchResponse
+        return emptySearchResponse()
       }
 
-      const provider = searchProvider.value
+      const provider = searchProviderValue.value
 
       // --- Algolia: fetch all at once ---
       if (provider === 'algolia') {
@@ -58,8 +64,8 @@ export function useUserPackages(username: MaybeRefOrGetter<string>) {
           const response = await searchByOwner(user)
 
           // Guard against stale response (user/provider changed during await)
-          if (user !== toValue(username) || provider !== searchProvider.value) {
-            return emptySearchResponse
+          if (user !== toValue(username) || provider !== searchProviderValue.value) {
+            return emptySearchResponse()
           }
 
           // If Algolia returns results, use them. If empty, fall through to npm
@@ -95,8 +101,8 @@ export function useUserPackages(username: MaybeRefOrGetter<string>) {
       )
 
       // Guard against stale response (user/provider changed during await)
-      if (user !== toValue(username) || provider !== searchProvider.value) {
-        return emptySearchResponse
+      if (user !== toValue(username) || provider !== searchProviderValue.value) {
+        return emptySearchResponse()
       }
 
       cache.value = {
@@ -107,7 +113,7 @@ export function useUserPackages(username: MaybeRefOrGetter<string>) {
 
       return { ...response, isStale }
     },
-    { default: () => emptySearchResponse },
+    { default: emptySearchResponse },
   )
   // --- Fetch more (npm path only) ---
   /**
@@ -193,11 +199,14 @@ export function useUserPackages(username: MaybeRefOrGetter<string>) {
 
   // asyncdata will automatically rerun due to key, but we need to reset cache/page
   // when provider changes
-  watch(searchProvider, newProvider => {
-    cache.value = null
-    currentPage.value = 1
-    activeProvider.value = newProvider
-  })
+  watch(
+    () => searchProviderValue.value,
+    newProvider => {
+      cache.value = null
+      currentPage.value = 1
+      activeProvider.value = newProvider
+    },
+  )
 
   // Computed data that uses cache (only if it belongs to the current username)
   const data = computed<NpmSearchResponse | null>(() => {

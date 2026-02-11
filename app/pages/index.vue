@@ -2,6 +2,8 @@
 import { debounce } from 'perfect-debounce'
 import { SHOWCASED_FRAMEWORKS } from '~/utils/frameworks'
 
+const { searchProvider } = useSearchProvider()
+
 const searchQuery = shallowRef('')
 const isSearchFocused = shallowRef(false)
 
@@ -10,7 +12,7 @@ async function search() {
   if (!query) return
   await navigateTo({
     path: '/search',
-    query: query ? { q: query } : undefined,
+    query: query ? { q: query, p: searchProvider.value === 'npm' ? 'npm' : undefined } : undefined,
   })
   const newQuery = searchQuery.value.trim()
   if (newQuery !== query) {
@@ -18,9 +20,18 @@ async function search() {
   }
 }
 
-const handleInput = isTouchDevice()
-  ? search
-  : debounce(search, 250, { leading: true, trailing: true })
+const handleInputNpm = debounce(search, 250, { leading: true, trailing: true })
+const handleInputAlgolia = debounce(search, 80, { leading: true, trailing: true })
+
+function handleInput() {
+  if (isTouchDevice()) {
+    search()
+  } else if (searchProvider.value === 'algolia') {
+    handleInputAlgolia()
+  } else {
+    handleInputNpm()
+  }
+}
 
 useSeoMeta({
   title: () => $t('seo.home.title'),
@@ -60,7 +71,6 @@ defineOgImageComponent('Default', {
         >
           {{ $t('tagline') }}
         </p>
-
         <search
           class="w-full max-w-xl motion-safe:animate-slide-up motion-safe:animate-fill-both"
           style="animation-delay: 0.2s"
