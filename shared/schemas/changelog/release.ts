@@ -5,7 +5,6 @@ export const GithubReleaseSchama = v.object({
   name: v.string(),
   draft: v.boolean(),
   prerelease: v.boolean(),
-  html: v.string(),
   markdown: v.nullable(v.string()), // can be null if no descroption was made
   publishedAt: v.pipe(v.string(), v.isoTimestamp()),
 })

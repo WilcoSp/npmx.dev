@@ -1,8 +1,9 @@
 import type { ProviderId } from '~~/shared/utils/git-providers'
 import type { ReleaseData } from '~~/shared/types/changelog'
-import { GithubReleaseCollectionSchama } from '~~/shared/schemas/changelog/release'
 import { ERROR_CHANGELOG_RELEASES_FAILED, THROW_INCOMPLETE_PARAM } from '~~/shared/utils/constants'
+import { GithubReleaseCollectionSchama } from '~~/shared/schemas/changelog/release'
 import { parse } from 'valibot'
+import { changelogRenderer, sanitizeRawHTML } from '~~/server/utils/changelog/markdown'
 
 export default defineCachedEventHandler(async event => {
   const provider = getRouterParam(event, 'provider')
@@ -43,11 +44,13 @@ async function getReleasesFromGithub(owner: string, repo: string) {
 
   const { releases } = parse(GithubReleaseCollectionSchama, data)
 
+  const render = await changelogRenderer()
+
   return releases.map(
     r =>
       ({
         id: r.id,
-        html: r.html,
+        html: r.markdown ? sanitizeRawHTML(render(r.markdown) as string) : null,
         title: r.name,
         draft: r.draft,
         prerelease: r.prerelease,

@@ -7,10 +7,10 @@ const { release } = defineProps<{
 </script>
 <template>
   <section class="border border-border rounded-lg p-4 sm:p-6">
-    <h1 class="text-1xl sm:text-2xl font-medium min-w-0 break-words py-2">
+    <h2 class="text-1xl sm:text-2xl font-medium min-w-0 break-words py-2">
       {{ release.title }}
-    </h1>
-    <Readme v-if="release.html" :html="release.html.trim()"></Readme>
+    </h2>
+    <Readme v-if="release.html" :html="release.html"></Readme>
   </section>
 </template>
 

@@ -8,8 +8,5 @@ const { data: releases } = useFetch<ReleaseData[]>(
 <template>
   <div class="flex flex-col gap-2 py-3" v-if="releases">
     <ChangelogCard v-for="release of releases" :release :key="release.id" />
-
-    <!-- <ChangelogCard />
-    <ChangelogCard /> -->
   </div>
 </template>

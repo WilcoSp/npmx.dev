@@ -110,7 +110,7 @@ function matchPlaygroundProvider(url: string): PlaygroundProvider | null {
 
 // allow h1-h6, but replace h1-h2 later since we shift README headings down by 2 levels
 // (page h1 = package name, h2 = "Readme" section, so README h1 → h3)
-const ALLOWED_TAGS = [
+export const ALLOWED_TAGS = [
   'h1',
   'h2',
   'h3',
@@ -151,7 +151,7 @@ const ALLOWED_TAGS = [
   'button',
 ]
 
-const ALLOWED_ATTR: Record<string, string[]> = {
+export const ALLOWED_ATTR: Record<string, string[]> = {
   '*': ['id'], // Allow id on all tags
   'a': ['href', 'title', 'target', 'rel'],
   'img': ['src', 'alt', 'title', 'width', 'height', 'align'],

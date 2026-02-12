@@ -19,7 +19,7 @@ export type ChangelogInfo = ChangelogReleaseInfo | ChangelogMarkdownInfo
 
 export interface ReleaseData {
   title: string // example "v1.x.x",
-  html: string
+  html: string | null
   prerelease?: boolean
   draft?: boolean
   id: string | number

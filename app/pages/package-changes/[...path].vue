@@ -70,13 +70,13 @@ const { data: changelog } = usePackageChangelog(packageName, version)
     <header class="border-b border-border bg-bg sticky top-14 z-20">
       <div class="container pt-4 pb-3">
         <div class="flex items-center gap-2 mb-3 flex-wrap min-w-0">
-          <NuxtLink
-            v-if="packageName"
-            :to="packageRoute(packageName, version)"
+          <h1
             class="font-mono text-lg sm:text-xl font-semibold text-fg hover:text-fg-muted transition-colors truncate"
           >
-            {{ packageName }}
-          </NuxtLink>
+            <NuxtLink v-if="packageName" :to="packageRoute(packageName, version)">
+              {{ packageName }}
+            </NuxtLink>
+          </h1>
 
           <VersionSelector
             v-if="version && pkg?.versions && pkg?.['dist-tags']"
