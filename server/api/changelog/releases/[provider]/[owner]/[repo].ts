@@ -20,7 +20,7 @@ export default defineCachedEventHandler(async event => {
   try {
     switch (provider as ProviderId) {
       case 'github':
-        return getReleasesFromGithub(owner, repo)
+        return await getReleasesFromGithub(owner, repo)
 
       default:
         return false
@@ -51,7 +51,7 @@ async function getReleasesFromGithub(owner: string, repo: string) {
     return {
       id: r.id,
       html,
-      title: r.name,
+      title: r.name ?? r.tag,
       draft: r.draft,
       prerelease: r.prerelease,
       toc,

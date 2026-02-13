@@ -2,7 +2,8 @@ import * as v from 'valibot'
 
 export const GithubReleaseSchama = v.object({
   id: v.pipe(v.number(), v.integer()),
-  name: v.string(),
+  name: v.nullable(v.string()),
+  tag: v.string(),
   draft: v.boolean(),
   prerelease: v.boolean(),
   markdown: v.nullable(v.string()), // can be null if no descroption was made
