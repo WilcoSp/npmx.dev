@@ -185,6 +185,7 @@ export const ALLOWED_ATTR: Record<string, string[]> = {
  */
 export function slugify(text: string): string {
   return text
+    .replace(/&nbsp;?/g, '') // remove non breaking spaces
     .replace(/<[^>]*>/g, '') // Strip HTML tags
     .toLowerCase()
     .trim()

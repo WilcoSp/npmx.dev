@@ -44,7 +44,11 @@ export async function changelogRenderer() {
       const id = `user-content-${releaseId}-${uniqueSlug}`
 
       // Collect TOC item with plain text (HTML stripped)
-      const plainText = text.replace(/<[^>]*>/g, '').trim()
+      const plainText = text
+        .replace(/<[^>]*>/g, '')
+        // remove non breaking spaces
+        .replace(/&nbsp;?/g, '')
+        .trim()
       if (plainText) {
         toc.push({ text: plainText, id, depth })
       }
