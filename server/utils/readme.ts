@@ -222,7 +222,7 @@ const isNpmJsUrlThatCanBeRedirected = (url: URL) => {
   return true
 }
 
-const replaceHtmlLink = (html: string) => {
+export const replaceHtmlLink = (html: string) => {
   return html.replace(/href="([^"]+)"/g, (match, href) => {
     if (isNpmJsUrlThatCanBeRedirected(new URL(href, 'https://www.npmjs.com'))) {
       const newHref = href.replace(/^https?:\/\/(www\.)?npmjs\.com/, '')

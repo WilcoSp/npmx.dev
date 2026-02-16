@@ -1,9 +1,56 @@
 import { marked, type Tokens } from 'marked'
-import { ALLOWED_ATTR, ALLOWED_TAGS, calculateSemanticDepth, prefixId, slugify } from '../readme'
+import {
+  ALLOWED_ATTR,
+  ALLOWED_TAGS,
+  calculateSemanticDepth,
+  prefixId,
+  replaceHtmlLink,
+  slugify,
+} from '../readme'
 import sanitizeHtml from 'sanitize-html'
 
 export async function changelogRenderer() {
   const renderer = new marked.Renderer()
+
+  const shiki = await getShikiHighlighter()
+
+  renderer.link = function ({ href, title, tokens }: Tokens.Link) {
+    const text = this.parser.parseInline(tokens)
+    const titleAttr = title ? ` title="${title}"` : ''
+    const plainText = text.replace(/<[^>]*>/g, '').trim()
+
+    const intermediateTitleAttr = `${` data-title-intermediate="${plainText || title}"`}`
+
+    return `<a href="${href}"${titleAttr}${intermediateTitleAttr} target="_blank">${text}</a>`
+  }
+
+  // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
+  renderer.blockquote = function ({ tokens }: Tokens.Blockquote) {
+    const body = this.parser.parse(tokens)
+
+    const calloutMatch = body.match(/^<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:<br>)?\s*/i)
+
+    if (calloutMatch?.[1]) {
+      const calloutType = calloutMatch[1].toLowerCase()
+      const cleanedBody = body.replace(calloutMatch[0], '<p>')
+      return `<blockquote data-callout="${calloutType}">${cleanedBody}</blockquote>\n`
+    }
+
+    return `<blockquote>${body}</blockquote>\n`
+  }
+
+  // Syntax highlighting for code blocks (uses shared highlighter)
+  renderer.code = ({ text, lang }: Tokens.Code) => {
+    const html = highlightCodeSync(shiki, text, lang || 'text')
+    // Add copy button
+    return `<div class="readme-code-block" >
+  <button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-carbon:checkmark" copy-icon="i-carbon:copy" data-copy>
+  <span class="i-carbon:copy" aria-hidden="true"></span>
+  <span class="sr-only">Copy code</span>
+  </button>
+  ${html}
+  </div>`
+  }
 
   return (markdown: string | null, releaseId: string | number) => {
     // Collect table of contents items during parsing
@@ -19,7 +66,6 @@ export async function changelogRenderer() {
     // Track used heading slugs to handle duplicates (GitHub-style: foo, foo-1, foo-2)
     const usedSlugs = new Map<string, number>()
 
-    // settings will need to be added still
     let lastSemanticLevel = 2 // Start after h2 (the "Readme" section heading)
     renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
       // Calculate the target semantic level based on document structure
@@ -59,6 +105,11 @@ export async function changelogRenderer() {
     return {
       html: marked.parse(markdown, {
         renderer,
+        walkTokens: token => {
+          if (token.type === 'html') {
+            token.text = replaceHtmlLink(token.text)
+          }
+        },
       }) as string,
       toc,
     }
