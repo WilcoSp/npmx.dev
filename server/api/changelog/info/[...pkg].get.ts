@@ -31,12 +31,12 @@ export default defineCachedEventHandler(
       })
     }
   },
-  // {
-  //   maxAge: CACHE_MAX_AGE_ONE_DAY, // 24 hours - analysis rarely changes
-  //   swr: true,
-  //   getKey: event => {
-  //     const pkg = getRouterParam(event, 'pkg') ?? ''
-  //     return `changelog:v1:${pkg.replace(/\/+$/, '').trim()}`
-  //   },
-  // },
+  {
+    maxAge: CACHE_MAX_AGE_ONE_DAY, // 24 hours
+    swr: true,
+    getKey: event => {
+      const pkg = getRouterParam(event, 'pkg') ?? ''
+      return `changelogInfo:pr1:${pkg.replace(/\/+$/, '').trim()}`
+    },
+  },
 )

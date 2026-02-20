@@ -52,7 +52,7 @@ async function getReleasesFromGithub(owner: string, repo: string) {
       id: r.id,
       // replace single \n within <p> like with Vue's releases
       html: html?.replace(/(?<!>)\n/g, '<br>') ?? null,
-      title: r.name ?? r.tag,
+      title: r.name || r.tag,
       draft: r.draft,
       prerelease: r.prerelease,
       toc,

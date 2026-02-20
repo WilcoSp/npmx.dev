@@ -1,4 +1,5 @@
-import type { ChangelogReleaseInfo } from '~~/shared/types/changelog'
+import type { ChangelogReleaseInfo, ChangelogMarkdownInfo } from '~~/shared/types/changelog'
+import { ERROR_CHANGELOG_NOT_FOUND } from '~~/shared/utils/constants'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 // ChangelogInfo
@@ -22,9 +23,16 @@ export async function detectChangelog(
     return false
   }
 
-  const releaseInfo = await checkReleases(repoRef)
+  const changelog = (await checkReleases(repoRef)) || (await checkChangelogFile(repoRef))
 
-  return releaseInfo || checkChangelogFile(repoRef)
+  if (changelog) {
+    return changelog
+  }
+
+  throw createError({
+    statusCode: 404,
+    statusMessage: ERROR_CHANGELOG_NOT_FOUND,
+  })
 }
 
 /**
@@ -69,13 +77,23 @@ function getLatestReleaseUrl(ref: RepoRef): null | string[] {
   return null
 }
 
-const CHANGELOG_FILENAMES = ['changelog', 'history', 'changes', 'news', 'releases'] as const
+const EXTENSIONS = ['.md', ''] as const
 
-async function checkChangelogFile(ref: RepoRef) {
-  const checkUrls = getChangelogUrls(ref)
+const CHANGELOG_FILENAMES = ['changelog', 'releases', 'changes', 'history', 'news']
+  .map(fileName => {
+    const fileNameUpperCase = fileName.toUpperCase()
+    return EXTENSIONS.map(ext => [`${fileNameUpperCase}${ext}`, `${fileName}${ext}`])
+  })
+  .flat(3)
 
-  for (const checkUrl of checkUrls ?? []) {
-    const exists = await fetch(checkUrl, {
+async function checkChangelogFile(ref: RepoRef): Promise<ChangelogMarkdownInfo | false> {
+  const baseUrl = getBaseFileUrl(ref)
+  if (!baseUrl) {
+    return false
+  }
+
+  for (const fileName of CHANGELOG_FILENAMES) {
+    const exists = await fetch(`${baseUrl}/${fileName}`, {
       headers: {
         // GitHub API requires User-Agent
         'User-Agent': 'npmx.dev',
@@ -85,30 +103,14 @@ async function checkChangelogFile(ref: RepoRef) {
       .then(r => r.ok)
       .catch(() => false)
     if (exists) {
-      console.log('exists', checkUrl)
-      return true
+      return {
+        type: 'md',
+        provider: ref.provider,
+        path: fileName,
+      } satisfies ChangelogMarkdownInfo
     }
   }
   return false
-}
-
-function getChangelogUrls(ref: RepoRef) {
-  const baseUrl = getBaseFileUrl(ref)
-  if (!baseUrl) {
-    return
-  }
-
-  return CHANGELOG_FILENAMES.flatMap(fileName => {
-    const fileNameUpCase = fileName.toUpperCase()
-    return [
-      `${baseUrl}/${fileNameUpCase}.md`,
-      `${baseUrl}/${fileName}.md`,
-      `${baseUrl}/${fileNameUpCase}`,
-      `${baseUrl}/${fileName}`,
-      `${baseUrl}/${fileNameUpCase}.txt`,
-      `${baseUrl}/${fileName}.txt`,
-    ]
-  })
 }
 
 function getBaseFileUrl(ref: RepoRef) {

@@ -195,7 +195,11 @@ const { data: skillsData } = useLazyFetch<SkillsListResponse>(
 
 const { data: packageAnalysis } = usePackageAnalysis(packageName, requestedVersion)
 const { data: moduleReplacement } = useModuleReplacement(packageName)
-const { data: hasChangelog } = usePackageChangelog(packageName, requestedVersion)
+const { data: changelog } = usePackageChangelog(packageName, requestedVersion)
+
+const hasChangelog = computed(
+  () => changelog.value?.type == 'release' || changelog.value?.type == 'md',
+)
 
 const {
   data: resolvedVersion,
@@ -883,7 +887,7 @@ const showSkeleton = shallowRef(false)
                 {{ $t('package.links.issues') }}
               </LinkBase>
             </li>
-            <li v-if="!!hasChangelog && resolvedVersion">
+            <li v-if="!!changelog && resolvedVersion">
               <LinkBase
                 classicon="i-carbon:warning"
                 :to="{ name: 'changes', params: { path: [pkg.name, 'v', resolvedVersion] } }"

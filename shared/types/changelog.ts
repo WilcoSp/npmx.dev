@@ -13,7 +13,7 @@ export interface ChangelogMarkdownInfo {
   /**
    * location within the repository
    */
-  location: string
+  path: string
 }
 
 export type ChangelogInfo = ChangelogReleaseInfo | ChangelogMarkdownInfo
