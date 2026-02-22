@@ -195,10 +195,6 @@ const { data: packageAnalysis } = usePackageAnalysis(packageName, requestedVersi
 const { data: moduleReplacement } = useModuleReplacement(packageName)
 const { data: changelog } = usePackageChangelog(packageName, requestedVersion)
 
-const hasChangelog = computed(
-  () => changelog.value?.type == 'release' || changelog.value?.type == 'md',
-)
-
 const {
   data: resolvedVersion,
   status: versionStatus,

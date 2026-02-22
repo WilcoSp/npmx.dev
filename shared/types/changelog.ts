@@ -15,6 +15,10 @@ export interface ChangelogMarkdownInfo {
    */
   path: string
   repo: `${string}/${string}`
+  /**
+   * link to a rendered changelog markdown file
+   */
+  link?: string
 }
 
 export type ChangelogInfo = ChangelogReleaseInfo | ChangelogMarkdownInfo

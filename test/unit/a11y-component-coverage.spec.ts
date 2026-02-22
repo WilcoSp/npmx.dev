@@ -47,6 +47,7 @@ const SKIPPED_COMPONENTS: Record<string, string> = {
   'SkeletonInline.vue': 'Already covered indirectly via other component tests',
   'Button/Group.vue': "Wrapper component, tests wouldn't make much sense here",
   'Changelog/Releases.vue': 'Requires API calls',
+  'Changelog/Markdown.vue': 'Requires API call & only renders markdown html',
 }
 
 /**

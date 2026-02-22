@@ -1,7 +1,14 @@
-import type { ChangelogReleaseInfo, ChangelogMarkdownInfo } from '~~/shared/types/changelog'
-import { ERROR_CHANGELOG_NOT_FOUND } from '~~/shared/utils/constants'
+import type {
+  ChangelogMarkdownInfo,
+  ChangelogInfo,
+  ChangelogReleaseInfo,
+} from '~~/shared/types/changelog'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
+import { ERROR_CHANGELOG_NOT_FOUND } from '~~/shared/utils/constants'
+import * as v from 'valibot'
+import { GithubReleaseSchama } from '~~/shared/schemas/changelog/release'
+
 // ChangelogInfo
 
 /**
@@ -39,43 +46,87 @@ export async function detectChangelog(
  * check whether releases are being used with this repo
  * @returns true if in use
  */
-async function checkReleases(ref: RepoRef): Promise<ChangelogReleaseInfo | false> {
-  const checkUrls = getLatestReleaseUrl(ref)
-
-  for (const checkUrl of checkUrls ?? []) {
-    const exists = await fetch(checkUrl, {
-      headers: {
-        // GitHub API requires User-Agent
-        'User-Agent': 'npmx.dev',
-      },
-      method: 'HEAD', // we just need to know if it exists or not
-    })
-      .then(r => r.ok)
-      .catch(() => false)
-    if (exists) {
-      return {
-        provider: ref.provider,
-        type: 'release',
-        repo: `${ref.owner}/${ref.repo}`,
-      }
+async function checkReleases(ref: RepoRef): Promise<ChangelogInfo | false> {
+  switch (ref.provider) {
+    case 'github': {
+      return checkLatestGithubRelease(ref)
     }
   }
+
+  // const checkUrls = getLatestReleaseUrl(ref)
+
+  // for (const checkUrl of checkUrls ?? []) {
+  //   const exists = await fetch(checkUrl, {
+  //     headers: {
+  //       // GitHub API requires User-Agent
+  //       'User-Agent': 'npmx.dev',
+  //     },
+  //     method: 'HEAD', // we just need to know if it exists or not
+  //   })
+  //     .then(r => r.ok)
+  //     .catch(() => false)
+  //   if (exists) {
+  //     return {
+  //       provider: ref.provider,
+  //       type: 'release',
+  //       repo: `${ref.owner}/${ref.repo}`,
+  //     }
+  //   }
+  // }
   return false
 }
 
-/**
- * get the url to check if releases are being used.
- *
- * @returns returns an array so that if providers don't have a latest that we can check for versions
- */
-function getLatestReleaseUrl(ref: RepoRef): null | string[] {
-  switch (ref.provider) {
-    case 'github':
-      return [`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`]
-  }
+/// releases
 
-  return null
+// /**
+//  * get the url to check if releases are being used.
+//  *
+//  * @returns returns an array so that if providers don't have a latest that we can check for versions
+//  */
+// function getLatestReleaseUrl(ref: RepoRef): null | string[] {
+//   switch (ref.provider) {
+//     case 'github':
+//       return [`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`]
+//   }
+
+//   return null
+// }
+
+const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()(.*?)(?=\))/i
+
+function checkLatestGithubRelease(ref: RepoRef): Promise<ChangelogInfo | false> {
+  return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
+    .then(r => {
+      console.log(r)
+      const { release } = v.parse(v.object({ release: GithubReleaseSchama }), r)
+
+      const matchedChangelog = release.markdown?.match(MD_REGEX)?.at(0)
+
+      // if no changelog.md or the url doesn't contain /blob/
+      if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
+        return {
+          provider: ref.provider,
+          type: 'release',
+          repo: `${ref.owner}/${ref.repo}`,
+        } satisfies ChangelogReleaseInfo
+      }
+
+      const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
+      return {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
+      } satisfies ChangelogMarkdownInfo
+    })
+    .catch(e => {
+      console.log('changelog error', e)
+      return false
+    })
 }
+
+/// changelog markdown
 
 const EXTENSIONS = ['.md', ''] as const
 
