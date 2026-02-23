@@ -53,8 +53,8 @@ const latestVersion = computed(() => pkg.value?.['dist-tags']?.latest ?? null)
 
 watch(
   [version, latestVersion, packageName],
-  ([version, latest, name]) => {
-    if (!version && latest && name) {
+  ([v, latest, name]) => {
+    if (!v && latest && name) {
       const pathSegments = [...name.split('/'), 'v', latest]
       router.replace({ name: 'changes', params: { path: pathSegments as [string, ...string[]] } })
     }
@@ -93,11 +93,8 @@ const { data: changelog, pending } = usePackageChangelog(packageName, version)
 
     <section class="container w-full" v-if="changelog">
       <LazyChangelogReleases v-if="changelog.type == 'release'" :info="changelog" />
-      <LazyChangelogMarkdown
-        v-else-if="changelog.type == 'md'"
-        :info="changelog"
-      ></LazyChangelogMarkdown>
-      <p v-else-if="!pending">Sorry, this package doesn't track any changelogs</p>
+      <LazyChangelogMarkdown v-else-if="changelog.type == 'md'" :info="changelog" />
+      <p v-else-if="!pending" class="mt-5">{{ $t('changelog.no_logs') }}</p>
     </section>
   </main>
 </template>

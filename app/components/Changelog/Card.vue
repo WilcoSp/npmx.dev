@@ -17,7 +17,7 @@ function navigateToTitle() {
 </script>
 <template>
   <section class="border border-border rounded-lg p-4 sm:p-6">
-    <div class="flex justify-between" :id="cardId">
+    <div class="flex gap-2 items-center" :id="cardId">
       <h2 class="text-1xl sm:text-2xl font-medium min-w-0 break-words py-2" :id="navId">
         <a
           class="hover:decoration-accent hover:text-accent focus-visible:decoration-accent focus-visible:text-accent transition-colors duration-200"
@@ -28,13 +28,21 @@ function navigateToTitle() {
           {{ release.title }}
         </a>
       </h2>
+      <TagStatic v-if="release.prerelease" variant="default" :tabindex="0" class="h-unset">
+        {{ $t('changelog.pre_release') }}
+      </TagStatic>
+      <TagStatic v-if="release.draft" variant="default" :tabindex="0" class="h-unset">
+        {{ $t('changelog.draft') }}
+      </TagStatic>
+      <div class="flex-1" aria-hidden="true"></div>
       <ReadmeTocDropdown
         v-if="release?.toc && release.toc.length > 1"
         :toc="release.toc"
-        class="justify-self-end"
+        class="ms-auto"
       />
       <!-- :active-id="activeTocId" -->
     </div>
+    <DateTime v-if="release.publishedAt" :datetime="release.publishedAt" date-style="medium" />
     <Readme v-if="release.html" :html="release.html"></Readme>
   </section>
 </template>

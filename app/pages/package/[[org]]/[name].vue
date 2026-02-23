@@ -910,7 +910,7 @@ const showSkeleton = shallowRef(false)
             </li>
             <li v-if="!!changelog && resolvedVersion">
               <LinkBase
-                classicon="i-carbon:warning"
+                classicon="i-lucide:notebook-text"
                 :to="{ name: 'changes', params: { path: [pkg.name, 'v', resolvedVersion] } }"
               >
                 {{ $t('package.links.changelog') }}
