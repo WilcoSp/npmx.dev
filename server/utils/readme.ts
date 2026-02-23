@@ -179,7 +179,7 @@ export const ALLOWED_ATTR: Record<string, string[]> = {
  * incomplete sanitization from nested/interleaved tags
  * (e.g. `<scr<script>ipt>` → `<script>` after one pass).
  */
-function stripHtmlTags(text: string): string {
+export function stripHtmlTags(text: string): string {
   const tagPattern = /<[^>]*>/g
   let result = text
   let previous: string
@@ -200,7 +200,7 @@ function stripHtmlTags(text: string): string {
  */
 export function slugify(text: string): string {
   return stripHtmlTags(text)
-    .toLowerCase()
+    .replace(/&nbsp;?/g, '') // remove non breaking spaces
     .trim()
     .replace(/\s+/g, '-') // Spaces to hyphens
     .replace(/[^\w\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff-]/g, '') // Keep alphanumeric, CJK, hyphens

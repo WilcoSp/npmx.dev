@@ -1,5 +1,12 @@
 import { marked, type Tokens } from 'marked'
-import { ALLOWED_ATTR, ALLOWED_TAGS, calculateSemanticDepth, prefixId, slugify } from '../readme'
+import {
+  ALLOWED_ATTR,
+  ALLOWED_TAGS,
+  calculateSemanticDepth,
+  prefixId,
+  slugify,
+  stripHtmlTags,
+} from '../readme'
 import sanitizeHtml from 'sanitize-html'
 
 export async function changelogRenderer() {
@@ -86,11 +93,9 @@ export async function changelogRenderer() {
         ? `user-content-${releaseId}-${uniqueSlug}`
         : `user-content-${uniqueSlug}`
 
-      // Collect TOC item with plain text (HTML stripped)
-      const plainText = text
-        .replace(/<[^>]*>/g, '')
-        // remove non breaking spaces
-        .replace(/&nbsp;?/g, '')
+      // Collect TOC item with plain text (HTML stripped & emoji's added)
+      const plainText = convertToEmoji(stripHtmlTags(text))
+        .replace(/&nbsp;?/g, '') // remove non breaking spaces
         .trim()
       if (plainText) {
         toc.push({ text: plainText, id, depth })
@@ -100,9 +105,11 @@ export async function changelogRenderer() {
     }
 
     return {
-      html: marked.parse(markdown, {
-        renderer,
-      }) as string,
+      html: convertToEmoji(
+        marked.parse(markdown, {
+          renderer,
+        }) as string,
+      ),
       toc,
     }
   }

@@ -3,6 +3,7 @@ definePageMeta({
   name: 'changes',
   path: '/package-changes/:path+',
   alias: ['/package/changes/:path+', '/changes/:path+'],
+  scrollMargin: 130,
 })
 
 /// routing
