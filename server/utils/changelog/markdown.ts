@@ -9,6 +9,8 @@ import {
 } from '../readme'
 import sanitizeHtml from 'sanitize-html'
 
+const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
+
 export async function changelogRenderer() {
   const renderer = new marked.Renderer({
     gfm: true,
@@ -20,6 +22,10 @@ export async function changelogRenderer() {
     const text = this.parser.parseInline(tokens)
     const titleAttr = title ? ` title="${title}"` : ''
     const plainText = text.replace(/<[^>]*>/g, '').trim()
+
+    if (href.startsWith('mailto:') && !EMAIL_REGEX.test(text)) {
+      return text
+    }
 
     const intermediateTitleAttr = `${` data-title-intermediate="${plainText || title}"`}`
 
@@ -105,10 +111,12 @@ export async function changelogRenderer() {
     }
 
     return {
-      html: convertToEmoji(
-        marked.parse(markdown, {
-          renderer,
-        }) as string,
+      html: sanitizeRawHTML(
+        convertToEmoji(
+          marked.parse(markdown, {
+            renderer,
+          }) as string,
+        ),
       ),
       toc,
     }
