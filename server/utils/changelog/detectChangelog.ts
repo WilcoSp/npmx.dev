@@ -97,7 +97,6 @@ const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()
 function checkLatestGithubRelease(ref: RepoRef): Promise<ChangelogInfo | false> {
   return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
     .then(r => {
-      console.log(r)
       const { release } = v.parse(v.object({ release: GithubReleaseSchama }), r)
 
       const matchedChangelog = release.markdown?.match(MD_REGEX)?.at(0)
@@ -120,8 +119,7 @@ function checkLatestGithubRelease(ref: RepoRef): Promise<ChangelogInfo | false> 
         link: matchedChangelog,
       } satisfies ChangelogMarkdownInfo
     })
-    .catch(e => {
-      console.log('changelog error', e)
+    .catch(() => {
       return false
     })
 }

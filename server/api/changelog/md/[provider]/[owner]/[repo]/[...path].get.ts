@@ -43,5 +43,11 @@ async function getGithubMarkDown(owner: string, repo: string, path: string) {
 
   const markdown = v.parse(v.string(), data)
 
-  return (await changelogRenderer())(markdown)
+  return (
+    await changelogRenderer({
+      blobBaseUrl: `https://github.com/${owner}/${repo}/blob/HEAD`,
+      rawBaseUrl: `https://raw.githubusercontent.com/${owner}/${repo}/HEAD`,
+      path,
+    })
+  )(markdown)
 }

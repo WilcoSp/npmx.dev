@@ -49,7 +49,10 @@ async function getReleasesFromGithub(owner: string, repo: string) {
 
   const { releases } = parse(GithubReleaseCollectionSchama, data)
 
-  const render = await changelogRenderer()
+  const render = await changelogRenderer({
+    blobBaseUrl: `https://github.com/${owner}/${repo}/blob/HEAD`,
+    rawBaseUrl: `https://raw.githubusercontent.com/${owner}/${repo}/HEAD`,
+  })
 
   return releases.map(r => {
     const { html, toc } = render(r.markdown, r.id)

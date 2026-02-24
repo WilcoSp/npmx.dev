@@ -3,15 +3,17 @@ import {
   ALLOWED_ATTR,
   ALLOWED_TAGS,
   calculateSemanticDepth,
+  isNpmJsUrlThatCanBeRedirected,
   prefixId,
   slugify,
   stripHtmlTags,
 } from '../readme'
 import sanitizeHtml from 'sanitize-html'
+import { hasProtocol } from 'ufo'
 
 const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
-export async function changelogRenderer() {
+export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   const renderer = new marked.Renderer({
     gfm: true,
   })
@@ -71,6 +73,8 @@ export async function changelogRenderer() {
       }
     }
 
+    const idPrefix = releaseId ? `user-content-${releaseId}` : `user-content`
+
     // Track used heading slugs to handle duplicates (GitHub-style: foo, foo-1, foo-2)
     const usedSlugs = new Map<string, number>()
 
@@ -95,9 +99,7 @@ export async function changelogRenderer() {
 
       // Prefix with 'user-content-' to avoid collisions with page IDs
       // (e.g., #install, #dependencies, #versions are used by the package page)
-      const id = releaseId
-        ? `user-content-${releaseId}-${uniqueSlug}`
-        : `user-content-${uniqueSlug}`
+      const id = `${idPrefix}-${uniqueSlug}`
 
       // Collect TOC item with plain text (HTML stripped & emoji's added)
       const plainText = convertToEmoji(stripHtmlTags(text))
@@ -117,13 +119,14 @@ export async function changelogRenderer() {
             renderer,
           }) as string,
         ),
+        mdRepoInfo,
       ),
       toc,
     }
   }
 }
 
-export function sanitizeRawHTML(rawHtml: string) {
+export function sanitizeRawHTML(rawHtml: string, mdRepoInfo: MarkdownRepoInfo) {
   return sanitizeHtml(rawHtml, {
     allowedTags: ALLOWED_TAGS,
     allowedAttributes: ALLOWED_ATTR,
@@ -177,38 +180,21 @@ export function sanitizeRawHTML(rawHtml: string) {
       //   }
       //   return { tagName, attribs }
       // },
-      // a: (tagName, attribs) => {
-      //   if (!attribs.href) {
-      //     return { tagName, attribs }
-      //   }
+      a: (tagName, attribs) => {
+        if (!attribs.href) {
+          return { tagName, attribs }
+        }
 
-      //   const resolvedHref = resolveUrl(attribs.href, packageName, repoInfo)
+        const resolvedHref = resolveUrl(attribs.href, mdRepoInfo)
 
-      //   const provider = matchPlaygroundProvider(resolvedHref)
-      //   if (provider && !seenUrls.has(resolvedHref)) {
-      //     seenUrls.add(resolvedHref)
-
-      //     collectedLinks.push({
-      //       url: resolvedHref,
-      //       provider: provider.id,
-      //       providerName: provider.name,
-      //       /**
-      //        * We need to set some data attribute before hand because `transformTags` doesn't
-      //        * provide the text of the element. This will automatically be removed, because there
-      //        * is an allow list for link attributes.
-      //        * */
-      //       label: attribs['data-title-intermediate'] || provider.name,
-      //     })
-      //   }
-
-      //   // Add security attributes for external links
-      //   if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
-      //     attribs.rel = 'nofollow noreferrer noopener'
-      //     attribs.target = '_blank'
-      //   }
-      //   attribs.href = resolvedHref
-      //   return { tagName, attribs }
-      // },
+        // Add security attributes for external links
+        if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
+          attribs.rel = 'nofollow noreferrer noopener'
+          attribs.target = '_blank'
+        }
+        attribs.href = resolvedHref
+        return { tagName, attribs }
+      },
       div: prefixId,
       p: prefixId,
       span: prefixId,
@@ -216,4 +202,59 @@ export function sanitizeRawHTML(rawHtml: string) {
       article: prefixId,
     },
   })
+}
+
+interface MarkdownRepoInfo {
+  /** Raw file URL base (e.g., https://raw.githubusercontent.com/owner/repo/HEAD) */
+  rawBaseUrl: string
+  /** Blob/rendered file URL base (e.g., https://github.com/owner/repo/blob/HEAD) */
+  blobBaseUrl: string
+  /**
+   * path to the markdown file, can't start with /
+   */
+  path?: string
+}
+
+function resolveUrl(url: string, repoInfo: MarkdownRepoInfo) {
+  if (!url) return url
+  if (url.startsWith('#')) {
+    if (url.startsWith('#user-content')) {
+      return url
+    }
+    // Prefix anchor links to match heading IDs (avoids collision with page IDs)
+    return `#user-content-${url.slice(1)}`
+  }
+  if (hasProtocol(url, { acceptRelative: true })) {
+    try {
+      const parsed = new URL(url, 'https://example.com')
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        // Redirect npmjs urls to ourself
+        if (isNpmJsUrlThatCanBeRedirected(parsed)) {
+          return parsed.pathname + parsed.search + parsed.hash
+        }
+        return url
+      }
+    } catch {
+      // Invalid URL, fall through to resolve as relative
+    }
+    // return protocol-relative URLs (//example.com) as-is
+    if (url.startsWith('//')) {
+      return url
+    }
+    // for non-HTTP protocols (javascript:, data:, etc.), don't return, treat as relative
+  }
+
+  // Check if this is a markdown file link
+  const isMarkdownFile = /\.md$/i.test(url.split('?')[0]?.split('#')[0] ?? '')
+
+  const baseUrl = isMarkdownFile ? repoInfo.blobBaseUrl : repoInfo.rawBaseUrl
+  if (url.startsWith('./') || url.startsWith('../')) {
+    // url constructor handles relative paths
+    return new URL(url, `${baseUrl}/${repoInfo.path ?? ''}`).href
+  }
+  if (url.startsWith('/')) {
+    return new URL(`${baseUrl}${url}`).href
+  }
+
+  return url
 }
