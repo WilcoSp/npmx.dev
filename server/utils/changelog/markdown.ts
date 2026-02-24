@@ -1,10 +1,10 @@
-import { marked, type Tokens } from 'marked'
+import { type Tokens, marked } from 'marked'
 import {
+  type prefixId as prefixIdFn,
   ALLOWED_ATTR,
   ALLOWED_TAGS,
   calculateSemanticDepth,
   isNpmJsUrlThatCanBeRedirected,
-  prefixId,
   slugify,
   stripHtmlTags,
 } from '../readme'
@@ -112,6 +112,14 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
       return `<h${semanticLevel} id="${id}" data-level="${depth}">${text}  <a content-none href="#${id}"><span class="i-lucide:link size-[1em]" aria-hidden="true"></span></a></h${semanticLevel}>\n`
     }
 
+    // Helper to prefix id attributes with 'user-content-'
+    const prefixId: typeof prefixIdFn = (tagName: string, attribs: sanitizeHtml.Attributes) => {
+      if (attribs.id && !attribs.id.startsWith('user-content-')) {
+        attribs.id = `${idPrefix}-${attribs.id}`
+      }
+      return { tagName, attribs }
+    }
+
     return {
       html: sanitizeRawHTML(
         convertToEmoji(
@@ -120,13 +128,18 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
           }) as string,
         ),
         mdRepoInfo,
+        prefixId,
       ),
       toc,
     }
   }
 }
 
-export function sanitizeRawHTML(rawHtml: string, mdRepoInfo: MarkdownRepoInfo) {
+export function sanitizeRawHTML(
+  rawHtml: string,
+  mdRepoInfo: MarkdownRepoInfo,
+  prefixId: typeof prefixIdFn,
+) {
   return sanitizeHtml(rawHtml, {
     allowedTags: ALLOWED_TAGS,
     allowedAttributes: ALLOWED_ATTR,

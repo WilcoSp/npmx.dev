@@ -3,7 +3,7 @@ definePageMeta({
   name: 'changes',
   path: '/package-changes/:path+',
   alias: ['/package/changes/:path+', '/changes/:path+'],
-  scrollMargin: 130,
+  scrollMargin: 140,
 })
 
 /// routing
@@ -65,12 +65,14 @@ watch(
 // getting info
 
 const { data: changelog, pending } = usePackageChangelog(packageName, version)
+
+const header = useTemplateRef('header')
 </script>
 <template>
   <main class="flex-1 flex flex-col">
     <header class="border-b border-border bg-bg sticky top-14 z-20">
       <div class="container pt-4 pb-3">
-        <div class="flex items-center gap-2 mb-3 flex-wrap min-w-0">
+        <div class="flex items-center gap-2 mb-3 flex-wrap min-w-0" ref="header">
           <h1
             class="font-mono text-lg sm:text-xl font-semibold text-fg hover:text-fg-muted transition-colors truncate"
           >
@@ -87,13 +89,18 @@ const { data: changelog, pending } = usePackageChangelog(packageName, version)
             :dist-tags="pkg['dist-tags']"
             :url-pattern="versionUrlPattern"
           />
+          <div class="flex-1"></div>
         </div>
       </div>
     </header>
 
     <section class="container w-full" v-if="changelog">
       <LazyChangelogReleases v-if="changelog.type == 'release'" :info="changelog" />
-      <LazyChangelogMarkdown v-else-if="changelog.type == 'md'" :info="changelog" />
+      <LazyChangelogMarkdown
+        v-else-if="changelog.type == 'md'"
+        :info="changelog"
+        :tpTarget="header"
+      />
       <p v-else-if="!pending" class="mt-5">{{ $t('changelog.no_logs') }}</p>
     </section>
   </main>
