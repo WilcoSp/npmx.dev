@@ -312,7 +312,11 @@
       "filter_help": "Infos sur le filtre de plage semver",
       "filter_tooltip": "Filtrer les versions avec une {link}. Par exemple, ^3.0.0 affiche toutes les versions 3.x.",
       "filter_tooltip_link": "plage semver",
-      "no_matches": "Aucune version ne correspond à cette plage"
+      "no_matches": "Aucune version ne correspond à cette plage",
+      "copy_alt": {
+        "per_version_analysis": "La version {version} a été téléchargée {downloads} fois",
+        "general_description": "Graphique en barres montrant les téléchargements par version pour {versions_count} versions {semver_grouping_mode} du paquet {package_name}, {date_range_label} de la version {first_version} à la version {last_version}. La version la plus téléchargée est {max_downloaded_version} avec {max_version_downloads} téléchargements. {per_version_analysis} {watermark}."
+      }
     },
     "dependencies": {
       "title": "Dépendances ({count})",
@@ -374,7 +378,21 @@
         "contributors": "Contributeurs"
       },
       "play_animation": "Lancer l'animation",
-      "pause_animation": "Mettre l'animation en pause"
+      "pause_animation": "Mettre l'animation en pause",
+      "copy_alt": {
+        "trend_none": "globalement stable",
+        "trend_strong": "forte",
+        "trend_weak": "faible",
+        "trend_undefined": "indéfinie (données insuffisantes)",
+        "button_label": "Copier le texte alternatif",
+        "watermark": "En bas, un filigrane indique \"./npmx un navigateur rapide et moderne pour le registre npm\"",
+        "analysis": "{package_name} commence à {start_value} et se termine à {end_value}, affichant une tendance {trend} avec une pente de {downloads_slope} téléchargements par intervalle de temps",
+        "estimation": "La valeur finale est une estimation basée sur des données partielles pour la période en cours.",
+        "estimations": "Les valeurs finales sont des estimations basées sur des données partielles pour la période en cours.",
+        "compare": "Graphique en courbes comparant les téléchargements des paquets suivants : {packages}.",
+        "single_package": "Graphique en courbes des téléchargements pour le paquet {package}.",
+        "general_description": "L’axe Y représente le nombre de téléchargements. L’axe X représente la plage de dates, de {start_date} à {end_date}, avec une période de temps {granularity}.{estimation_notice} {packages_analysis}. {watermark}."
+      }
     },
     "downloads": {
       "title": "Téléchargements hebdo.",
