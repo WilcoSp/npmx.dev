@@ -6,8 +6,8 @@ import {
   calculateSemanticDepth,
   isNpmJsUrlThatCanBeRedirected,
   slugify,
-  stripHtmlTags,
 } from '../readme'
+import { stripHtmlTags } from '#shared/utils/html'
 import sanitizeHtml from 'sanitize-html'
 import { hasProtocol } from 'ufo'
 
