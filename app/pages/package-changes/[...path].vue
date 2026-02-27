@@ -89,9 +89,9 @@ defineOgImageComponent('Default', {
           </h1>
 
           <VersionSelector
-            v-if="version && pkg?.versions && pkg?.['dist-tags']"
+            v-if="(version || latestVersion) && pkg?.versions && pkg?.['dist-tags']"
             :package-name="packageName"
-            :current-version="version"
+            :current-version="version ?? latestVersion!"
             :versions="pkg.versions"
             :dist-tags="pkg['dist-tags']"
             :url-pattern="versionUrlPattern"
@@ -112,7 +112,6 @@ defineOgImageComponent('Default', {
         </div>
       </div>
     </header>
-
     <section class="container w-full" v-if="!pending">
       <LazyChangelogReleases v-if="changelog?.type == 'release'" :info="changelog" />
       <LazyChangelogMarkdown
