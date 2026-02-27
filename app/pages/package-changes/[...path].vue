@@ -68,6 +68,12 @@ const { data: changelog, pending } = usePackageChangelog(packageName, version)
 
 const repoProviderIcon = useProviderIcon(() => changelog.value?.provider)
 const tptoc = useTemplateRef('tptoc')
+
+defineOgImageComponent('Default', {
+  title: () => `${pkg.value?.name ?? 'Package'} - Changelogs`,
+  description: () => pkg.value?.license ?? '',
+  primaryColor: '#60a5fa',
+})
 </script>
 <template>
   <main class="flex-1 flex flex-col">
