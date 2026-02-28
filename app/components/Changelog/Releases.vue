@@ -14,7 +14,6 @@ const router = useRouter()
 watch(
   [() => route.hash, () => requestedDate, releases],
   ([hash, date, r]) => {
-    console.log('mario')
     if (hash || !date || !r) {
       return
     }
