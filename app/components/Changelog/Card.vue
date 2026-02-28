@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import type { ReleaseData } from '~~/shared/types/changelog'
-import { useDateFormat } from '#imports'
 
 const { release } = defineProps<{
   release: ReleaseData
 }>()
-const formattedDate = useDateFormat(() => release.publishedAt, 'YYYY-MM-DD', {})
+const formattedDate = computed(() => {
+  if (!release.publishedAt) {
+    return
+  }
+  return new Date(release.publishedAt).toISOString().split('T')[0]
+})
 
 const cardId = computed(() => (release.publishedAt ? `date-${formattedDate.value}` : undefined))
 

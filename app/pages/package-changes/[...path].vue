@@ -5,7 +5,7 @@ definePageMeta({
   name: 'changes',
   path: '/package-changes/:path+',
   alias: ['/package/changes/:path+', '/changes/:path+'],
-  scrollMargin: 140,
+  scrollMargin: 150,
 })
 
 /// routing
@@ -43,7 +43,7 @@ const packageName = computed(() => parsedRoute.value.packageName)
 const version = computed(() => parsedRoute.value.version)
 const filePath = computed(() => parsedRoute.value.filePath?.replace(/\/$/, ''))
 
-const { data: pkg } = usePackage(packageName)
+const { data: pkg } = usePackage(packageName, version)
 
 const versionUrlPattern = computed(() => {
   const base = `/package-changes/${packageName.value}/v/{version}`
@@ -68,6 +68,16 @@ const { data: changelog, pending } = usePackageChangelog(packageName, version)
 
 const repoProviderIcon = useProviderIcon(() => changelog.value?.provider)
 const tptoc = useTemplateRef('tptoc')
+
+const versionDate = computed(() => {
+  if (!version.value) {
+    return
+  }
+  const time = pkg.value?.time[version.value]
+  if (time) {
+    return new Date(time).toISOString().split('T')[0]
+  }
+})
 
 defineOgImageComponent('Default', {
   title: () => `${pkg.value?.name ?? 'Package'} - Changelogs`,
@@ -113,7 +123,11 @@ defineOgImageComponent('Default', {
       </div>
     </header>
     <section class="container w-full" v-if="!pending">
-      <LazyChangelogReleases v-if="changelog?.type == 'release'" :info="changelog" />
+      <LazyChangelogReleases
+        v-if="changelog?.type == 'release'"
+        :info="changelog"
+        :requestedDate="versionDate"
+      />
       <LazyChangelogMarkdown
         v-else-if="changelog?.type == 'md'"
         :info="changelog"
