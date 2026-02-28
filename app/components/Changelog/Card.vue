@@ -13,7 +13,7 @@ const formattedDate = computed(() => {
 
 const cardId = computed(() => (release.publishedAt ? `date-${formattedDate.value}` : undefined))
 
-const navId = computed(() => `release-${encodeURIComponent(release.title)}`)
+const navId = computed(() => `release-${encodeURI(release.title)}:`)
 
 function navigateToTitle() {
   navigateTo(`#${navId.value}`)
