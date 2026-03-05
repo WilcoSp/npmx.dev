@@ -116,7 +116,7 @@ const versionDate = computed(() => {
             {{ changelog.provider }}
           </LinkBase>
 
-          <div v-if="changelog?.type == 'md'" ref="tptoc" class="w-14 h-8">
+          <div v-if="changelog?.type == 'md'" ref="tptoc" class="w-14 h-8 ms-auto">
             <!-- prevents layout shift while loading -->
           </div>
         </div>
