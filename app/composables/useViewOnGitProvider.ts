@@ -4,31 +4,39 @@
 export function useViewOnGitProvider(
   provider: MaybeRefOrGetter<ProviderId | (string & {}) | null | undefined>,
 ) {
-  const { t, te } = useI18n()
+  const { t } = useI18n()
   return computed(() => {
     const uProvider = toValue(provider)
     if (!uProvider) {
       return t('common.view_on.git_repo')
     }
-    const key = `common.view_on.${uProvider}`
-    if (te(key)) {
-      return t(key)
+    switch (uProvider) {
+      case 'github':
+        return t('common.view_on.github')
+      case 'gitlab':
+        return t('common.view_on.gitlab')
+      case 'bitbucket':
+        return t('common.view_on.bitbucket')
+      case 'codeberg':
+        return t('common.view_on.codeberg')
+      case 'forgejo':
+        return t('common.view_on.forgejo')
+      case 'gitea':
+        return t('common.view_on.gitea')
+      case 'gitee':
+        return t('common.view_on.gitee')
+      case 'radicle':
+        return t('common.view_on.radicle')
+      case 'sourcehut':
+        return t('common.view_on.sourcehut')
+      case 'git':
+        return t('common.view_on.git_repo')
     }
-    // oxlint-disable-next-line no-console
-    console.warn(`"common.view_on.${uProvider}" translation doesn't exist`)
+
+    if (import.meta.dev) {
+      // oxlint-disable-next-line no-console
+      console.warn(`missing '${uProvider}' provider, add it to shared/utils/git-providers.ts!`)
+    }
     return t('common.view_on.git_repo')
   })
 }
-
-/* for i18n report, translations that are currently present:
-t('common.view_on.github') 
-t('common.view_on.gitlab') 
-t('common.view_on.bitbucket') 
-t('common.view_on.codeberg')
-t('common.view_on.forgejo')
-t('common.view_on.gitea')
-t('common.view_on.gitee')
-t('common.view_on.radicle')
-t('common.view_on.sourcehut')
-t('common.view_on.tangled')
- */
