@@ -3,7 +3,7 @@
   "seo": {
     "home": {
       "title": "npmx - Pakket Browser voor de npm Register",
-      "description": "een snelle, moderne browser voor de npm register. zoek, blader en ontdek pakketten met een modern uiterlijk."
+      "description": "Een snelle, moderne browser voor het npm register. Zoek, blader en ontdek pakketten met een moderne interface."
     }
   },
   "built_at": "gebouwd op {0}",
@@ -12,14 +12,14 @@
   "non_affiliation_disclaimer": "niet affiliëerd met npm, Inc.",
   "trademark_disclaimer": "npm is een geregisteerd trademark van npm, Inc. Deze website is niet affiliëerd met npm, Inc.",
   "footer": {
-    "about": "over",
+    "about": "over ons",
     "blog": "blog",
     "docs": "docs",
-    "source": "bron",
+    "source": "bron code",
     "social": "social",
     "chat": "chat",
     "builders_chat": "bouwers",
-    "keyboard_shortcuts": "sneltoetsen"
+    "keyboard_shortcuts": "toetsenbordnavigatie"
   },
   "shortcuts": {
     "section": {
@@ -88,11 +88,11 @@
   "blog": {
     "title": "Blog",
     "heading": "blog",
-    "meta_description": "Insights and updates from the npmx community",
+    "meta_description": "Inzichten en updates van de npmx community",
     "author": {
       "view_profile": "View {name}'s profile on Bluesky"
     },
-    "draft_badge": "Draft",
+    "draft_badge": "Ontwerp",
     "draft_banner": "This is an unpublished draft. It may be incomplete or contain inaccuracies.",
     "atproto": {
       "view_on_bluesky": "View on Bluesky",
@@ -119,7 +119,7 @@
       "display": "Display",
       "search": "Zoekfuncties",
       "language": "Taal",
-      "keyboard_shortcuts": "Sneltoetsen"
+      "keyboard_shortcuts": "toetsenbordnavigatie"
     },
     "data_source": {
       "label": "Gegevensbron",
@@ -146,11 +146,11 @@
     "clear_accent": "Clear accent color",
     "translation_progress": "Voortgang vertaling",
     "background_themes": "Achtergrondkleur",
-    "keyboard_shortcuts_enabled": "Sneltoetsen inschakelen",
-    "keyboard_shortcuts_enabled_description": "Sneltoetsen kunnen worden uitgeschakeld als ze conflicteren met andere sneltoetsen van de browser of het systeem."
+    "keyboard_shortcuts_enabled": "toetsenbordnavigatie inschakelen",
+    "keyboard_shortcuts_enabled_description": "toetsenbordnavigatie kan worden uitgeschakeld als ze conflicteren met andere sneltoetsen van de browser of het systeem."
   },
   "i18n": {
-    "missing_keys": "{count} missing translation | {count} missing translations",
+    "missing_keys": "{count} ontbrekende vertaling | {count} ontbrekende vertalingen",
     "copy_keys": "Sleutels kopiëren",
     "show_more_keys": "Weergeef {count} meer...",
     "contribute_hint": "Help deze vertaling te verbeteren door de ontbrekende sleutels toe te voegen.",
@@ -158,11 +158,11 @@
     "view_guide": "Vertalen handleiding"
   },
   "error": {
-    "401": "Unauthorized",
-    "404": "Page not found",
-    "500": "Internal server error",
-    "503": "Service unavailable",
-    "default": "Something went wrong"
+    "401": "Ongeautoriseerd",
+    "404": "Pagina niet gevonden",
+    "500": "Interne serverfout",
+    "503": "Service niet beschikbaar",
+    "default": "Er is iets misgegaan"
   },
   "common": {
     "loading": "Laden...",
@@ -916,74 +916,74 @@
     }
   },
   "about": {
-    "title": "About",
-    "heading": "about",
-    "meta_description": "npmx is a fast, modern browser for the npm registry. A better UX/DX for exploring npm packages.",
+    "title": "Over",
+    "heading": "over ons",
+    "meta_description": "npmx is een snelle, moderne browser voor de npm register. Een betere UX/DX om npm-pakketten te ontdekken.",
     "what_we_are": {
-      "title": "What we are",
-      "better_ux_dx": "better UX/DX",
+      "title": "Wat zijn we",
+      "better_ux_dx": "betere UX/DX",
       "admin_ui": "admin UI",
-      "description": "npmx is a {betterUxDx} for the npm package registry and tooling. We provide a fast, modern interface for exploring packages, with features like dark mode, keyboard navigation, code browsing, and connections to alternative registries like {jsr}.",
-      "admin_description": "We also aim to provide a better {adminUi} for managing your packages, teams, and organizations — all from the browser, powered by your local npm CLI."
+      "description": "npmx is een {betterUxDx} voor het npm register en bijbehorende hulpmiddelen. We bieden een snelle, moderne interface voor het ontdekken van pakketten, met functies zoals dark mode, toetsenbordnavigatie, code-browsing en koppelingen met alternatieve registers zoals {jsr}.",
+      "admin_description": "We streven er ook naar om een betere {adminUi} te bieden voor het beheer van uw pakketten, teams en organisaties — allemaal vanuit de browser, aangedreven door uw lokale npm CLI."
     },
     "what_we_are_not": {
-      "title": "What we're not",
-      "not_package_manager": "Not a package manager.",
-      "not_registry": "Not a registry.",
-      "registry_description": "We don't host packages. We're just a better way to browse them.",
+      "title": "Wat zijn we niet",
+      "not_package_manager": "Geen pakketbeheerder",
+      "not_registry": "Niet een register.",
+      "registry_description": "Wij hosten geen pakketten. Wij bieden alleen een betere manier om ze te bekijken.",
       "package_managers_exist": "{already} {people} {building} {really} {cool} {package} {managers}.",
       "words": {
-        "already": "There are",
-        "people": "already",
-        "building": "people",
-        "really": "building",
-        "cool": "really",
-        "package": "cool",
-        "managers": "package managers"
+        "already": "Er zijn",
+        "people": "al",
+        "building": "mensen bezig met",
+        "really": "het bouwen",
+        "cool": "van hele",
+        "package": "gave",
+        "managers": "pakket beheerders"
       }
     },
     "sponsors": {
       "title": "Sponsors"
     },
     "oss_partners": {
-      "title": "OSS Partners"
+      "title": "Open Source Software Partners"
     },
     "team": {
       "title": "Team",
-      "governance": "Governance",
-      "role_steward": "steward",
-      "role_maintainer": "maintainer",
+      "governance": "Bestuur",
+      "role_steward": "Coördinator",
+      "role_maintainer": "Onderhouder",
       "sponsor": "sponsor",
-      "sponsor_aria": "Sponsor {name} on GitHub"
+      "sponsor_aria": "Sponsor {name} op GitHub"
     },
     "contributors": {
-      "title": "... and {count} more contributor | ... and {count} more contributors",
-      "description": "npmx is fully open source, built by an amazing community of contributors. Join us and let's build the npm browsing experience we always wanted, together.",
-      "loading": "Loading contributors...",
-      "error": "Failed to load contributors",
-      "view_profile": "View {name}'s GitHub profile"
+      "title": "... en {count} meer bijdrager | ... en {count} meer bijdragers",
+      "description": "npmx is volledig open source en is ontwikkeld door een geweldige community van bijdragers. Doe mee en laten we samen de npm browserervaring bouwen die we altijd al wilden hebben.",
+      "loading": "Laden bijdragers...",
+      "error": "Niet gelukt om bedragers te laden",
+      "view_profile": "Bekijk het GitHub-profiel van {naam}"
     },
     "get_involved": {
-      "title": "Get involved",
+      "title": "Doe mee",
       "contribute": {
-        "title": "Contribute",
-        "description": "Help us build a better npm experience.",
-        "cta": "View on GitHub"
+        "title": "Bijdragen",
+        "description": "Help ons om een betere npm ervaring te creëren.",
+        "cta": "Ga naar GitHub"
       },
       "community": {
-        "title": "Join the community",
-        "description": "Chat, ask questions, and share ideas.",
-        "cta": "Join Discord"
+        "title": "Word lid van de community",
+        "description": "Chat, stel vragen en deel ideeën.",
+        "cta": "Word lid van de Discord"
       },
       "builders": {
-        "title": "Help build npmx",
-        "description": "Join the builders shaping the future of npmx.",
-        "cta": "Join Builders Discord"
+        "title": "Bouw mee",
+        "description": "Word lid van het team dat de toekomst van npmx bouwt.",
+        "cta": "Join de bouwsers Discord"
       },
       "follow": {
-        "title": "Stay updated",
-        "description": "Find out the latest on npmx.",
-        "cta": "Follow on Bluesky"
+        "title": "Blijf op te hoogte",
+        "description": "Ontdek het laatste nieuws van npmx.",
+        "cta": "Volg op Bluesky"
       }
     }
   },
