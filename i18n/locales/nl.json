@@ -58,7 +58,7 @@
     "claim_button": "Claim \"{name}\"",
     "want_to_claim": "Want to claim this package name?",
     "start_typing": "Start typing to search packages",
-    "algolia_disclaimer": "Powered by Algolia",
+    "algolia_disclaimer": "Mogelijk gemaakt door Algolia",
     "exact_match": "exact",
     "suggestion": {
       "user": "user",
@@ -74,16 +74,16 @@
     "instant_search_advisory": "{label} {state} — {action}"
   },
   "nav": {
-    "main_navigation": "Main",
+    "main_navigation": "Hoofd",
     "popular_packages": "Populaire pakketten",
     "settings": "instellingen",
-    "compare": "compare",
+    "compare": "vergelijken",
     "back": "terug",
     "menu": "Menu",
-    "mobile_menu": "Navigation menu",
+    "mobile_menu": "Navigatie menu",
     "open_menu": "Open menu",
     "links": "Links",
-    "tap_to_search": "Tap to search"
+    "tap_to_search": "Tik om te zoeken"
   },
   "blog": {
     "title": "Blog",
@@ -111,51 +111,51 @@
     }
   },
   "settings": {
-    "title": "settings",
-    "tagline": "customize your npmx experience",
-    "meta_description": "Customize your npmx.dev experience with theme, language, and display preferences.",
+    "title": "instellingen",
+    "tagline": "Pas uw npmx.dev ervaring aan",
+    "meta_description": "Pas uw npmx.dev ervaring aan met thema-, taal- en weergavevoorkeuren.",
     "sections": {
-      "appearance": "Appearance",
+      "appearance": "Uiterlijk",
       "display": "Display",
-      "search": "Search features",
-      "language": "Language",
-      "keyboard_shortcuts": "Keyboard shortcuts"
+      "search": "Zoekfuncties",
+      "language": "Taal",
+      "keyboard_shortcuts": "Sneltoetsen"
     },
     "data_source": {
-      "label": "Data source",
-      "description": "Choose where npmx gets search data. Individual package pages always use the npm registry directly.",
-      "npm": "npm Registry",
-      "npm_description": "Fetches search, org and user listings directly from the official npm registry. Authoritative, but can be slower.",
+      "label": "Gegevensbron",
+      "description": "Kies waar npmx zoekgegevens vandaan haalt. Individuele pakketpagina's gebruiken altijd rechtstreeks het npm-register.",
+      "npm": "npm register",
+      "npm_description": "Haald zoek-, org- en gebruikerslijsten rechtstreeks op uit het officiële npm-register. Betrouwbaar, maar kan trager zijn.",
       "algolia": "Algolia",
-      "algolia_description": "Uses Algolia for faster search, org and user pages."
+      "algolia_description": "Gebruikt Algolia voor snellere zoekopdrachten, organisatie- en gebruikerspagina's."
     },
-    "instant_search": "Instant search",
-    "instant_search_description": "Navigates to the search page and updates the results as you type.",
-    "relative_dates": "Relative dates",
-    "include_types": "Include {'@'}types in install",
-    "include_types_description": "Add {'@'}types package to install commands for untyped packages",
-    "hide_platform_packages": "Hide platform-specific packages in search",
-    "hide_platform_packages_description": "Hide native binary packages like {'@'}esbuild/linux-x64 from results",
-    "theme": "Theme",
-    "theme_light": "Light",
-    "theme_dark": "Dark",
-    "theme_system": "System",
-    "language": "Language",
-    "help_translate": "Help translate npmx",
-    "accent_colors": "Accent colors",
+    "instant_search": "Direct zoeken",
+    "instant_search_description": "Navigeert naar de zoekpagina en werkt de resultaten bij terwijl u typt.",
+    "relative_dates": "Relatieve datums",
+    "include_types": "Voeg {'@'}types toe aan installatie",
+    "include_types_description": "Voeg {'@'}types toe aan installatie commands van pakketten zonder types.",
+    "hide_platform_packages": "Verberg platformspecifieke pakketten in zoekresultaten",
+    "hide_platform_packages_description": "Verberg native binaire pakketten zoals {'@'}esbuild/linux-x64 uit de resultaten",
+    "theme": "Thema",
+    "theme_light": "Licht",
+    "theme_dark": "Donker",
+    "theme_system": "Systeem",
+    "language": "Taal",
+    "help_translate": "Help npmx vertalen",
+    "accent_colors": "Accentkleuren",
     "clear_accent": "Clear accent color",
-    "translation_progress": "Translation progress",
-    "background_themes": "Background shade",
-    "keyboard_shortcuts_enabled": "Enable keyboard shortcuts",
-    "keyboard_shortcuts_enabled_description": "Keyboard shortcuts can be disabled if they conflict with other browser or system shortcuts"
+    "translation_progress": "Voortgang vertaling",
+    "background_themes": "Achtergrondkleur",
+    "keyboard_shortcuts_enabled": "Sneltoetsen inschakelen",
+    "keyboard_shortcuts_enabled_description": "Sneltoetsen kunnen worden uitgeschakeld als ze conflicteren met andere sneltoetsen van de browser of het systeem."
   },
   "i18n": {
     "missing_keys": "{count} missing translation | {count} missing translations",
-    "copy_keys": "Copy keys",
-    "show_more_keys": "Show {count} more...",
-    "contribute_hint": "Help improve this translation by adding the missing keys.",
-    "edit_on_github": "Edit on GitHub",
-    "view_guide": "Translation guide"
+    "copy_keys": "Sleutels kopiëren",
+    "show_more_keys": "Weergeef {count} meer...",
+    "contribute_hint": "Help deze vertaling te verbeteren door de ontbrekende sleutels toe te voegen.",
+    "edit_on_github": "Bewerk op GitHub",
+    "view_guide": "Vertalen handleiding"
   },
   "error": {
     "401": "Unauthorized",
@@ -165,12 +165,12 @@
     "default": "Something went wrong"
   },
   "common": {
-    "loading": "Loading...",
+    "loading": "Laden...",
     "loading_more": "Loading more...",
     "loading_packages": "Loading packages...",
     "end_of_results": "End of results",
     "try_again": "Try again",
-    "close": "Close",
+    "close": "Sluiten",
     "or": "or",
     "retry": "Retry",
     "copy": "kopieer",
@@ -590,24 +590,24 @@
   },
   "connector": {
     "modal": {
-      "title": "Local Connector",
-      "connected": "Connected",
-      "connected_as_user": "Connected as ~{user}",
-      "connected_hint": "You can now manage packages and organizations from the web UI.",
-      "disconnect": "Disconnect",
-      "run_hint": "Run the connector on your machine to enable admin features.",
-      "copy_command": "Copy command",
-      "copied": "Copied",
-      "paste_token": "Then paste the token below to connect:",
+      "title": "Lokale Connector",
+      "connected": "Verbonden",
+      "connected_as_user": "Verbonden als ~{user}",
+      "connected_hint": "U kunt nu pakketten en organisaties beheren vanuit de webinterface.",
+      "disconnect": "Ontkoppelen",
+      "run_hint": "Voer de connector uit op uw computer om beheerdersfuncties in te schakelen.",
+      "copy_command": "Kopieer command",
+      "copied": "Gekopieerd",
+      "paste_token": "Plak vervolgens het onderstaande token om verbinding te maken:",
       "token_label": "Token",
-      "token_placeholder": "paste token here...",
-      "advanced": "Advanced options",
+      "token_placeholder": "plak hier uw token...",
+      "advanced": "Geavanceerde opties",
       "port_label": "Port",
-      "warning": "WARNING",
-      "warning_text": "This allows npmx to access your npm CLI. Only connect to sites you trust.",
-      "connect": "Connect",
-      "connecting": "Connecting...",
-      "auto_open_url": "Automatically open auth page"
+      "warning": "WAARSCHUWING",
+      "warning_text": "Dit geeft npmx toegang tot je npm CLI. Maak alleen verbinding met sites die je vertrouwt.",
+      "connect": "Verbind",
+      "connecting": "Verbinden...",
+      "auto_open_url": "Automatisch authenticatiepagina openen"
     }
   },
   "operations": {
@@ -988,32 +988,32 @@
     }
   },
   "account_menu": {
-    "connect": "connect",
+    "connect": "verbinden",
     "account": "Account",
     "npm_cli": "npm CLI",
     "atmosphere": "Atmosphere",
-    "npm_cli_desc": "Manage packages & orgs",
-    "atmosphere_desc": "Social features & identity",
-    "connect_npm_cli": "Connect to npm CLI",
-    "connect_atmosphere": "Connect to Atmosphere",
-    "connecting": "Connecting...",
-    "ops": "{count} op | {count} ops"
+    "npm_cli_desc": "Pakketten en organisaties beheren",
+    "atmosphere_desc": "Sociale functies en identiteit",
+    "connect_npm_cli": "Verbinden met npm CLI",
+    "connect_atmosphere": "Verbinden met Atmosphere",
+    "connecting": "Verbinden...",
+    "ops": "{count} operatie | {count} operaties"
   },
   "auth": {
     "modal": {
       "title": "Atmosphere",
-      "connected_as": "Connected as {'@'}{handle}",
-      "disconnect": "Disconnect",
-      "connect_prompt": "Connect with your Atmosphere account",
+      "connected_as": "Verbonden als {'@'}{handle}",
+      "disconnect": "Ontkoppelen",
+      "connect_prompt": "Verbind met je Atmosphere account",
       "handle_label": "Handle",
-      "handle_placeholder": "alice.npmx.social",
-      "connect": "Connect",
-      "create_account": "Create a new account",
-      "connect_bluesky": "Connect with Bluesky",
-      "what_is_atmosphere": "What is an Atmosphere account?",
-      "atmosphere_explanation": "{npmx} uses the {atproto} to power many of its social features, allowing users to own their data and use one account for all compatible applications. Once you create an account, you can use other apps like {bluesky} and {tangled} with the same account.",
-      "default_input_error": "Please enter a valid handle, DID, or a full PDS URL",
-      "profile": "Profile"
+      "handle_placeholder": "willem.npmx.social",
+      "connect": "Verbinden",
+      "create_account": "Nieuw account maken",
+      "connect_bluesky": "Verbind met Bluesky",
+      "what_is_atmosphere": "wat is een Atmosphere account?",
+      "atmosphere_explanation": "{npmx} maakt gebruik van {atproto} voor veel van zijn sociale functies, waardoor gebruikers eigenaar zijn van hun gegevens en één account kunnen gebruiken voor alle compatibele applicaties. Zodra u een account hebt aangemaakt, kunt u andere apps zoals {bluesky} en {tangled} met hetzelfde account gebruiken.",
+      "default_input_error": "Voer een geldige handle, DID of volledige PDS-URL in.",
+      "profile": "Profiel"
     }
   },
   "header": {
