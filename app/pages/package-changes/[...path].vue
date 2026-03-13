@@ -58,7 +58,7 @@ const latestVersion = computed(() => {
 })
 
 watch(
-  [version, latestVersion, packageName],
+  [version, () => latestVersion.value?.version, packageName],
   ([v, latest, name]) => {
     if (!v && latest && name) {
       const pathSegments = [...name.split('/'), 'v', latest]
@@ -138,7 +138,7 @@ defineOgImageComponent('Default', {
         <SkeletonBlock class="h-5 w-3/4 max-w-2xl rounded" />
       </section>
 
-      <Suspense v-else>
+      <Suspense v-else-if="latestVersion?.version">
         <template #default>
           <LazyChangelogReleases
             v-if="changelog?.type == 'release'"

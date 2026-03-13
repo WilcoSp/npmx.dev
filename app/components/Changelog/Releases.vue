@@ -12,6 +12,7 @@ const { data: releases, error } = await useFetch<ReleaseData[]>(
 )
 
 const route = useRoute()
+const router = useRouter()
 
 const matchingDateReleases = computed(() => {
   if (!requestedDate || !releases.value) {
@@ -28,32 +29,34 @@ const matchingDateReleases = computed(() => {
   })
 })
 
-watch(
-  [() => route.hash, () => requestedDate?.toLowerCase(), releases, () => requestedVersion],
-  ([hash, date, r, rv]) => {
-    if (hash && r) {
-      // ensures the user is scrolled to the hash
-      navigateTo(hash)
-      return
-    }
-    if (hash || !date || !r) {
-      return
-    }
-    if (rv) {
-      for (const match of matchingDateReleases.value ?? []) {
-        if (match.title.toLowerCase().includes(rv)) {
-          navigateTo(`#release-${slugify(match.title)}`)
-          return
+if (import.meta.client) {
+  watch(
+    [() => route.hash, () => requestedDate?.toLowerCase(), releases, () => requestedVersion],
+    ([hash, date, r, rv]) => {
+      if (hash && r) {
+        // ensures the user is scrolled to the hash
+        navigateTo(hash, { replace: true })
+        return
+      }
+      if (hash || !date || !r) {
+        return
+      }
+      if (rv) {
+        for (const match of matchingDateReleases.value ?? []) {
+          if (match.title.toLowerCase().includes(rv)) {
+            navigateTo(`#release-${slugify(match.title)}`, { replace: true })
+            return
+          }
         }
       }
-    }
 
-    navigateTo(`#date-${date}`)
-  },
-  {
-    immediate: true,
-  },
-)
+      navigateTo(`#date-${date}`, { replace: true })
+    },
+    {
+      immediate: true,
+    },
+  )
+}
 </script>
 <template>
   <div class="flex flex-col gap-2 py-3" v-if="releases">
