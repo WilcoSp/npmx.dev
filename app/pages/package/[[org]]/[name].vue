@@ -646,16 +646,6 @@ const showSkeleton = shallowRef(false)
                 </LinkBase>
               </li>
               <!-- Mobile-only: Docs + Code + Compare links -->
-              <li v-if="docsLink && displayVersion" class="sm:hidden">
-                <LinkBase :to="docsLink" classicon="i-lucide:file-text">
-                  {{ $t('package.links.docs') }}
-                </LinkBase>
-              </li>
-              <li v-if="resolvedVersion && codeLink" class="sm:hidden">
-                <LinkBase :to="codeLink" classicon="i-lucide:code">
-                  {{ $t('package.links.code') }}
-                </LinkBase>
-              </li>
               <li class="sm:hidden">
                 <LinkBase
                   :to="{ name: 'compare', query: { packages: pkg.name } }"
