@@ -4116,6 +4116,18 @@
         },
         "no_logs": {
           "type": "string"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "p1": {
+              "type": "string"
+            },
+            "p2": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

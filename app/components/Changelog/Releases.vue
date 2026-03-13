@@ -57,8 +57,6 @@ watch(
 </script>
 <template>
   <div class="flex flex-col gap-2 py-3" v-if="releases">
-    <ClientOnly>
-      <ChangelogCard v-for="release of releases" :release :key="release.id" />
-    </ClientOnly>
+    <ChangelogCard v-for="release of releases" :release :key="release.id" />
   </div>
 </template>

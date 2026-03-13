@@ -5,7 +5,7 @@ definePageMeta({
   name: 'changes',
   path: '/package-changes/:path+',
   alias: ['/package/changes/:path+', '/changes/:path+'],
-  scrollMargin: 200,
+  scrollMargin: 190,
 })
 
 /// routing
@@ -69,7 +69,7 @@ watch(
 )
 
 // getting info
-const { data: changelog, pending } = usePackageChangelog(packageName, version)
+const { data: changelog, pending, error } = usePackageChangelog(packageName, version)
 
 const repoProviderIcon = useProviderIcon(() => changelog.value?.provider)
 const tptoc = useTemplateRef('tptoc')
@@ -109,9 +109,9 @@ defineOgImageComponent('Default', {
       :resolved-version="version"
       :display-version="pkg?.requestedVersion"
     />
-    <section class="container w-full pt-3" v-if="!pending">
+    <section class="container w-full pt-3">
       <div
-        class="sticky top-[--combined-header-height] pa-3 z-2 flex justify-between gap-4"
+        class="sticky top-[--combined-header-height] pa-3 z-2 flex justify-between gap-4 h-12"
         :class="$style.gitTocHeader"
       >
         <LinkBase
@@ -126,20 +126,39 @@ defineOgImageComponent('Default', {
           <!- prevents layout shift while loading ->
         </div>
       </div>
+      <section v-if="pending" class="flex flex-col gap-2 py-3">
+        <SkeletonBlock class="h-8 w-40 rounded" />
+        <ul class="ms-3 list-disc my-[1rem] ps-[1.5rem] marker:color-[--border-hover]">
+          <li class="mb-1" v-for="n in 5">
+            <SkeletonBlock class="h-7 w-full max-w-2xl rounded" />
+          </li>
+        </ul>
 
-      <LazyChangelogReleases
-        v-if="changelog?.type == 'release'"
-        :info="changelog"
-        :requestedDate="versionDate"
-        :requested-version="version || latestVersion?.version"
-      />
-      <LazyChangelogMarkdown
-        v-else-if="changelog?.type == 'md'"
-        :info="changelog"
-        :tpTarget="tptoc"
-        :requested-version="version || latestVersion?.version"
-      />
-      <p class="mt-5" v-else>{{ $t('changelog.no_logs') }}</p>
+        <SkeletonBlock class="h-5 w-5/6 max-w-2xl rounded" />
+        <SkeletonBlock class="h-5 w-3/4 max-w-2xl rounded" />
+      </section>
+
+      <template v-else-if="!error">
+        <LazyChangelogReleases
+          v-if="changelog?.type == 'release'"
+          :info="changelog"
+          :requestedDate="versionDate"
+          :requested-version="version || latestVersion?.version"
+        />
+        <LazyChangelogMarkdown
+          v-else-if="changelog?.type == 'md'"
+          :info="changelog"
+          :tpTarget="tptoc"
+          :requested-version="version || latestVersion?.version"
+        />
+        <p class="mt-5" v-else>{{ $t('changelog.no_logs') }}</p>
+      </template>
+      <section v-else class="flex items-center pa-3 flex-col text-lg gap-2">
+        <p>{{ $t('changelog.error.p1', { package: pkg?.name }) }}</p>
+        <i18n-t keypath="changelog.error.p2" tag="p" #viewon>
+          <LinkBase :to="changelog?.link">{{ viewOnGit.toLowerCase() }}</LinkBase>
+        </i18n-t>
+      </section>
     </section>
   </main>
 </template>
