@@ -111,7 +111,7 @@ defineOgImageComponent('Default', {
     />
     <section class="container w-full pt-3">
       <div
-        class="sticky top-[--combined-header-height] pa-3 z-2 flex justify-between gap-4 h-12"
+        class="sticky top-[--combined-header-height] pa-3 z-2 flex justify-between gap-4 h-14"
         :class="$style.gitTocHeader"
       >
         <LinkBase
