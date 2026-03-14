@@ -32,7 +32,10 @@ if (import.meta.server) {
 }
 
 // status: resolvedStatus
-const { data: version } = await useResolvedVersion(packageName, requestedVersion)
+const { data: version, pending: resolvingPending } = await useResolvedVersion(
+  packageName,
+  requestedVersion,
+)
 
 const { data: pkg } = usePackage(packageName, () => version.value ?? requestedVersion.value ?? null)
 
@@ -99,10 +102,14 @@ defineOgImageComponent('Default', {
       :resolved-version="version"
       :display-version="pkg?.requestedVersion"
     />
+    {{ requestedVersion }} {{ version }}
     <section class="container w-full pt-3">
       <div
-        class="sticky top-[--combined-header-height] pa-3 z-2 flex justify-between gap-4 h-14"
-        :class="$style.gitTocHeader"
+        class="pa-3 z-2 flex justify-between gap-4 h-14"
+        :class="{
+          [$style.gitTocHeader]: true,
+          sticky: changelog?.type == 'md',
+        }"
       >
         <LinkBase
           v-if="changelog?.link"
@@ -116,7 +123,7 @@ defineOgImageComponent('Default', {
           <!- prevents layout shift while loading ->
         </div>
       </div>
-      <section v-if="pending" class="flex flex-col gap-2 py-3">
+      <section v-if="pending || resolvingPending" class="flex flex-col gap-2 py-3">
         <SkeletonBlock class="h-8 w-40 rounded" />
         <ul class="ms-3 list-disc my-[1rem] ps-[1.5rem] marker:color-[--border-hover]">
           <li class="mb-1" v-for="_n in 5">
@@ -128,13 +135,13 @@ defineOgImageComponent('Default', {
         <SkeletonBlock class="h-5 w-3/4 max-w-2xl rounded" />
       </section>
 
-      <Suspense v-else-if="latestVersion?.version">
+      <Suspense v-else>
         <template #default>
           <LazyChangelogReleases
             v-if="changelog?.type == 'release'"
             :info="changelog"
             :requestedDate="versionDate"
-            :requested-version="version || latestVersion?.version"
+            :requested-version="version"
             #error
           >
             <LazyChangelogErrorMsg
@@ -147,7 +154,7 @@ defineOgImageComponent('Default', {
             v-else-if="changelog?.type == 'md'"
             :info="changelog"
             :tpTarget="tptoc"
-            :requested-version="version || latestVersion?.version"
+            :requested-version="version"
             #error
           >
             <LazyChangelogErrorMsg
@@ -181,5 +188,6 @@ defineOgImageComponent('Default', {
   border-bottom-width: 1px;
   border-color: color-mix(in srgb, var(--border) var(--un-border-opacity), transparent);
   background-color: color-mix(in srgb, var(--bg) var(--un-bg-opacity), transparent);
+  top: var(--combined-header-height);
 }
 </style>

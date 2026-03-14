@@ -12,7 +12,6 @@ const { data: releases, error } = await useFetch<ReleaseData[]>(
 )
 
 const route = useRoute()
-const router = useRouter()
 
 const matchingDateReleases = computed(() => {
   if (!requestedDate || !releases.value) {
@@ -33,6 +32,8 @@ if (import.meta.client) {
   watch(
     [() => route.hash, () => requestedDate?.toLowerCase(), releases, () => requestedVersion],
     ([hash, date, r, rv]) => {
+      console.log({ rv })
+
       if (hash && r) {
         // ensures the user is scrolled to the hash
         navigateTo(hash, { replace: true })
@@ -54,6 +55,7 @@ if (import.meta.client) {
     },
     {
       immediate: true,
+      flush: 'post',
     },
   )
 }
