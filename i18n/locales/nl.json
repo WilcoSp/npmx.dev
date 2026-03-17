@@ -27,18 +27,18 @@
       "search": "Zoeken",
       "package": "Pakket"
     },
-    "focus_search": "",
-    "show_kbd_hints": "",
+    "focus_search": "Focus op zoeken",
+    "show_kbd_hints": "Toetsenbordtips uitlichten",
     "settings": "Open instellingen",
     "compare": "Open compare",
-    "compare_from_package": "Open compare (prefilled with current package)",
-    "navigate_results": "Navigate results",
-    "go_to_result": "Go to result",
-    "open_code_view": "Open code view",
-    "open_docs": "Open docs",
-    "disable_shortcuts": "You can disable keyboard shortcuts in {settings}.",
-    "open_main": "EN TEXT TO REPLACE: Open main information",
-    "open_diff": "EN TEXT TO REPLACE: Open version differences"
+    "compare_from_package": "Vergelijking openen (vooraf ingevuld met het huidige pakket)",
+    "navigate_results": "Navigeer resultaten",
+    "go_to_result": "Ga naar resultaten",
+    "open_code_view": "Open code weergaven",
+    "open_docs": "Open documentatie",
+    "disable_shortcuts": "Je kunt toetsenboordnavigatie uitschakelen in {instellingen}.",
+    "open_main": "Open pakket overzicht",
+    "open_diff": "Open versie verschillen"
   },
   "search": {
     "label": "Zoek npm pakketten",
@@ -95,20 +95,20 @@
       "view_profile": "Bekijk {name}'s profiel op Bluesky"
     },
     "draft_badge": "Ontwerp",
-    "draft_banner": "This is an unpublished draft. It may be incomplete or contain inaccuracies.",
+    "draft_banner": "Dit is een ongepubliceerd concept. Het kan onvolledig zijn of onjuistheden bevatten.",
     "atproto": {
-      "view_on_bluesky": "View on Bluesky",
-      "reply_on_bluesky": "Reply on Bluesky",
-      "likes_on_bluesky": "Likes on Bluesky",
-      "like_or_reply_on_bluesky": "Like this post or add your comment on Bluesky",
-      "no_comments_yet": "No comments yet.",
-      "could_not_load_comments": "Could not load comments.",
-      "comments": "Comments",
-      "loading_comments": "Loading comments...",
-      "updating": "Updating...",
-      "reply_count": "{count} reply | {count} replies",
-      "like_count": "{count} like | {count} likes",
-      "repost_count": "{count} repost | {count} reposts",
+      "view_on_bluesky": "Bekijk op Bluesky",
+      "reply_on_bluesky": "Reageer op Bluesky",
+      "likes_on_bluesky": "Vind leuk op Bluesky",
+      "like_or_reply_on_bluesky": "Vind deze post leuk of voeg een opmerking Bluesky",
+      "no_comments_yet": "Nog geen opmerkingen.",
+      "could_not_load_comments": "Kon geen opmerkingen laden.",
+      "comments": "Opmerkingen",
+      "loading_comments": "Opmerkingen laden...",
+      "updating": "Bijwerken...",
+      "reply_count": "{count} antwoord | {count} antwoorden",
+      "like_count": "{count} vind leuk | {count} vinden leuk",
+      "repost_count": "{count} herplaatsing | {count} herplaatsing",
       "more_replies": "{count} more reply... | {count} more replies..."
     }
   },
@@ -181,47 +181,47 @@
     "warnings": "Waarschuwingen:",
     "go_back_home": "Ga terug naar startpagina",
     "per_week": "/ week",
-    "vanity_downloads_hint": "Vanity number: no packages displayed | Vanity number: for the displayed package | Vanity number: Sum of {count} displayed packages",
+    "vanity_downloads_hint": "Totaaloverzicht: geen pakketten weergegeven | Totaaloverzicht: voor het weergegeven pakket | Totaaloverzicht: som van {count} weergegeven pakketten",
     "sort": {
-      "name": "name",
-      "role": "role",
-      "members": "members"
+      "name": "naam",
+      "role": "rol",
+      "members": "leden"
     },
     "scroll_to_top": "Naar boven scrollen",
-    "cancel": "Cancel",
-    "save": "Save",
-    "edit": "Edit",
-    "error": "Error",
+    "cancel": "Annuleer",
+    "save": "Opslaan",
+    "edit": "Wijzigen",
+    "error": "Fout",
     "view_on": {
       "npm": "Bekijk op npm",
-      "github": "EN TEXT TO REPLACE: View on GitHub",
-      "gitlab": "EN TEXT TO REPLACE: View on GitLab",
-      "bitbucket": "EN TEXT TO REPLACE: View on Bitbucket",
-      "codeberg": "EN TEXT TO REPLACE: View on Codeberg",
-      "git_repo": "EN TEXT TO REPLACE: View on Git repository",
-      "forgejo": "EN TEXT TO REPLACE: View on Forgejo",
-      "gitea": "EN TEXT TO REPLACE: View on Gitea",
-      "gitee": "EN TEXT TO REPLACE: View on Gitee",
-      "radicle": "EN TEXT TO REPLACE: View on Radicle",
-      "sourcehut": "EN TEXT TO REPLACE: View on SourceHut",
-      "tangled": "EN TEXT TO REPLACE: View on Tangled"
+      "github": "Bekijk op GitHub",
+      "gitlab": "Bekijk op GitLab",
+      "bitbucket": "Bekijk op Bitbucket",
+      "codeberg": "Bekijk op Codeberg",
+      "git_repo": "Bekijk op Git repository",
+      "forgejo": "Bekijk op Forgejo",
+      "gitea": "Bekijk op Gitea",
+      "gitee": "Bekijk op Gitee",
+      "radicle": "Bekijk op Radicle",
+      "sourcehut": "Bekijk op SourceHut",
+      "tangled": "Bekijk op Tangled"
     }
   },
   "profile": {
     "display_name": "Display Name",
-    "description": "Description",
-    "no_description": "No description",
+    "description": "Bescrijving",
+    "no_description": "Geen bescrijving",
     "website": "Website",
     "website_placeholder": "https://example.com",
-    "likes": "Likes",
+    "likes": "Vind leuk",
     "seo_title": "{handle} - npmx",
-    "seo_description": "npmx profile by {handle}",
-    "not_found": "Profile Not Found",
-    "not_found_message": "The profile for {handle} could not be found.",
+    "seo_description": "npmx profiel bij {handle}",
+    "not_found": "Profiel niet gevonden",
+    "not_found_message": "Het profiel voor {handle} kon niet gevonden worden.",
     "invite": {
-      "message": "It doesn't look like they're using npmx yet. Want to tell them about it?",
-      "share_button": "Share on Bluesky",
-      "compose_text": "Hey {'@'}{handle}! Have you checked out npmx.dev yet? It's a browser for the npm registry that's fast, modern, and open-source.\nhttps://npmx.dev"
+      "message": "Het lijkt erop dat ze npmx nog niet gebruiken. Wil je ze hierop wijzen",
+      "share_button": "Deel op Bluesky",
+      "compose_text": "Hallo {'@'}{handle}! Heb je npmx.dev al bekeken? Het is een browser voor het npm register die snel, modern en open source is.\nhttps://npmx.dev"
     }
   },
   "package": {
@@ -229,7 +229,7 @@
     "not_found_message": "Dit pakket kon nit gevonden worden.",
     "no_description": "Geen beschrijving beschikbaar",
     "verified_provenance": "Geverifieerde herkomst",
-    "navigation": "Package",
+    "navigation": "Pakket",
     "copy_name": "Kopieer pakket naam",
     "deprecation": {
       "package": "Dit pakket wordt afgeraden.",
@@ -271,17 +271,17 @@
     },
     "skills": {
       "title": "Agent Skills",
-      "skills_available": "{count} skill available | {count} skills available",
+      "skills_available": "{count} skill beschikbaar | {count} skills beschikbaar",
       "compatible_with": "Compatibel met {tool}",
       "install": "Installeer",
       "installation_method": "Installatie methode",
       "learn_more": "Leer meer",
-      "available_skills": "Available Skills",
+      "available_skills": "Beschikbare Skills",
       "click_to_expand": "Klik om uit te vouwen",
       "no_description": "Geen beschrijving",
       "file_counts": {
         "scripts": "{count} script | {count} scripts",
-        "refs": "{count} ref | {count} refs",
+        "refs": "{count} verwijzing | {count} verwijzingen",
         "assets": "{count} bestand | {count} bestanden"
       },
       "view_source": "Bekijk bron"
@@ -302,16 +302,16 @@
       "unlike": "Dit pakket niet meer leuk vinden"
     },
     "docs": {
-      "not_available": "Docs not available",
-      "not_available_detail": "We could not generate docs for this version."
+      "not_available": "Geen documentatie beschikbaar",
+      "not_available_detail": "We kunnen geen documentatie genereren van deze versie"
     },
     "get_started": {
       "title": "Aan de slag",
       "pm_label": "Pakketbeheerder",
       "copy_command": "Kopieer installatie command",
-      "copy_dev_command": "Copy dev install command",
-      "dev_dependency_hint": "Usually installed as a dev dependency",
-      "view_types": "View {package}"
+      "copy_dev_command": "Kopieer developer installatie command",
+      "dev_dependency_hint": "Wordt meestal geïnstalleerd als developer dependency",
+      "view_types": "Bekijk {package}"
     },
     "create": {
       "title": "Nieuw project aanmaken",
@@ -350,7 +350,7 @@
       "title": "Vertrouwensvermindering",
       "description_to_none_provenance": "Deze versie is gepubliseerd zonder {provenance}.",
       "description_to_none_trustedPublisher": "Deze versie is gepubliseerd zonder {trustedPublishing}.",
-      "description_to_provenance_trustedPublisher": "This version uses {provenance} but not {trustedPublishing}.",
+      "description_to_provenance_trustedPublisher": "Deze versie gebruikt {provenance} maar niet {trustedPublishing}.",
       "fallback_install_provenance": "Installatie commands zijn vastgezet op {version}, de laatste versie met geverifieerde herkomst.",
       "fallback_install_trustedPublisher": "Install commands are pinned to {version}, the last version with trusted publishing.",
       "provenance_link_text": "herkomstverificatie",
@@ -364,8 +364,8 @@
       "weekly_downloads": "Weekelijkse downloads",
       "keywords": "Trefwoorden",
       "license": "Licentie",
-      "select": "EN TEXT TO REPLACE: Select package",
-      "select_maximum": "EN TEXT TO REPLACE: Maximum {count} packages can be selected"
+      "select": "Selecteer pakket",
+      "select_maximum": "Er kunnen maximaal {count} pakketten worden geselecteerd"
     },
     "versions": {
       "title": "Versies",
@@ -379,22 +379,22 @@
       "more_tagged": "Nog 1 getagd | Nog {count} meer getagd",
       "all_covered": "Alle versies zijn gedekt bij de tags hierboven",
       "deprecated_title": "{version} (afgeraden)",
-      "view_all": "View {count} version | View all {count} versions",
+      "view_all": "Bekijk {count} versie | Bekijk alle {count} versies",
       "view_all_versions": "Bekijk alle versies",
-      "distribution_title": "Semver Group",
+      "distribution_title": "Semver Groep",
       "distribution_modal_title": "Versies",
-      "distribution_range_date_same_year": "from {from} to {to}, {endYear}",
-      "distribution_range_date_multiple_years": "from {from}, {startYear} to {to}, {endYear}",
-      "grouping_major": "Major",
-      "grouping_minor": "Minor",
-      "grouping_versions_title": "Versions",
-      "grouping_versions_all": "All",
-      "grouping_versions_only_recent": "Only recent",
-      "grouping_usage_title": "Usage",
-      "grouping_usage_all": "All",
-      "grouping_usage_most_used": "EN TEXT TO REPLACE: Most used",
-      "recent_versions_only_tooltip": "Show only versions published within the last year.",
-      "show_low_usage_tooltip": "Include version groups with less than 1% of total downloads.",
+      "distribution_range_date_same_year": "van {from} t/m {to}, {endYear}",
+      "distribution_range_date_multiple_years": "van {from}, {startYear} t/m {to}, {endYear}",
+      "grouping_major": "Hoofd",
+      "grouping_minor": "Sub",
+      "grouping_versions_title": "Versies",
+      "grouping_versions_all": "Alle",
+      "grouping_versions_only_recent": "Alleen recent",
+      "grouping_usage_title": "Gebruik",
+      "grouping_usage_all": "Alle",
+      "grouping_usage_most_used": "Meest gebruikt",
+      "recent_versions_only_tooltip": "Toon alleen versies die in het afgelopen jaar zijn gepubliceerd.",
+      "show_low_usage_tooltip": "Inclusief versiegroepen met minder dan 1% van het totale aantal downloads.",
       "y_axis_label": "Downloads",
       "filter_placeholder": "Filter bij semver (bijv. ^3.0.0)",
       "filter_invalid": "Ongeldige semver bereik",
@@ -403,13 +403,13 @@
       "filter_tooltip_link": "semver bereik",
       "no_matches": "Geen versies in dit bereik",
       "copy_alt": {
-        "per_version_analysis": "{version} version was downloaded {downloads} times",
-        "general_description": "Bar chart showing per-version downloads for {versions_count} {semver_grouping_mode} versions of the {package_name} package, {date_range_label} from the {first_version} version to the {last_version} version. The most downloaded version is {max_downloaded_version} with {max_version_downloads} downloads. {per_version_analysis}. {watermark}."
+        "per_version_analysis": "{version} versie was gedownloadt {downloads} keren",
+        "general_description": "Staafdiagram met het aantal downloads per versie voor {versions_count} {semver_grouping_mode}-versies van het pakket {package_name}, {date_range_label} van versie {first_version} tot versie {last_version}. De meest gedownloade versie is {max_downloaded_version} met {max_version_downloads} downloads. {per_version_analysis}. {watermark}."
       },
-      "page_title": "EN TEXT TO REPLACE: Version History",
+      "page_title": "Versie geschiedenis",
       "current_tags": "EN TEXT TO REPLACE: Current Tags",
-      "version_filter_placeholder": "EN TEXT TO REPLACE: Filter versions…",
-      "version_filter_label": "EN TEXT TO REPLACE: Filter versions",
+      "version_filter_placeholder": "Filter versies.",
+      "version_filter_label": "Filter versies",
       "no_match_filter": "EN TEXT TO REPLACE: No versions match {filter}"
     },
     "dependencies": {
@@ -703,17 +703,17 @@
       "cancel_add": "Cancel adding member",
       "add_member": "+ Add member"
     },
-    "public_packages": "{count} public package | {count} public packages",
+    "public_packages": "{count} publieke pakket | {count} publieke pakketten",
     "page": {
-      "packages_title": "Packages",
-      "members_tab": "Members",
+      "packages_title": "Pakketten",
+      "members_tab": "Leden",
       "teams_tab": "Teams",
-      "no_packages": "No public packages found for",
-      "no_packages_hint": "This organization may not exist or has no public packages.",
-      "failed_to_load": "Failed to load organization packages",
-      "no_match": "No packages match \"{query}\"",
-      "not_found": "Organization not found",
-      "not_found_message": "The organization \"{'@'}{name}\" does not exist on npm"
+      "no_packages": "Geen publieke pakketten gevonden voor",
+      "no_packages_hint": "Deze organisatie bestaat misschien niet of heeft geen publieke pakketten.",
+      "failed_to_load": "Het laden van de pakketten van de organisatie is mislukt",
+      "no_match": "Geen pakket kwam overeen met \"{query}\"",
+      "not_found": "Organisatie niet gevonden",
+      "not_found_message": "De organisatie \"{'@'}{name}\" bestaat niet op npm"
     }
   },
   "user": {
@@ -773,35 +773,35 @@
     }
   },
   "code": {
-    "files_label": "Files",
+    "files_label": "Bestanden",
     "no_files": "No files in this directory",
     "root": "root",
     "lines": "{count} line | {count} lines",
-    "toggle_tree": "Toggle file tree",
-    "close_tree": "Close file tree",
-    "copy_link": "Copy link",
+    "toggle_tree": "Bestandsstructuur weergeven/verbergen",
+    "close_tree": "Sluit bestand structuur",
+    "copy_link": "Kopieer link",
     "raw": "Raw",
-    "view_raw": "View raw file",
-    "file_too_large": "File too large to preview",
-    "file_size_warning": "{size} exceeds the 500KB limit for syntax highlighting",
-    "failed_to_load": "Failed to load file",
-    "unavailable_hint": "The file may be too large or unavailable",
-    "version_required": "Version is required to browse code",
+    "view_raw": "Bekijk origineel bestand",
+    "file_too_large": "Bestand te groot om te weergeven",
+    "file_size_warning": "{size} overschrijdt de limiet van 500 KB voor syntaxisaccentuering",
+    "failed_to_load": "Het is niet gelukt om bestand te laden",
+    "unavailable_hint": "Bestand is misschien te groot of niet beschikbaar",
+    "version_required": "Een versie is verplicht om de code te bekijken",
     "go_to_package": "Go to package",
-    "loading_tree": "Loading file tree...",
-    "failed_to_load_tree": "Failed to load files for this package version",
+    "loading_tree": "Bestand structuur laden...",
+    "failed_to_load_tree": "Het is niet gelukt om bestanden te laden voor deze versie",
     "back_to_package": "Back to package",
     "table": {
       "name": "Name",
       "size": "Size"
     },
     "markdown_view_mode": {
-      "preview": "preview",
+      "preview": "voorbeeld",
       "code": "code"
     },
-    "file_path": "File path",
-    "binary_file": "EN TEXT TO REPLACE: Binary file",
-    "binary_rendering_warning": "EN TEXT TO REPLACE: File type \"{contentType}\" is not supported for preview."
+    "file_path": "Bestand pad",
+    "binary_file": "Binair bestand",
+    "binary_rendering_warning": "Bestand type \"{contentType}\" wordt niet ondersteund om te weergeven."
   },
   "badges": {
     "provenance": {
@@ -1018,7 +1018,7 @@
       "disconnect": "Ontkoppelen",
       "connect_prompt": "Verbind met je Atmosphere account",
       "handle_label": "Handle",
-      "handle_placeholder": "willem.npmx.social",
+      "handle_placeholder": "alice.npmx.social",
       "connect": "Verbinden",
       "create_account": "Nieuw account maken",
       "connect_bluesky": "Verbind met Bluesky",
