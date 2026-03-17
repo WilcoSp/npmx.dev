@@ -187,13 +187,13 @@
       "role": "role",
       "members": "members"
     },
-    "scroll_to_top": "Scroll to top",
+    "scroll_to_top": "Naar boven scrollen",
     "cancel": "Cancel",
     "save": "Save",
     "edit": "Edit",
     "error": "Error",
     "view_on": {
-      "npm": "EN TEXT TO REPLACE: view on npm",
+      "npm": "Bekijk op npm",
       "github": "EN TEXT TO REPLACE: View on GitHub",
       "gitlab": "EN TEXT TO REPLACE: View on GitLab",
       "bitbucket": "EN TEXT TO REPLACE: View on Bitbucket",
@@ -225,21 +225,21 @@
     }
   },
   "package": {
-    "not_found": "Package Not Found",
-    "not_found_message": "The package could not be found.",
-    "no_description": "No description provided",
-    "verified_provenance": "Verified provenance",
+    "not_found": "Pakket niet gevonden",
+    "not_found_message": "Dit pakket kon nit gevonden worden.",
+    "no_description": "Geen beschrijving beschikbaar",
+    "verified_provenance": "Geverifieerde herkomst",
     "navigation": "Package",
-    "copy_name": "Copy package name",
+    "copy_name": "Kopieer pakket naam",
     "deprecation": {
-      "package": "This package has been deprecated.",
-      "version": "This version has been deprecated.",
-      "no_reason": "No reason provided"
+      "package": "Dit pakket wordt afgeraden.",
+      "version": "Deze versie wordt afgeraden.",
+      "no_reason": "Geen reden gegeven"
     },
     "size_increase": {
-      "title_size": "Significant size increase since v{version}",
-      "title_deps": "Significant dependency count increase since v{version}",
-      "title_both": "Significant size and dependency increase since v{version}",
+      "title_size": "Aanzienlijke toenamen in grootte sinds v{version}",
+      "title_deps": "Aanzienlijke toename van het aantal dependencies sinds versie {version}",
+      "title_both": "Aanzienlijke toename in omvang en depen sinds v{version}",
       "size": "Install size increased by {percent} ({size} larger)",
       "deps": "{count} more dependencies"
     },
@@ -248,7 +248,7 @@
       "native": "Dit kan vervangen worden door {replacement}, Beschikbaar sinds node {nodeVersion}.",
       "simple": "De {community} heeft dit pakket als overbodig gemarkeerd, met het advies: {replacement}.",
       "documented": "De {community} heeft aangegeven dat er voor dit pakket beter presterende alternatieven zijn.",
-      "none": "This package has been flagged as no longer needed, and its functionality is likely available natively in all engines.",
+      "none": "Dit pakket is gemarkeerd als overbodig en de functionaliteit ervan is waarschijnlijk standaard beschikbaar in alle omgevingen.",
       "learn_more": "Leer meer",
       "learn_more_above": "Lees hierboven meer.",
       "mdn": "MDN",
@@ -256,59 +256,59 @@
       "consider_no_dep": "+ Geen dependency overwegen?"
     },
     "stats": {
-      "license": "License",
+      "license": "Licentie",
       "deps": "Deps",
-      "install_size": "Install Size",
-      "vulns": "Vulns",
-      "published": "Published",
-      "published_tooltip": "Date {package}{'@'}{version} was published",
-      "view_dependency_graph": "View dependency graph",
-      "inspect_dependency_tree": "Inspect dependency tree",
+      "install_size": "installatiegrootte",
+      "vulns": "Kwetsbaarheden",
+      "published": "Gepubliceerd",
+      "published_tooltip": "Datum waarop {package}{'@'}{version} is gepubliceerd",
+      "view_dependency_graph": "Dependency grafiek bekijken",
+      "inspect_dependency_tree": "Dependency structuur inspecteren",
       "size_tooltip": {
-        "unpacked": "{size} unpacked size (this package)",
-        "total": "{size} total unpacked size (including {count} dependency for linux-x64) | {size} total unpacked size (including all {count} dependencies for linux-x64)"
+        "unpacked": "{size} uitgepakte grootte (dit pakket)",
+        "total": "totale grootte na uitpakken (inclusief {count} dependencies voor linux-x64)"
       }
     },
     "skills": {
       "title": "Agent Skills",
       "skills_available": "{count} skill available | {count} skills available",
-      "compatible_with": "Compatible with {tool}",
-      "install": "Install",
-      "installation_method": "Installation method",
-      "learn_more": "Learn more",
+      "compatible_with": "Compatibel met {tool}",
+      "install": "Installeer",
+      "installation_method": "Installatie methode",
+      "learn_more": "Leer meer",
       "available_skills": "Available Skills",
-      "click_to_expand": "Click to expand",
-      "no_description": "No description",
+      "click_to_expand": "Klik om uit te vouwen",
+      "no_description": "Geen beschrijving",
       "file_counts": {
         "scripts": "{count} script | {count} scripts",
         "refs": "{count} ref | {count} refs",
-        "assets": "{count} asset | {count} assets"
+        "assets": "{count} bestand | {count} bestanden"
       },
-      "view_source": "View source"
+      "view_source": "Bekijk bron"
     },
     "links": {
-      "main": "EN TEXT TO REPLACE: main",
+      "main": "Overzicht",
       "repo": "repo",
-      "homepage": "homepage",
+      "homepage": "website",
       "issues": "issues",
       "jsr": "jsr",
       "code": "code",
       "docs": "docs",
-      "fund": "fund",
-      "compare": "compare"
+      "fund": "Steunen",
+      "compare": "vergelijk"
     },
     "likes": {
-      "like": "Like this package",
-      "unlike": "Unlike this package"
+      "like": "Dit pakket leuk vinden",
+      "unlike": "Dit pakket niet meer leuk vinden"
     },
     "docs": {
       "not_available": "Docs not available",
       "not_available_detail": "We could not generate docs for this version."
     },
     "get_started": {
-      "title": "Get started",
-      "pm_label": "Package manager",
-      "copy_command": "Copy install command",
+      "title": "Aan de slag",
+      "pm_label": "Pakketbeheerder",
+      "copy_command": "Kopieer installatie command",
       "copy_dev_command": "Copy dev install command",
       "dev_dependency_hint": "Usually installed as a dev dependency",
       "view_types": "View {package}"
@@ -319,12 +319,12 @@
       "view": "{packageName} has the same maintainer. Click for more details."
     },
     "run": {
-      "title": "Run",
+      "title": "Uitvoeren",
       "locally": "Run locally"
     },
     "readme": {
       "title": "Readme",
-      "no_readme": "No README available.",
+      "no_readme": "Geen README beschikbaar.",
       "toc_title": "Outline",
       "callout": {
         "note": "Note",
@@ -333,28 +333,28 @@
         "warning": "Warning",
         "caution": "Caution"
       },
-      "copy_as_markdown": "Copy README as Markdown"
+      "copy_as_markdown": "kopieer README als Markdown"
     },
     "provenance_section": {
-      "title": "Provenance",
-      "built_and_signed_on": "Built and signed on {provider}",
+      "title": "Herkomstverificatie",
+      "built_and_signed_on": "Gebouwd en getekend op {provider}",
       "view_build_summary": "View build summary",
       "source_commit": "Source Commit",
       "build_file": "Build File",
       "public_ledger": "Public Ledger",
       "transparency_log_entry": "Transparency log entry",
-      "view_more_details": "View more details",
-      "error_loading": "Failed to load provenance details"
+      "view_more_details": "Meer informatie bekijken",
+      "error_loading": "Het laden van de herkomstgegevens is mislukt"
     },
     "security_downgrade": {
-      "title": "Trust downgrade",
-      "description_to_none_provenance": "This version was published without {provenance}.",
-      "description_to_none_trustedPublisher": "This version was published without {trustedPublishing}.",
+      "title": "Vertrouwensvermindering",
+      "description_to_none_provenance": "Deze versie is gepubliseerd zonder {provenance}.",
+      "description_to_none_trustedPublisher": "Deze versie is gepubliseerd zonder {trustedPublishing}.",
       "description_to_provenance_trustedPublisher": "This version uses {provenance} but not {trustedPublishing}.",
-      "fallback_install_provenance": "Install commands are pinned to {version}, the last version with provenance.",
+      "fallback_install_provenance": "Installatie commands zijn vastgezet op {version}, de laatste versie met geverifieerde herkomst.",
       "fallback_install_trustedPublisher": "Install commands are pinned to {version}, the last version with trusted publishing.",
-      "provenance_link_text": "provenance",
-      "trusted_publishing_link_text": "trusted publishing"
+      "provenance_link_text": "herkomstverificatie",
+      "trusted_publishing_link_text": "vertrouwd publiceren"
     },
     "keywords_title": "Keywords",
     "compatibility": "Compatibility",
@@ -519,37 +519,37 @@
       "choose": "choose playground"
     },
     "metrics": {
-      "esm": "ES Modules supported",
-      "cjs": "CommonJS supported",
-      "no_esm": "No ES Modules support",
+      "esm": "ES Modules ondersteund",
+      "cjs": "CommonJS ondersteund",
+      "no_esm": "Geen ES Modules ondersteuning",
       "types_label": "Types",
-      "types_included": "Types included",
-      "types_available": "Types available via {package}",
-      "no_types": "No TypeScript types"
+      "types_included": "Inclusief types",
+      "types_available": "Types beschikbaar via {package}",
+      "no_types": "Geen TypeScript types"
     },
     "license": {
       "view_spdx": "View license text on SPDX",
-      "none": "None"
+      "none": "Geen"
     },
     "vulnerabilities": {
-      "tree_found": "{vulns} vulnerability in {packages}/{total} packages | {vulns} vulnerabilities in {packages}/{total} packages",
-      "show_all_packages": "show {count} affected package | show all {count} affected packages",
-      "path": "path",
+      "tree_found": "{vulns} kwetsbaarheid in {packages}/{total} pakketten | {vulns} kwetsbaarheden in {packages}/{total} pakketten",
+      "show_all_packages": "toon {count} betrokken pakketten | toon alle {count} betrokken pakketten",
+      "path": "pad",
       "more": "+{count} more",
-      "packages_failed": "{count} package could not be checked | {count} packages could not be checked",
-      "scan_failed": "Could not scan for vulnerabilities",
+      "packages_failed": "{count} pakket kon niet worden gecontroleerd | {count} pakketten konden niet worden gecontroleerd",
+      "scan_failed": "Kon niet scannen voor kwetsbaarheden",
       "severity": {
-        "critical": "critical",
-        "high": "high",
-        "moderate": "moderate",
-        "low": "low"
+        "critical": "kritiek",
+        "high": "hoog",
+        "moderate": "matig",
+        "low": "laag"
       },
       "fixed_in_title": "Fixed in version {version}"
     },
     "deprecated": {
       "label": "Deprecated",
-      "tree_found": "{count} deprecated dependency | {count} deprecated dependencies",
-      "show_all": "show {count} deprecated package | show all {count} deprecated packages"
+      "tree_found": "{count} afraden dependency | {count} afgeraden dependencies",
+      "show_all": "toen {count} afgeraden pakket | toen alle {count} afgeraden pakketten"
     },
     "access": {
       "title": "Team Access",
@@ -810,7 +810,7 @@
       "verified_via": "Verified: published via {provider}"
     },
     "jsr": {
-      "title": "also available on JSR"
+      "title": "Ook verkrijgbaar op JSR"
     }
   },
   "filters": {
@@ -1122,8 +1122,8 @@
           "description": "Wekelijks aantal downloads"
         },
         "totalLikes": {
-          "label": "Likes",
-          "description": "Aantal likes"
+          "label": "vind leuk",
+          "description": "Aantal vind leuk"
         },
         "lastUpdated": {
           "label": "Gepubliceerd",
@@ -1174,8 +1174,8 @@
     "lines_hidden": "{count} line hidden | {count} lines hidden",
     "file_too_large": "File too large to compare",
     "file_size_warning": "{size} exceeds the 250KB limit for comparison",
-    "compare_versions": "diff",
-    "compare_versions_title": "Compare with latest version",
+    "compare_versions": "verschillen",
+    "compare_versions_title": "Vergelijk met de laatste versie",
     "version_selector_title": "EN TEXT TO REPLACE: Compare with version",
     "summary": "Summary",
     "deps_count": "{count} dep | {count} deps",
