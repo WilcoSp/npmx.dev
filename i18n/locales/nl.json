@@ -314,35 +314,35 @@
       "view_types": "View {package}"
     },
     "create": {
-      "title": "Create new project",
-      "copy_command": "Copy create command",
-      "view": "{packageName} has the same maintainer. Click for more details."
+      "title": "Nieuw project aanmaken",
+      "copy_command": "Kopieer aanmaak command",
+      "view": "{packageName} heeft dezelfde beheerder. Klik hier voor meer informatie."
     },
     "run": {
       "title": "Uitvoeren",
-      "locally": "Run locally"
+      "locally": "Lokaal uitvoeren"
     },
     "readme": {
       "title": "Readme",
       "no_readme": "Geen README beschikbaar.",
-      "toc_title": "Outline",
+      "toc_title": "Inhoud",
       "callout": {
-        "note": "Note",
+        "note": "notitie",
         "tip": "Tip",
-        "important": "Important",
-        "warning": "Warning",
-        "caution": "Caution"
+        "important": "Belangrijk",
+        "warning": "Waarschuwing",
+        "caution": "Let op"
       },
       "copy_as_markdown": "kopieer README als Markdown"
     },
     "provenance_section": {
-      "title": "Herkomstverificatie",
+      "title": "Herkomst verificatie gegevens",
       "built_and_signed_on": "Gebouwd en getekend op {provider}",
-      "view_build_summary": "View build summary",
-      "source_commit": "Source Commit",
-      "build_file": "Build File",
-      "public_ledger": "Public Ledger",
-      "transparency_log_entry": "Transparency log entry",
+      "view_build_summary": "Bekijk bouw samenvatting",
+      "source_commit": "Bron Commit",
+      "build_file": "Bouw bestand",
+      "public_ledger": "Publiek logboek",
+      "transparency_log_entry": "Vermelding in het transparantielogboek",
       "view_more_details": "Meer informatie bekijken",
       "error_loading": "Het laden van de herkomstgegevens is mislukt"
     },
@@ -356,8 +356,8 @@
       "provenance_link_text": "herkomstverificatie",
       "trusted_publishing_link_text": "vertrouwd publiceren"
     },
-    "keywords_title": "Keywords",
-    "compatibility": "Compatibility",
+    "keywords_title": "Trefwoorden",
+    "compatibility": "Compatibiliteit",
     "card": {
       "publisher": "Publiceerder",
       "published": "Gepubliceerd",
@@ -368,21 +368,21 @@
       "select_maximum": "EN TEXT TO REPLACE: Maximum {count} packages can be selected"
     },
     "versions": {
-      "title": "Versions",
-      "collapse": "Collapse {tag}",
-      "expand": "Expand {tag}",
-      "collapse_other": "Collapse other versions",
-      "expand_other": "Expand other versions",
-      "collapse_major": "Collapse major {major}",
-      "expand_major": "Expand major {major}",
-      "other_versions": "Other versions",
-      "more_tagged": "{count} more tagged",
-      "all_covered": "All versions are covered by tags above",
-      "deprecated_title": "{version} (deprecated)",
+      "title": "Versies",
+      "collapse": "{tag} inklappen",
+      "expand": "{tag} uitklappen",
+      "collapse_other": "Andere versies inklappen",
+      "expand_other": "Andere versies uitklappen",
+      "collapse_major": "Hoofd {major} inklappen",
+      "expand_major": "Hoofd {major} uitklappen",
+      "other_versions": "Andere versies",
+      "more_tagged": "Nog 1 getagd | Nog {count} meer getagd",
+      "all_covered": "Alle versies zijn gedekt bij de tags hierboven",
+      "deprecated_title": "{version} (afgeraden)",
       "view_all": "View {count} version | View all {count} versions",
-      "view_all_versions": "EN TEXT TO REPLACE: View all versions",
+      "view_all_versions": "Bekijk alle versies",
       "distribution_title": "Semver Group",
-      "distribution_modal_title": "Versions",
+      "distribution_modal_title": "Versies",
       "distribution_range_date_same_year": "from {from} to {to}, {endYear}",
       "distribution_range_date_multiple_years": "from {from}, {startYear} to {to}, {endYear}",
       "grouping_major": "Major",
@@ -396,12 +396,12 @@
       "recent_versions_only_tooltip": "Show only versions published within the last year.",
       "show_low_usage_tooltip": "Include version groups with less than 1% of total downloads.",
       "y_axis_label": "Downloads",
-      "filter_placeholder": "Filter by semver (e.g. ^3.0.0)",
-      "filter_invalid": "Invalid semver range",
-      "filter_help": "Semver range filter help",
-      "filter_tooltip": "Filter versions using a {link}. For example, ^3.0.0 shows all 3.x versions.",
-      "filter_tooltip_link": "semver range",
-      "no_matches": "No versions match this range",
+      "filter_placeholder": "Filter bij semver (bijv. ^3.0.0)",
+      "filter_invalid": "Ongeldige semver bereik",
+      "filter_help": "Semver bereikfilter hulp",
+      "filter_tooltip": "Filter versie bij {link}. bijvoorbeeld, ^3.0.0 laat zien 3.x versies.",
+      "filter_tooltip_link": "semver bereik",
+      "no_matches": "Geen versies in dit bereik",
       "copy_alt": {
         "per_version_analysis": "{version} version was downloaded {downloads} times",
         "general_description": "Bar chart showing per-version downloads for {versions_count} {semver_grouping_mode} versions of the {package_name} package, {date_range_label} from the {first_version} version to the {last_version} version. The most downloaded version is {max_downloaded_version} with {max_version_downloads} downloads. {per_version_analysis}. {watermark}."
@@ -414,38 +414,38 @@
     },
     "dependencies": {
       "title": "Dependency ({count}) | Dependencies ({count})",
-      "list_label": "Package dependencies",
-      "show_all": "show {count} dep | show all {count} deps",
-      "optional": "optional",
-      "view_vulnerabilities": "View vulnerabilities",
-      "outdated_major": "{count} major version behind (latest: {latest}) | {count} major versions behind (latest: {latest})",
+      "list_label": "Pakket dependencies",
+      "show_all": "toon {count} dep | toon alle {count} deps",
+      "optional": "optioneel",
+      "view_vulnerabilities": "Bekijk kwetsbaarheden",
+      "outdated_major": "{count} subversie achter (nieuwste: {latest}) | {count} subversies achter (nieuwste: {latest})",
       "outdated_minor": "{count} minor version behind (latest: {latest}) | {count} minor versions behind (latest: {latest})",
-      "outdated_patch": "Patch update available (latest: {latest})",
-      "has_replacement": "This dependency has suggested replacements"
+      "outdated_patch": "Patch update beschikbaar (nieuwste: {latest})",
+      "has_replacement": "Deze dedependency heeft voorgesteld alternatieven"
     },
     "peer_dependencies": {
       "title": "Peer Dependency ({count}) | Peer Dependencies ({count})",
-      "list_label": "Package peer dependencies",
-      "show_all": "show {count} peer dep | show all {count} peer deps"
+      "list_label": "Pakket peer dependencies",
+      "show_all": "toon {count} peer dep | toon alle {count} peer deps"
     },
     "optional_dependencies": {
-      "title": "Optional Dependency ({count}) | Optional Dependencies ({count})",
-      "list_label": "Package optional dependencies",
-      "show_all": "show {count} optional dep | show all {count} optional deps"
+      "title": "Optionele Dependency ({count}) | Optionele Dependencies ({count})",
+      "list_label": "Optionele pakket dependencies",
+      "show_all": "toon {count} Optionele dep | toon alle {count} Optionele deps"
     },
     "maintainers": {
-      "title": "Maintainers",
-      "list_label": "Package maintainers",
-      "you": "(you)",
+      "title": "Beheerders",
+      "list_label": "Pakket beheerders",
+      "you": "(u)",
       "via": "via {teams}",
-      "remove_owner": "Remove {name} as owner",
-      "username_to_add": "Username to add as owner",
-      "username_placeholder": "username...",
-      "add_button": "add",
-      "cancel_add": "Cancel adding owner",
-      "add_owner": "+ Add owner",
-      "show_more": "(show {count} more)",
-      "show_less": "(show fewer)"
+      "remove_owner": "Verwijder {name} als eigenaar",
+      "username_to_add": "gebruikers naam toevoegen als eigenaar",
+      "username_placeholder": "gebruikersnaam...",
+      "add_button": "toevoegen",
+      "cancel_add": "Annuleer toevoegen eigenaar",
+      "add_owner": "+ Eigenaar toevoegen",
+      "show_more": "(toon {count} meer)",
+      "show_less": "(toon minder)"
     },
     "trends": {
       "granularity": "Granulariteit",
@@ -456,7 +456,7 @@
       "start_date": "Van",
       "end_date": "T/m",
       "loading": "Laden...",
-      "date_range": "{start} to {end}",
+      "date_range": "{start} t/m {end}",
       "date_range_multiline": "{start}\nt/m {end}",
       "download_file": "Download {fileType}",
       "toggle_annotator": "Schakel annotator aan/uit",
@@ -471,7 +471,7 @@
       "contributors_skip": "Niet weergegeven in Bijdragers (geen GitHub-repository):",
       "items": {
         "downloads": "Downloads",
-        "likes": "Likes",
+        "likes": "Vind leuk",
         "contributors": "Bijdragers"
       },
       "data_correction": "Gegevenscorrectie",
@@ -504,19 +504,19 @@
       }
     },
     "downloads": {
-      "title": "Weekly Downloads",
-      "community_distribution": "View community adoption distribution",
-      "subtitle": "Across all versions"
+      "title": "Weekelijkse Downloads",
+      "community_distribution": "Bekijk adoptiegraad",
+      "subtitle": "Over alle versies"
     },
     "install_scripts": {
-      "title": "Install Scripts",
+      "title": "Installatie Scripts",
       "script_label": "(script)",
-      "npx_packages": "{count} npx package | {count} npx packages",
-      "currently": "currently {version}"
+      "npx_packages": "{count} npx pakket | {count} npx pakketten",
+      "currently": "huidige {version}"
     },
     "playgrounds": {
-      "title": "Try it out",
-      "choose": "choose playground"
+      "title": "Probeer het uit",
+      "choose": "kies playground"
     },
     "metrics": {
       "esm": "ES Modules ondersteund",
@@ -528,7 +528,7 @@
       "no_types": "Geen TypeScript types"
     },
     "license": {
-      "view_spdx": "View license text on SPDX",
+      "view_spdx": "bekijk licentie tekst op SPDX",
       "none": "Geen"
     },
     "vulnerabilities": {
@@ -547,7 +547,7 @@
       "fixed_in_title": "Fixed in version {version}"
     },
     "deprecated": {
-      "label": "Deprecated",
+      "label": "Afgeraden",
       "tree_found": "{count} afraden dependency | {count} afgeraden dependencies",
       "show_all": "toen {count} afgeraden pakket | toen alle {count} afgeraden pakketten"
     },
