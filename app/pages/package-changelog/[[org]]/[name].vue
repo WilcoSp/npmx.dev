@@ -51,7 +51,11 @@ const latestVersion = computed(() => {
 })
 
 // getting info
-const { data: changelog, pending } = usePackageChangelog(packageName, version)
+const {
+  data: changelog,
+  pending,
+  error: changelogError,
+} = usePackageChangelog(packageName, version)
 
 const repoProviderIcon = useProviderIcon(() => changelog.value?.provider)
 const tptoc = useTemplateRef('tptoc')
@@ -150,7 +154,11 @@ defineOgImageComponent('Default', {
               :viewOnGit
             />
           </LazyChangelogMarkdown>
+          <p class="mt-5" v-else-if="changelogError?.statusMessage == ERROR_UNGH_API_KEY_EXHAUSTED">
+            {{ $t('changelog.rate_limit_ungh') }}
+          </p>
           <p class="mt-5" v-else>{{ $t('changelog.no_logs') }}</p>
+          <!-- <p class="mt-5" v-else-></p> -->
         </template>
         <template #fallback>
           <section class="flex flex-col gap-2 py-3">

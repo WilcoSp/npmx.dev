@@ -6,8 +6,9 @@ import type {
 import type { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
-import { ERROR_CHANGELOG_NOT_FOUND, ERROR_PROXY_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
+import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
 import * as v from 'valibot'
+import { H3Error } from 'h3'
 import { GithubReleaseSchama } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
 
@@ -27,7 +28,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
   }
 
   const releases = await checkReleases(repoRef, pkg.repository.directory)
-  if (releases) {
+  if (releases && !(releases instanceof H3Error)) {
     return releases
   }
 
@@ -36,11 +37,8 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return changelog
   }
 
-  if (releases === 0) {
-    throw createError({
-      statusCode: 502,
-      statusMessage: ERROR_PROXY_API_KEY_EXHAUSTED,
-    })
+  if (releases instanceof H3Error) {
+    throw releases
   }
 
   throw createError({
@@ -51,9 +49,12 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
 
 /**
  * check whether releases are being used with this repo
- * @returns true if in use, 0 in case proxy api (ungh.cc) exhausted api keys, false if not in use
+ * @returns true if in use, false if not in use or an H3Error in case of ungh's api keys being exhausted
  */
-async function checkReleases(ref: RepoRef, directory?: string): Promise<ChangelogInfo | false | 0> {
+async function checkReleases(
+  ref: RepoRef,
+  directory?: string,
+): Promise<ChangelogInfo | false | H3Error> {
   switch (ref.provider) {
     case 'github': {
       return checkLatestGithubRelease(ref, directory)
@@ -71,8 +72,8 @@ const ROOT_ONLY_REGEX = /^\/[^/]+$/
 function checkLatestGithubRelease(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false | 0> {
-  return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest/notexisting`)
+): Promise<ChangelogInfo | false | H3Error> {
+  return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
     .then(r => {
       const { release } = v.parse(v.object({ release: GithubReleaseSchama }), r)
 
@@ -104,7 +105,10 @@ function checkLatestGithubRelease(
     .catch((e: FetchError) => {
       if (e.statusCode == 403) {
         // with 403 ungh.cc has exhausted it's api keys, returning 0 to indicate this
-        return 0
+        return createError({
+          statusCode: 502,
+          statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
+        })
       }
 
       return false as const
