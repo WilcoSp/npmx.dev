@@ -15,47 +15,45 @@ const route = useRoute()
 
 const matchingDateReleases = computed(() => {
   if (!requestedDate || !releases.value) {
-    return
+    return []
   }
 
   return releases.value.filter(release => {
     if (!release.publishedAt) {
       return
     }
-    const date = new Date(release.publishedAt).toISOString().split('T')[0]
-
-    return date === requestedDate
+    return requestedDate === toIsoDate(new Date(release.publishedAt))
   })
 })
 
 if (import.meta.client) {
-  watch(
-    [() => route.hash, () => requestedDate?.toLowerCase(), releases, () => requestedVersion],
-    ([hash, date, uReleases, uRequestedVersion]) => {
-      if (hash && uReleases) {
-        // ensures the user is scrolled to the hash
-        navigateTo(hash, { replace: true })
-        return
-      }
-      if (hash || !date || !uReleases) {
-        return
-      }
-      if (uRequestedVersion) {
-        for (const match of matchingDateReleases.value ?? []) {
-          if (match.title.toLowerCase().includes(uRequestedVersion)) {
-            navigateTo(`#release-${slugify(match.title)}`, { replace: true })
-            return
-          }
+  // doing this server side can make it that we go to the homepage
+  watchEffect(() => {
+    const uReleases = releases.value
+    if (route.hash && uReleases) {
+      navigateTo(route.hash, { replace: true })
+      return
+    }
+    const date = requestedDate?.toLowerCase()
+    if (route.hash || !date || !uReleases) {
+      return
+    }
+    const uMatchingDateReleases = matchingDateReleases.value
+    if (uMatchingDateReleases?.length < 1) {
+      // if no releases have matched the requested version publish date then most likely no release note has been made
+      return
+    }
+
+    if (requestedVersion) {
+      for (const match of uMatchingDateReleases) {
+        if (match.title.toLowerCase().includes(requestedVersion)) {
+          navigateTo(`#release-${slugify(match.title)}`, { replace: true })
+          return
         }
       }
-
-      navigateTo(`#date-${date}`, { replace: true })
-    },
-    {
-      immediate: true,
-      flush: 'post',
-    },
-  )
+    }
+    navigateTo(`#date-${date}`, { replace: true })
+  })
 }
 </script>
 <template>

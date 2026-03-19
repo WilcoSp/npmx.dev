@@ -12,29 +12,26 @@ const { data, error } = await useFetch(
 )
 
 if (import.meta.client) {
-  watch(
-    [() => data.value?.toc, () => requestedVersion?.toLowerCase(), () => route.hash],
-    ([toc, rv, hash]) => {
-      if (toc && hash) {
-        navigateTo(hash)
+  // doing this server side can make it that we go to the homepage
+  watchEffect(() => {
+    const toc = data.value?.toc
+
+    if (toc && route.hash) {
+      navigateTo(route.hash)
+      return
+    }
+    if (!toc || !requestedVersion || route.hash) {
+      return
+    }
+    // lc = lower case
+    const lcRequestedVersion = requestedVersion.toLowerCase()
+    for (const item of toc) {
+      if (item.text.toLowerCase().includes(lcRequestedVersion)) {
+        navigateTo(`#${item.id}`)
         return
       }
-
-      if (!toc || !rv || hash) {
-        return
-      }
-
-      for (const item of toc) {
-        if (item.text.toLowerCase().includes(rv)) {
-          navigateTo(`#${item.id}`)
-          return
-        }
-      }
-    },
-    {
-      immediate: true,
-    },
-  )
+    }
+  })
 }
 </script>
 <template>
