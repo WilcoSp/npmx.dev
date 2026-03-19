@@ -6,11 +6,11 @@ import type {
 import type { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
+import { type NuxtError, createError, isNuxtError } from 'nuxt/app'
 import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
-import * as v from 'valibot'
-import { H3Error } from 'h3'
 import { GithubReleaseSchama } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
+import * as v from 'valibot'
 
 /**
  * Detect whether changelogs/releases are available for this package
@@ -28,7 +28,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
   }
 
   const releases = await checkReleases(repoRef, pkg.repository.directory)
-  if (releases && !(releases instanceof H3Error)) {
+  if (releases && !isNuxtError(releases)) {
     return releases
   }
 
@@ -37,7 +37,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return changelog
   }
 
-  if (releases instanceof H3Error) {
+  if (isNuxtError(releases)) {
     throw releases
   }
 
@@ -49,12 +49,12 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
 
 /**
  * check whether releases are being used with this repo
- * @returns true if in use, false if not in use or an H3Error in case of ungh's api keys being exhausted
+ * @returns true if in use, false if not in use or an NuxtError in case of ungh's api keys being exhausted
  */
 async function checkReleases(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false | H3Error> {
+): Promise<ChangelogInfo | false | NuxtError> {
   switch (ref.provider) {
     case 'github': {
       return checkLatestGithubRelease(ref, directory)
@@ -72,7 +72,7 @@ const ROOT_ONLY_REGEX = /^\/[^/]+$/
 function checkLatestGithubRelease(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false | H3Error> {
+): Promise<ChangelogInfo | false | NuxtError> {
   return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
     .then(r => {
       const { release } = v.parse(v.object({ release: GithubReleaseSchama }), r)
