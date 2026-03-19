@@ -6,7 +6,6 @@ import type {
 import type { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
-import { type NuxtError, createError, isNuxtError } from 'nuxt/app'
 import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
 import { GithubReleaseSchama } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
@@ -28,7 +27,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
   }
 
   const releases = await checkReleases(repoRef, pkg.repository.directory)
-  if (releases && !isNuxtError(releases)) {
+  if (releases && !isError(releases)) {
     return releases
   }
 
@@ -37,7 +36,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return changelog
   }
 
-  if (isNuxtError(releases)) {
+  if (isError(releases)) {
     throw releases
   }
 
@@ -54,7 +53,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
 async function checkReleases(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false | NuxtError> {
+): Promise<ChangelogInfo | false | Error> {
   switch (ref.provider) {
     case 'github': {
       return checkLatestGithubRelease(ref, directory)
@@ -72,7 +71,7 @@ const ROOT_ONLY_REGEX = /^\/[^/]+$/
 function checkLatestGithubRelease(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false | NuxtError> {
+): Promise<ChangelogInfo | false | Error> {
   return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
     .then(r => {
       const { release } = v.parse(v.object({ release: GithubReleaseSchama }), r)
