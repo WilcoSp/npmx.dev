@@ -46,6 +46,9 @@ export const ERROR_CHANGELOG_NOT_FOUND =
 export const ERROR_CHANGELOG_RELEASES_FAILED = 'Failed to get releases'
 export const ERROR_CHANGELOG_FILE_FAILED = 'Failed to get changelog markdown'
 export const ERROR_THROW_INCOMPLETE_PARAM = "Couldn't do request due to incomplete parameters"
+// for ungh.cc when api keys are exhausted, name is broad in case more proxies are going to be used
+export const ERROR_PROXY_API_KEY_EXHAUSTED =
+  "Couldn't fetch resources due to proxy's api key's being exhausted"
 
 // microcosm services
 export const CONSTELLATION_HOST = 'constellation.microcosm.blue'

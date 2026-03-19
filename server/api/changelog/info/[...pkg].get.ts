@@ -3,7 +3,6 @@ import { PackageRouteParamsSchema } from '#shared/schemas/package'
 import { ERROR_PACKAGE_DETECT_CHANGELOG, NPM_REGISTRY } from '#shared/utils/constants'
 import * as v from 'valibot'
 import { detectChangelog } from '~~/server/utils/changelog/detectChangelog'
-// CACHE_MAX_AGE_ONE_DAY,
 
 export default defineCachedEventHandler(
   async event => {
@@ -38,5 +37,6 @@ export default defineCachedEventHandler(
       const pkg = getRouterParam(event, 'pkg') ?? ''
       return `changelogInfo:v1:${pkg.trim().replace(/\/+$/, '')}`
     },
+    shouldBypassCache: () => import.meta.dev,
   },
 )

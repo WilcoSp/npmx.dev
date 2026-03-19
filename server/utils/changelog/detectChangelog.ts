@@ -3,9 +3,10 @@ import type {
   ChangelogInfo,
   ChangelogReleaseInfo,
 } from '~~/shared/types/changelog'
-import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
+import type { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
-import { ERROR_CHANGELOG_NOT_FOUND } from '~~/shared/utils/constants'
+import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
+import { ERROR_CHANGELOG_NOT_FOUND, ERROR_PROXY_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
 import * as v from 'valibot'
 import { GithubReleaseSchama } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
@@ -25,12 +26,21 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return false
   }
 
-  const changelog =
-    (await checkReleases(repoRef, pkg.repository.directory)) ||
-    (await checkChangelogFile(repoRef, pkg.repository.directory))
+  const releases = await checkReleases(repoRef, pkg.repository.directory)
+  if (releases) {
+    return releases
+  }
 
+  const changelog = await checkChangelogFile(repoRef, pkg.repository.directory)
   if (changelog) {
     return changelog
+  }
+
+  if (releases === 0) {
+    throw createError({
+      statusCode: 502,
+      statusMessage: ERROR_PROXY_API_KEY_EXHAUSTED,
+    })
   }
 
   throw createError({
@@ -41,9 +51,9 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
 
 /**
  * check whether releases are being used with this repo
- * @returns true if in use
+ * @returns true if in use, 0 in case proxy api (ungh.cc) exhausted api keys, false if not in use
  */
-async function checkReleases(ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
+async function checkReleases(ref: RepoRef, directory?: string): Promise<ChangelogInfo | false | 0> {
   switch (ref.provider) {
     case 'github': {
       return checkLatestGithubRelease(ref, directory)
@@ -61,8 +71,8 @@ const ROOT_ONLY_REGEX = /^\/[^/]+$/
 function checkLatestGithubRelease(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false> {
-  return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
+): Promise<ChangelogInfo | false | 0> {
+  return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest/notexisting`)
     .then(r => {
       const { release } = v.parse(v.object({ release: GithubReleaseSchama }), r)
 
@@ -91,7 +101,12 @@ function checkLatestGithubRelease(
         link: matchedChangelog,
       } satisfies ChangelogMarkdownInfo
     })
-    .catch(() => {
+    .catch((e: FetchError) => {
+      if (e.statusCode == 403) {
+        // with 403 ungh.cc has exhausted it's api keys, returning 0 to indicate this
+        return 0
+      }
+
       return false as const
     })
 }
