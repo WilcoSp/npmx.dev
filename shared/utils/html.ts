@@ -36,8 +36,7 @@ export function stripHtmlTags(text: string): string {
  * - Collapse multiple hyphens
  */
 export function slugify(text: string): string {
-  return stripHtmlTags(text)
-    .replace(/&nbsp;?/g, '') // remove non breaking spaces
+  return decodeHtmlEntities(stripHtmlTags(text))
     .toLowerCase()
     .trim()
     .replace(/\s+/g, '-') // Spaces to hyphens

@@ -290,7 +290,7 @@ function normalizePreservedAnchorAttrs(attrs: string): string {
   return cleanedAttrs ? ` ${cleanedAttrs}` : ''
 }
 
-const isNpmJsUrlThatCanBeRedirected = (url: URL) => {
+export const isNpmJsUrlThatCanBeRedirected = (url: URL) => {
   if (!npmJsHosts.has(url.host)) {
     return false
   }
@@ -408,7 +408,7 @@ function resolveImageUrl(url: string, packageName: string, repoInfo?: Repository
 
 // Helper to prefix id attributes with 'user-content-'
 
-function prefixId(tagName: string, attribs: sanitizeHtml.Attributes) {
+export function prefixId(tagName: string, attribs: sanitizeHtml.Attributes) {
   if (attribs.id) {
     attribs.id = withUserContentPrefix(attribs.id)
   }
