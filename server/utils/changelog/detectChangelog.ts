@@ -102,8 +102,8 @@ function checkLatestGithubRelease(
       } satisfies ChangelogMarkdownInfo
     })
     .catch((e: FetchError) => {
-      if (e.statusCode == 403) {
-        // with 403 ungh.cc has exhausted it's api keys, returning 0 to indicate this
+      if (e.statusCode === 403 || e.statusCode === 429) {
+        // with 403/429 ungh.cc has exhausted it's api keys, returning error to indicate this
         return createError({
           statusCode: 502,
           statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
