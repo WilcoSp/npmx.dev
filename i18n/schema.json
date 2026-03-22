@@ -958,10 +958,10 @@
             "compare": {
               "type": "string"
             },
-            "changelog": {
+            "compare_this_package": {
               "type": "string"
             },
-            "compare_this_package": {
+            "changelog": {
               "type": "string"
             }
           },
