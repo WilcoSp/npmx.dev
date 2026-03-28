@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Client } from '@atproto/lex'
 import { slugify } from '~~/shared/utils/html'
 
 const { info, requestedDate, goToVersion } = defineProps<{
