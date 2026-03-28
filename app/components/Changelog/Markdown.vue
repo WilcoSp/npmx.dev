@@ -15,27 +15,30 @@ if (import.meta.client) {
   const { settings } = useSettings()
 
   // doing this server side can make it that we go to the homepage
-  const stopWatching = watchEffect(() => {
-    const toc = data.value?.toc
+  const stopWatching = watchEffect(
+    () => {
+      const toc = data.value?.toc
 
-    if (toc && route.hash) {
-      // scroll if there is a hash in the url
-      return navigateTo(route.hash)
-    }
+      if (toc && route.hash) {
+        // scroll if there is a hash in the url
+        return navigateTo(route.hash)
+      }
 
-    // don't allow auto scrolling when disabled and there was no hash before
-    if (!settings.value.changelogAutoScroll || !toc || !goToVersion || route.hash) {
-      return
-    }
-    // lc = lower case
-    const lcRequestedVersion = goToVersion.toLowerCase()
-    for (const item of toc) {
-      if (item.text.toLowerCase().includes(lcRequestedVersion)) {
-        navigateTo(`#${item.id}`)
+      // don't allow auto scrolling when disabled and there was no hash before
+      if (!settings.value.changelogAutoScroll || !toc || !goToVersion || route.hash) {
         return
       }
-    }
-  })
+      // lc = lower case
+      const lcRequestedVersion = goToVersion.toLowerCase()
+      for (const item of toc) {
+        if (item.text.toLowerCase().includes(lcRequestedVersion)) {
+          navigateTo(`#${item.id}`)
+          return
+        }
+      }
+    },
+    { flush: 'post' },
+  )
 
   // stops watchEffect from trigger just before navigating
   onBeforeRouteLeave(stopWatching)
