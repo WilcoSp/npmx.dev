@@ -1,9 +1,7 @@
 <script setup lang="ts">
-// stub
-
 definePageMeta({
-  name: 'changelog-version',
-  alias: ['/changelog/:org?/:name/v/:version'],
+  name: 'changelog',
+  alias: ['/changelog/:org?/:name'],
   scrollMargin: 200,
 })
 </script>

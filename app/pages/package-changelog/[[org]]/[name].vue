@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import { useProviderIcon } from '~/composables/useProviderIcon'
-
-definePageMeta({
-  name: 'changelog',
-  alias: ['/changelog/:org?/:name'],
-  scrollMargin: 190,
-})
 /// routing
 
 const route = useRoute('changelog')
