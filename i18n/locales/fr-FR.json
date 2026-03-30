@@ -168,7 +168,9 @@
       "black": "Noir"
     },
     "keyboard_shortcuts_enabled": "Activer les raccourcis clavier",
-    "keyboard_shortcuts_enabled_description": "Les raccourcis clavier peuvent être désactivés s'ils entrent en conflit avec d'autres raccourcis du navigateur ou du système"
+    "keyboard_shortcuts_enabled_description": "Les raccourcis clavier peuvent être désactivés s'ils entrent en conflit avec d'autres raccourcis du navigateur ou du système",
+    "enable_changelog_autoscroll": "Scroller automatiquement à la version voulue",
+    "enable_changelog_autoscroll_description": "Scroller automatiquement à — ou près — de la version voulue dans la page des changements"
   },
   "i18n": {
     "missing_keys": "{count} traduction manquante | {count} traductions manquantes",
@@ -317,7 +319,8 @@
       "docs": "docs",
       "fund": "donner",
       "compare": "comparer",
-      "compare_this_package": "comparer ce paquet"
+      "compare_this_package": "comparer ce paquet",
+      "changelog": "changements"
     },
     "likes": {
       "like": "Liker ce paquet",
@@ -433,15 +436,15 @@
       "filter_tooltip": "Filtrer les versions avec une {link}. Par exemple, ^3.0.0 affiche toutes les versions 3.x.",
       "filter_tooltip_link": "plage semver",
       "no_matches": "Aucune version ne correspond à cette plage",
+      "copy_alt": {
+        "per_version_analysis": "La version {version} a été téléchargée {downloads} fois",
+        "general_description": "Graphique en barres montrant les téléchargements par version pour {versions_count} versions {semver_grouping_mode} du paquet {package_name}, {date_range_label} de la version {first_version} à la version {last_version}. La version la plus téléchargée est {max_downloaded_version} avec {max_version_downloads} téléchargements. {per_version_analysis}. {watermark}."
+      },
       "page_title": "Historique des versions",
       "current_tags": "Tags actuels",
       "version_filter_placeholder": "Filtrer les versions...",
       "version_filter_label": "Filtrer les versions",
-      "no_match_filter": "Aucune version ne correspond à {filter}",
-      "copy_alt": {
-        "per_version_analysis": "La version {version} a été téléchargée {downloads} fois",
-        "general_description": "Graphique en barres montrant les téléchargements par version pour {versions_count} versions {semver_grouping_mode} du paquet {package_name}, {date_range_label} de la version {first_version} à la version {last_version}. La version la plus téléchargée est {max_downloaded_version} avec {max_version_downloads} téléchargements. {per_version_analysis}. {watermark}."
-      }
+      "no_match_filter": "Aucune version ne correspond à {filter}"
     },
     "dependencies": {
       "title": "Dépendances ({count})",
@@ -1429,5 +1432,15 @@
     "selection": "0 sélectionné | 1 sélectionné | {count} sélectionnés",
     "shortcut": "Appuyez sur « {key} » pour cibler les actions",
     "button_close_aria_label": "Fermer la barre d'actions"
+  },
+  "changelog": {
+    "pre_release": "Pré-version",
+    "draft": "Brouillon",
+    "no_logs": "Désolé, ce paquet ne publie pas de changements ou le format de ses changements n'est pas pris en charge.",
+    "error": {
+      "p1": "Désolé, les changements de {package} n'ont pas pu être chargés",
+      "p2": "Veuillez réessayer plus tard ou {viewon}"
+    },
+    "rate_limit_ungh": "Désolé, la limite de requêtes à l'API GitHub a été atteinte, réessayez plus tard"
   }
 }
