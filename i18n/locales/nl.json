@@ -147,10 +147,10 @@
     "theme_system": "Systeem",
     "language": "Taal",
     "help_translate": "Help npmx vertalen",
-    "accent_colors": "Accentkleuren",
+    "accent_colors": {},
     "clear_accent": "Geen accentkleur",
     "translation_progress": "Voortgang vertaling",
-    "background_themes": "Achtergrondkleur",
+    "background_themes": {},
     "keyboard_shortcuts_enabled": "toetsenbordnavigatie inschakelen",
     "keyboard_shortcuts_enabled_description": "toetsenbordnavigatie kan worden uitgeschakeld als ze conflicteren met andere sneltoetsen van de browser of het systeem."
   },
@@ -458,6 +458,7 @@
       "maintainer_template": "{avatar} {char126}{name}"
     },
     "trends": {
+      "chart_assistive_text": {},
       "granularity": "Granulariteit",
       "granularity_daily": "Dagelijks",
       "granularity_weekly": "Wekelijks",
@@ -605,7 +606,8 @@
       "b": "{size} B",
       "kb": "{size} kB",
       "mb": "{size} MB"
-    }
+    },
+    "download": {}
   },
   "connector": {
     "modal": {
@@ -886,11 +888,7 @@
       "downloads_month": "Downloads/ma",
       "downloads_year": "Downloads/jr",
       "published": "Laatst gepubliceerd",
-      "name": "Naam",
-      "quality": "Kwaliteit",
-      "popularity": "Populariteit",
-      "maintenance": "Onderhoud",
-      "score": "Score"
+      "name": "Naam"
     },
     "columns": {
       "title": "Kolommen",
@@ -904,10 +902,6 @@
       "published": "Laatst gepubliceerd",
       "maintainers": "Beheerders",
       "keywords": "Trefwoorden",
-      "quality_score": "Kwaliteit score",
-      "popularity_score": "Populariteit score",
-      "maintenance_score": "Onderhoud score",
-      "combined_score": "Gecombineerde score",
       "security": "Beveiliging",
       "selection": "Selecteer pakket"
     },
@@ -1096,14 +1090,11 @@
       "add_column": "Voeg geen pakket toe kolom toe aan vergelijking"
     },
     "facets": {
-      "group_label": "Vergelijking aspecten",
       "all": "alles",
       "none": "geen",
       "coming_soon": "Binnenkort",
       "select_all": "Selecteer alle acpecten",
       "deselect_all": "Alle aspecten deselecteren",
-      "select_category": "Alle {category} aspecten selecteren",
-      "deselect_category": "Alle {category} aspecten deselecteren",
       "binary_only_tooltip": "Dit pakket maakt binaries beschikbaar en exporteert niets",
       "categories": {
         "performance": "Prestaties",
@@ -1372,10 +1363,28 @@
       "link": "GitHub repository"
     }
   },
+  "translation_status": {
+    "table": {}
+  },
+  "vacations": {
+    "what": {},
+    "meantime": {},
+    "return": {},
+    "stats": {
+      "subtitle": {}
+    }
+  },
   "action_bar": {
     "title": "EN TEXT TO REPLACE: action bar",
     "selection": "EN TEXT TO REPLACE: 0 selected | 1 selected | {count} selected",
     "shortcut": "EN TEXT TO REPLACE: Press \"{key}\" to focus actions",
     "button_close_aria_label": "EN TEXT TO REPLACE: Close action bar"
+  },
+  "logo_menu": {},
+  "brand": {
+    "logos": {},
+    "customize": {},
+    "typography": {},
+    "guidelines": {}
   }
 }
