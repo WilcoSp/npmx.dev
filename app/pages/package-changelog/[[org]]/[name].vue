@@ -46,11 +46,7 @@ const latestVersion = computed(() => {
 })
 
 // getting info
-const {
-  data: changelog,
-  pending,
-  error: changelogError,
-} = usePackageChangelog(packageName, version)
+const { data: changelog, error: changelogError } = usePackageChangelog(packageName, version)
 
 const repoProviderIcon = useProviderIcon(() => changelog.value?.provider)
 const tptoc = useTemplateRef('tptoc')
