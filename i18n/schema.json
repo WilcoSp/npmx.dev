@@ -4605,6 +4605,9 @@
         },
         "rate_limit_ungh": {
           "type": "string"
+        },
+        "version_unavailable": {
+          "type": "string"
         }
       },
       "additionalProperties": false

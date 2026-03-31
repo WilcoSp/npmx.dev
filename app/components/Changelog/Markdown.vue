@@ -1,8 +1,9 @@
 <script setup lang="ts">
-const { info, goToVersion, tpTarget } = defineProps<{
+const { info, goToVersion, tpTarget, resolveVersionPending } = defineProps<{
   info: ChangelogMarkdownInfo
   goToVersion: string | null | undefined
   tpTarget?: HTMLElement | null
+  resolveVersionPending?: boolean
 }>()
 
 const route = useRoute()
@@ -17,6 +18,9 @@ if (import.meta.client) {
   // doing this server side can make it that we go to the homepage
   const stopWatching = watchEffect(
     () => {
+      if (resolveVersionPending) {
+        return // need to wait till resolving is finished
+      }
       const toc = data.value?.toc
 
       if (toc && route.hash) {

@@ -26,10 +26,11 @@ if (import.meta.server) {
 }
 
 // status: resolvedStatus
-const { data: version, pending: resolvingPending } = await useResolvedVersion(
-  packageName,
-  requestedVersion,
-)
+const {
+  data: version,
+  pending: resolvingPending,
+  error: resolvingError,
+} = await useResolvedVersion(packageName, requestedVersion)
 
 const { data: pkg } = usePackage(packageName, () => version.value ?? requestedVersion.value ?? null)
 
@@ -80,7 +81,7 @@ defineOgImageComponent('Default', {
 })
 </script>
 <template>
-  <main class="flex-1 flex flex-col" :style="stickyStyle">
+  <main class="flex-1 flex flex-col" :style="stickyStyle" v-if="!resolvingError">
     <PackageHeader
       page="changelog"
       :versionUrlPattern
@@ -108,7 +109,7 @@ defineOgImageComponent('Default', {
           <!-- prevents layout shift while loading -->
         </div>
       </div>
-      <section v-if="pending || resolvingPending" class="flex flex-col gap-2 py-3">
+      <section v-if="!changelog && !changelogError" class="flex flex-col gap-2 py-3">
         <SkeletonBlock class="h-8 w-40 rounded" />
         <ul class="ms-3 list-disc my-4 ps-6 marker:color-[--border-hover]">
           <li class="mb-1" v-for="_n in 5">
@@ -120,13 +121,14 @@ defineOgImageComponent('Default', {
         <SkeletonBlock class="h-5 w-3/4 max-w-2xl rounded" />
       </section>
 
-      <Suspense v-else>
+      <Suspense v-else-if="changelog">
         <template #default>
           <LazyChangelogReleases
             v-if="changelog?.type === 'release'"
             :info="changelog"
             :requested-date="versionDate"
             :goToVersion="requestedVersion && version"
+            :resolveVersionPending="resolvingPending"
             #error
           >
             <LazyChangelogErrorMsg
@@ -140,6 +142,7 @@ defineOgImageComponent('Default', {
             :info="changelog"
             :tpTarget="tptoc"
             :goToVersion="requestedVersion && version"
+            :resolveVersionPending="resolvingPending"
             #error
           >
             <LazyChangelogErrorMsg
@@ -148,10 +151,7 @@ defineOgImageComponent('Default', {
               :viewOnGit
             />
           </LazyChangelogMarkdown>
-          <p class="mt-5" v-else-if="changelogError?.statusMessage == ERROR_UNGH_API_KEY_EXHAUSTED">
-            {{ $t('changelog.rate_limit_ungh') }}
-          </p>
-          <p class="mt-5" v-else>{{ $t('changelog.no_logs') }}</p>
+
           <!-- <p class="mt-5" v-else-></p> -->
         </template>
         <template #fallback>
@@ -168,6 +168,28 @@ defineOgImageComponent('Default', {
           </section>
         </template>
       </Suspense>
+      <!-- error handling -->
+      <p class="mt-5" v-else-if="changelogError?.statusMessage == ERROR_UNGH_API_KEY_EXHAUSTED">
+        {{ $t('changelog.rate_limit_ungh') }}
+      </p>
+      <p class="mt-5" v-else-if="!version || !pkg?.versions[version]">
+        {{ $t('changelog.version_unavailable') }}
+      </p>
+      <p class="mt-5" v-else>
+        {{ $t('changelog.no_logs') }}
+      </p>
     </section>
+  </main>
+  <!-- resolving the version didn't succeed, assunming that the package doesn't exist -->
+  <main v-else role="alert" class="flex flex-col items-center py-20 text-center container w-full">
+    <h1 class="font-mono text-2xl font-medium mb-4">
+      {{ $t('package.not_found') }}
+    </h1>
+    <p class="text-fg-muted mb-8">
+      {{ $t('package.not_found_message') }}
+    </p>
+    <LinkBase variant="button-secondary" :to="{ name: 'index' }">{{
+      $t('common.go_back_home')
+    }}</LinkBase>
   </main>
 </template>

@@ -1533,6 +1533,7 @@
       "p1": "Sorry, the changelog for {package} couldn't be loaded",
       "p2": "Please try again later or {viewon}"
     },
-    "rate_limit_ungh": "Sorry, Github's rate limit has been hit, try again in a moment"
+    "rate_limit_ungh": "Sorry, Github's rate limit has been hit, try again in a moment",
+    "version_unavailable": "The requested version is not available."
   }
 }

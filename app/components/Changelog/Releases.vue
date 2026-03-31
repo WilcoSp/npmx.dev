@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { slugify } from '~~/shared/utils/html'
 
-const { info, requestedDate, goToVersion } = defineProps<{
+const { info, requestedDate, goToVersion, resolveVersionPending } = defineProps<{
   info: ChangelogReleaseInfo
   requestedDate?: string
   goToVersion?: string | null | undefined
+  resolveVersionPending?: boolean
 }>()
 
 const { data: releases, error } = await useLazyFetch<ReleaseData[]>(
@@ -32,6 +33,9 @@ if (import.meta.client) {
   // doing this server side can make it that we go to the homepage
   const stopWatching = watchEffect(
     () => {
+      if (resolveVersionPending) {
+        return // need to wait till resolving is finished
+      }
       const uReleases = releases.value
       if (route.hash && uReleases) {
         // scroll if there is a hash in the url
