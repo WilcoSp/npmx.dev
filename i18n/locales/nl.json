@@ -326,15 +326,15 @@
       "unlike": "Dit pakket niet meer leuk vinden"
     },
     "docs": {
-      "contents": "EN TEXT TO REPLACE: Contents",
-      "default_not_available": "EN TEXT TO REPLACE: Docs are not available for this version.",
+      "contents": "Inhoud",
+      "default_not_available": "Documentatie is niet beschikbaar voor deze versie",
       "not_available": "Geen documentatie beschikbaar",
       "not_available_detail": "We kunnen geen documentatie genereren van deze versie",
-      "page_title": "EN TEXT TO REPLACE: API Docs - npmx",
-      "page_title_name": "EN TEXT TO REPLACE: {name} docs - npmx",
-      "page_title_version": "EN TEXT TO REPLACE: {name} docs - npmx",
-      "og_title": "EN TEXT TO REPLACE: {name} - Docs",
-      "view_package": "EN TEXT TO REPLACE: View package"
+      "page_title": "API Documentatie - npmx",
+      "page_title_name": "{name} documentatie - npmx",
+      "page_title_version": "{name} documentatie - npmx",
+      "og_title": "{name} - Documentatie",
+      "view_package": "Bekijk pakket"
     },
     "get_started": {
       "title": "Aan de slag",
