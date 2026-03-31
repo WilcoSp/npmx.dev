@@ -1525,6 +1525,7 @@
       "discord_link_text": "chat.npmx.dev"
     }
   },
+  "alt_logo_kawaii": "A cute, rounded, and colorful version of the npmx logo.",
   "changelog": {
     "pre_release": "Pre-release",
     "draft": "Draft",
@@ -1536,4 +1537,5 @@
     "rate_limit_ungh": "Sorry, Github's rate limit has been hit, try again in a moment",
     "version_unavailable": "The requested version is not available."
   }
+  
 }
