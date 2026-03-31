@@ -4582,9 +4582,6 @@
     "alt_logo_kawaii": {
       "type": "string"
     },
-    "$schema": {
-      "type": "string"
-    },
     "changelog": {
       "type": "object",
       "properties": {
@@ -4617,6 +4614,10 @@
         }
       },
       "additionalProperties": false
+    },
+    "$schema": {
+      "type": "string"
+    }
   },
   "additionalProperties": false
 }
