@@ -148,25 +148,25 @@
     "theme_system": "Systeem",
     "language": "Taal",
     "help_translate": "Help npmx vertalen",
-    "translation_status": "EN TEXT TO REPLACE: Check global translation status",
+    "translation_status": "De status van de algemene vertaling controleren",
     "accent_colors": {
-      "label": "EN TEXT TO REPLACE: Accent colors",
-      "sky": "EN TEXT TO REPLACE: Sky",
-      "coral": "EN TEXT TO REPLACE: Coral",
-      "amber": "EN TEXT TO REPLACE: Amber",
-      "emerald": "EN TEXT TO REPLACE: Emerald",
-      "violet": "EN TEXT TO REPLACE: Violet",
-      "magenta": "EN TEXT TO REPLACE: Magenta"
+      "label": "Accentkleuren",
+      "sky": "Hemelsblauw",
+      "coral": "Koraalrood",
+      "amber": "Ambergeel",
+      "emerald": "Smaragdgroen",
+      "violet": "Violet",
+      "magenta": "Magenta"
     },
     "clear_accent": "Geen accentkleur",
     "translation_progress": "Voortgang vertaling",
     "background_themes": {
-      "label": "EN TEXT TO REPLACE: Background shade",
-      "neutral": "EN TEXT TO REPLACE: Neutral",
-      "stone": "EN TEXT TO REPLACE: Stone",
-      "zinc": "EN TEXT TO REPLACE: Zinc",
-      "slate": "EN TEXT TO REPLACE: Slate",
-      "black": "EN TEXT TO REPLACE: Black"
+      "label": "Achtergrondkleur",
+      "neutral": "Neutraal",
+      "stone": "Steen",
+      "zinc": "Zink",
+      "slate": "Leisteen",
+      "black": "Zwart"
     },
     "keyboard_shortcuts_enabled": "toetsenbordnavigatie inschakelen",
     "keyboard_shortcuts_enabled_description": "toetsenbordnavigatie kan worden uitgeschakeld als ze conflicteren met andere sneltoetsen van de browser of het systeem."
@@ -319,7 +319,7 @@
       "docs": "docs",
       "fund": "Steunen",
       "compare": "vergelijk",
-      "compare_this_package": "EN TEXT TO REPLACE: compare this package"
+      "compare_this_package": "Vergelijk dit pakket"
     },
     "likes": {
       "like": "Dit pakket leuk vinden",
