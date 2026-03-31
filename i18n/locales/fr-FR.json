@@ -1499,6 +1499,7 @@
       "p1": "Désolé, les changements de {package} n'ont pas pu être chargés",
       "p2": "Veuillez réessayer plus tard ou {viewon}"
     },
-    "rate_limit_ungh": "Désolé, la limite de requêtes à l'API GitHub a été atteinte, réessayez plus tard"
+    "rate_limit_ungh": "Désolé, la limite de requêtes à l'API GitHub a été atteinte, réessayez plus tard",
+    "version_unavailable": "La version demandée n'est pas disponible."
   }
 }
