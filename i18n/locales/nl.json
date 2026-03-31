@@ -19,7 +19,8 @@
     "social": "social",
     "chat": "chat",
     "builders_chat": "bouwers",
-    "keyboard_shortcuts": "toetsenbordnavigatie"
+    "keyboard_shortcuts": "toetsenbordnavigatie",
+    "brand": "merk"
   },
   "shortcuts": {
     "section": {
@@ -147,10 +148,26 @@
     "theme_system": "Systeem",
     "language": "Taal",
     "help_translate": "Help npmx vertalen",
-    "accent_colors": "Accentkleuren",
+    "translation_status": "EN TEXT TO REPLACE: Check global translation status",
+    "accent_colors": {
+      "label": "EN TEXT TO REPLACE: Accent colors",
+      "sky": "EN TEXT TO REPLACE: Sky",
+      "coral": "EN TEXT TO REPLACE: Coral",
+      "amber": "EN TEXT TO REPLACE: Amber",
+      "emerald": "EN TEXT TO REPLACE: Emerald",
+      "violet": "EN TEXT TO REPLACE: Violet",
+      "magenta": "EN TEXT TO REPLACE: Magenta"
+    },
     "clear_accent": "Geen accentkleur",
     "translation_progress": "Voortgang vertaling",
-    "background_themes": "Achtergrondkleur",
+    "background_themes": {
+      "label": "EN TEXT TO REPLACE: Background shade",
+      "neutral": "EN TEXT TO REPLACE: Neutral",
+      "stone": "EN TEXT TO REPLACE: Stone",
+      "zinc": "EN TEXT TO REPLACE: Zinc",
+      "slate": "EN TEXT TO REPLACE: Slate",
+      "black": "EN TEXT TO REPLACE: Black"
+    },
     "keyboard_shortcuts_enabled": "toetsenbordnavigatie inschakelen",
     "keyboard_shortcuts_enabled_description": "toetsenbordnavigatie kan worden uitgeschakeld als ze conflicteren met andere sneltoetsen van de browser of het systeem."
   },
@@ -301,15 +318,23 @@
       "code": "code",
       "docs": "docs",
       "fund": "Steunen",
-      "compare": "vergelijk"
+      "compare": "vergelijk",
+      "compare_this_package": "EN TEXT TO REPLACE: compare this package"
     },
     "likes": {
       "like": "Dit pakket leuk vinden",
       "unlike": "Dit pakket niet meer leuk vinden"
     },
     "docs": {
+      "contents": "EN TEXT TO REPLACE: Contents",
+      "default_not_available": "EN TEXT TO REPLACE: Docs are not available for this version.",
       "not_available": "Geen documentatie beschikbaar",
-      "not_available_detail": "We kunnen geen documentatie genereren van deze versie"
+      "not_available_detail": "We kunnen geen documentatie genereren van deze versie",
+      "page_title": "EN TEXT TO REPLACE: API Docs - npmx",
+      "page_title_name": "EN TEXT TO REPLACE: {name} docs - npmx",
+      "page_title_version": "EN TEXT TO REPLACE: {name} docs - npmx",
+      "og_title": "EN TEXT TO REPLACE: {name} - Docs",
+      "view_package": "EN TEXT TO REPLACE: View package"
     },
     "get_started": {
       "title": "Aan de slag",
@@ -458,6 +483,15 @@
       "maintainer_template": "{avatar} {char126}{name}"
     },
     "trends": {
+      "chart_assistive_text": {
+        "keyboard_navigation_horizontal": "EN TEXT TO REPLACE: Use the left and right arrow keys to cycle through data points.",
+        "keyboard_navigation_vertical": "EN TEXT TO REPLACE: Use the up and down arrow keys to cycle through data points.",
+        "table_available": "EN TEXT TO REPLACE: A data table for this chart is available below.",
+        "table_caption": "EN TEXT TO REPLACE: Chart data table"
+      },
+      "chart_view_toggle": "EN TEXT TO REPLACE: Toggle view",
+      "chart_view_combined": "EN TEXT TO REPLACE: Combined view",
+      "chart_view_split": "EN TEXT TO REPLACE: Split view",
       "granularity": "Granulariteit",
       "granularity_daily": "Dagelijks",
       "granularity_weekly": "Wekelijks",
@@ -516,7 +550,8 @@
     "downloads": {
       "title": "Weekelijkse Downloads",
       "community_distribution": "Bekijk adoptiegraad",
-      "subtitle": "Over alle versies"
+      "subtitle": "Over alle versies",
+      "sparkline_nav_hint": "EN TEXT TO REPLACE: Use ← →"
     },
     "install_scripts": {
       "title": "Installatie Scripts",
@@ -532,6 +567,7 @@
       "esm": "ES Modules ondersteund",
       "cjs": "CommonJS ondersteund",
       "no_esm": "Geen ES Modules ondersteuning",
+      "wasm": "EN TEXT TO REPLACE: Has WebAssembly",
       "types_label": "Types",
       "types_included": "Inclusief types",
       "types_available": "Types beschikbaar via {package}",
@@ -605,6 +641,10 @@
       "b": "{size} B",
       "kb": "{size} kB",
       "mb": "{size} MB"
+    },
+    "download": {
+      "button": "EN TEXT TO REPLACE: Download",
+      "tarball": "EN TEXT TO REPLACE: Download Tarball as .tar.gz"
     }
   },
   "connector": {
@@ -886,11 +926,7 @@
       "downloads_month": "Downloads/ma",
       "downloads_year": "Downloads/jr",
       "published": "Laatst gepubliceerd",
-      "name": "Naam",
-      "quality": "Kwaliteit",
-      "popularity": "Populariteit",
-      "maintenance": "Onderhoud",
-      "score": "Score"
+      "name": "Naam"
     },
     "columns": {
       "title": "Kolommen",
@@ -904,10 +940,6 @@
       "published": "Laatst gepubliceerd",
       "maintainers": "Beheerders",
       "keywords": "Trefwoorden",
-      "quality_score": "Kwaliteit score",
-      "popularity_score": "Populariteit score",
-      "maintenance_score": "Onderhoud score",
-      "combined_score": "Gecombineerde score",
       "security": "Beveiliging",
       "selection": "Selecteer pakket"
     },
@@ -1056,7 +1088,8 @@
       "error": "Failed to load organizations",
       "empty": "No organizations found",
       "view_all": "View all"
-    }
+    },
+    "pr": "EN TEXT TO REPLACE: Open GitHub pull request #{prNumber}"
   },
   "compare": {
     "packages": {
@@ -1075,7 +1108,10 @@
       "empty_title": "Selecteer pakketten om te vergelijken",
       "empty_description": "Zoek en voeg ten minste 2 bovenstaande pakketten toe om een vergelijking van hun statistieken naast elkaar te zien.",
       "table_view": "Tabel",
-      "charts_view": "Grafiek"
+      "charts_view": "Grafiek",
+      "no_chartable_data": "EN TEXT TO REPLACE: No chartable data available for the selected facets.",
+      "bar_chart_nav_hint": "EN TEXT TO REPLACE: Use ↑ ↓",
+      "line_chart_nav_hint": "EN TEXT TO REPLACE: Use ← →"
     },
     "selector": {
       "search_label": "Zoek voor pakketten",
@@ -1096,14 +1132,15 @@
       "add_column": "Voeg geen pakket toe kolom toe aan vergelijking"
     },
     "facets": {
-      "group_label": "Vergelijking aspecten",
       "all": "alles",
       "none": "geen",
+      "select_all_category_facets": "EN TEXT TO REPLACE: Select all {category} facets",
+      "deselect_all_category_facets": "EN TEXT TO REPLACE: Deselect all {category} facets",
+      "selected_all_category_facets": "EN TEXT TO REPLACE: Selected all {category} facets",
+      "deselected_all_category_facets": "EN TEXT TO REPLACE: Deselected all {category} facets",
       "coming_soon": "Binnenkort",
       "select_all": "Selecteer alle acpecten",
       "deselect_all": "Alle aspecten deselecteren",
-      "select_category": "Alle {category} aspecten selecteren",
-      "deselect_category": "Alle {category} aspecten deselecteren",
       "binary_only_tooltip": "Dit pakket maakt binaries beschikbaar en exporteert niets",
       "categories": {
         "performance": "Prestaties",
@@ -1372,10 +1409,117 @@
       "link": "GitHub repository"
     }
   },
+  "translation_status": {
+    "title": "EN TEXT TO REPLACE: translation status",
+    "generated_at": "EN TEXT TO REPLACE: Generation date: {date}",
+    "welcome": "EN TEXT TO REPLACE: If you're interested in helping us to translate {npmx} into one of the languages listed below, you've come to the right place! This auto-updating page always lists all the content that could use your help right now.",
+    "p1": "EN TEXT TO REPLACE: We use {lang} as the default language, with a total of {count}. If you'd like to help add translations, locate the language in {bylang} and expand the details.",
+    "p1_lang": "EN TEXT TO REPLACE: American English (en-US)",
+    "p1_count": "EN TEXT TO REPLACE: 0 messages | 1 message |{count} messages",
+    "p2": "EN TEXT TO REPLACE: Before starting, please read our {guide} to learn about our translation process and how you can get involved.",
+    "guide": "EN TEXT TO REPLACE: localization (i18n) guide",
+    "by_locale": "EN TEXT TO REPLACE: Translation progress by locale",
+    "by_file": "EN TEXT TO REPLACE: Translation progress by file",
+    "complete_text": "EN TEXT TO REPLACE: This translation is complete, amazing job!",
+    "missing_text": "EN TEXT TO REPLACE: missing",
+    "missing_keys": "EN TEXT TO REPLACE: There is no missing translations | Missing translation | Missing translations",
+    "progress_label": "EN TEXT TO REPLACE: Progress status for {locale}",
+    "table": {
+      "file": "EN TEXT TO REPLACE: File",
+      "status": "EN TEXT TO REPLACE: Status",
+      "error": "EN TEXT TO REPLACE: Error while loading file list.",
+      "empty": "EN TEXT TO REPLACE: No files found",
+      "file_link": "EN TEXT TO REPLACE: Edit {file} ({lang}) on GitHub"
+    }
+  },
+  "vacations": {
+    "title": "EN TEXT TO REPLACE: on vacation",
+    "meta_description": "EN TEXT TO REPLACE: The npmx team was recharging. Discord reopened after a week.",
+    "heading": "EN TEXT TO REPLACE: recharging",
+    "subtitle": "EN TEXT TO REPLACE: we were building npmx at a pace that was costing {some} of us sleep. we didn't want that to be the norm! so we took a week off. together.",
+    "illustration_alt": "EN TEXT TO REPLACE: a single row of cosy icons",
+    "poke_log": "EN TEXT TO REPLACE: Poke the campfire",
+    "what": {
+      "title": "EN TEXT TO REPLACE: what happened",
+      "p1": "EN TEXT TO REPLACE: discord was closed {dates}.",
+      "dates": "EN TEXT TO REPLACE: February 14 – 21",
+      "p2": "EN TEXT TO REPLACE: all invite links were gone and channels were locked – except {garden}, which stayed open for folks who wanted to keep hanging out.",
+      "garden": "EN TEXT TO REPLACE: #garden"
+    },
+    "meantime": {
+      "title": "EN TEXT TO REPLACE: in the meantime",
+      "p1": "EN TEXT TO REPLACE: {site} and {repo} stayed open – people still dug in, filed some issues, opened a few PRs, but mainly everyone spent time somewhere near a cosy fireplace.",
+      "repo_link": "EN TEXT TO REPLACE: the repo"
+    },
+    "return": {
+      "title": "EN TEXT TO REPLACE: we came back!",
+      "p1": "EN TEXT TO REPLACE: we came back recharged and ready for the final push to March 3rd. {social} for updates.",
+      "social_link": "EN TEXT TO REPLACE: follow us on Bluesky"
+    },
+    "stats": {
+      "contributors": "EN TEXT TO REPLACE: Contributors",
+      "commits": "EN TEXT TO REPLACE: Commits",
+      "pr": "EN TEXT TO REPLACE: PRs Merged",
+      "subtitle": {
+        "some": "EN TEXT TO REPLACE: some",
+        "all": "EN TEXT TO REPLACE: all"
+      }
+    }
+  },
   "action_bar": {
     "title": "EN TEXT TO REPLACE: action bar",
     "selection": "EN TEXT TO REPLACE: 0 selected | 1 selected | {count} selected",
     "shortcut": "EN TEXT TO REPLACE: Press \"{key}\" to focus actions",
     "button_close_aria_label": "EN TEXT TO REPLACE: Close action bar"
+  },
+  "logo_menu": {
+    "copy_svg": "EN TEXT TO REPLACE: Copy logo as SVG",
+    "copied": "EN TEXT TO REPLACE: Copied!",
+    "browse_brand": "EN TEXT TO REPLACE: Browse brand kit"
+  },
+  "brand": {
+    "title": "Merk",
+    "heading": "merk",
+    "meta_description": "npmx merkrichtlijnen, logo’s, kleuren en typografie voor gebruik in de pers en de media.",
+    "intro": "Hulpbronnen en richtlijnen voor het gebruik van het merk npmx in uw projecten, artikelen en media.",
+    "logos": {
+      "title": "logos",
+      "description": "Download npmx logos in SVG- en PNG-formaat. Kies de juiste variant voor je achtergrond.",
+      "wordmark": "VOLLEDIG WOORDMERK",
+      "wordmark_alt": "npmx logo met volledige woordmarkering en blauwe schuine streep op een donkere achtergrond ",
+      "wordmark_light_alt": "npmx logo met volledige woordmarkering en blauwe schuine streep op een lichte achtergrond ",
+      "mark": "LOGO",
+      "mark_alt": "npmx logo met punt en schuine streep op een donkere achtergrond",
+      "mark_light_alt": "npmx logo met punt en schuine streep op een lichte achtergrond",
+      "on_dark": "Op donker",
+      "on_light": "op licht",
+      "download_svg": "SVG",
+      "download_png": "PNG",
+      "download_svg_aria": "Download {name} als SVG",
+      "download_png_aria": "Download {name} als PNG"
+    },
+    "customize": {
+      "title": "pas uw logo aan",
+      "description": "Bekijk een voorbeeld van het npmx logo met je accentkleur en achtergrond. Het voorbeeld geeft je huidige instellingen weer — kies een kleur, schakel de achtergrond in of uit en download het logo.",
+      "accent_label": "accentkleur",
+      "bg_label": "achtergrond",
+      "download_svg_aria": "Download het aangepaste logo als SVG",
+      "download_png_aria": "Download het aangepaste logo als PNG"
+    },
+    "typography": {
+      "title": "typografie",
+      "description": "npmx maakt gebruik van de lettertypefamilie Geist van Vercel, zowel voor de tekst in de interface als voor de code.",
+      "sans": "Geist Sans",
+      "sans_desc": "Wordt gebruikt voor de hoofdtekst en UI-elementen.",
+      "mono": "Geist Mono",
+      "mono_desc": "Wordt gebruikt voor code, kopteksten en technische inhoud.",
+      "pangram": "Pa's wijze lynx bezag vroom het fikse aquaduct",
+      "numbers": "0123456789"
+    },
+    "guidelines": {
+      "title": "even ter informatie",
+      "message": "Toegankelijkheid is belangrijk voor ons en we zouden het geweldig vinden als je deze visie met ons deelt. Zorg bij het gebruik van de genoemde media voor voldoende contrast met de achtergrond en gebruik een minimale grootte van 24px. Heb je andere bestanden of extra informatie over het project nodig? Neem dan gerust contact met ons op via {link}.",
+      "discord_link_text": "chat.npmx.dev"
+    }
   }
 }
