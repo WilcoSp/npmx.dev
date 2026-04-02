@@ -146,7 +146,6 @@ import {
   CallToAction,
   ChangelogCard,
   ChangelogErrorMsg,
-  ChartPatternSlot,
   CodeDirectoryListing,
   CodeFileTree,
   CodeHeader,
