@@ -1499,5 +1499,6 @@
     },
     "rate_limit_ungh": "Désolé, la limite de requêtes à l'API GitHub a été atteinte, réessayez plus tard",
     "version_unavailable": "La version demandée n'est pas disponible."
-  }
+  },
+  "alt_logo_kawaii": "Une version mignonne, arrondie et colorée du logo npmx."
 }
