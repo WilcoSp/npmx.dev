@@ -20,15 +20,16 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   const shiki = await getShikiHighlighter()
 
   renderer.link = function ({ href, title, tokens }: Tokens.Link) {
+    const eTitle = escapeHtml(title ?? '')
     const text = this.parser.parseInline(tokens)
-    const titleAttr = title ? ` title="${title}"` : ''
-    const plainText = text.replace(/<[^>]*>/g, '').trim()
+    const titleAttr = eTitle ? ` title="${eTitle}"` : ''
+    const plainText = escapeHtml(stripHtmlTags(text).trim())
 
     if (href.startsWith('mailto:') && !EMAIL_REGEX.test(plainText)) {
       return text
     }
 
-    const intermediateTitleAttr = `data-title-intermediate="${plainText || title}"`
+    const intermediateTitleAttr = `data-title-intermediate="${plainText || eTitle}"`
 
     return `<a href="${href}"${titleAttr}${intermediateTitleAttr} target="_blank">${text}</a>`
   }

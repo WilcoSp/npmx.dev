@@ -212,7 +212,6 @@ function getHeadingSlugSource(text: string): string {
 }
 
 /**
->>>>>>> main
  * Lazy ATX heading extension for marked: allows headings without a space after `#`.
  *
  * Reimplements the behavior of markdown-it-lazy-headers
