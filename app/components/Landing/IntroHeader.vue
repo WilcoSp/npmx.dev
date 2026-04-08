@@ -6,6 +6,7 @@ const { env } = useAppConfig().buildInfo
 const activeNoodlesData = ACTIVE_NOODLES.map(noodle => ({
   key: noodle.key,
   date: noodle.date,
+  dateTo: noodle.dateTo,
   timezone: noodle.timezone,
   tagline: noodle.tagline,
 }))
@@ -54,22 +55,26 @@ onPrehydrate(el => {
   }
 
   const currentActiveNoodles = activeNoodles.filter(noodle => {
-    const todayDate = new Intl.DateTimeFormat('en-US', {
+    const todayDate = new Date()
+    const todayDateRaw = new Intl.DateTimeFormat('en-US', {
       timeZone: noodle.timezone === 'auto' ? undefined : noodle.timezone,
       month: '2-digit',
       day: '2-digit',
       year: 'numeric',
-    }).format(new Date())
+    }).format(todayDate)
 
-    const noodleDate =
-      noodle.date &&
-      new Intl.DateTimeFormat('en-US', {
+    const noodleDateFrom = new Date(noodle.date!)
+    if (!noodle.dateTo) {
+      const noodleDateFromRaw = new Intl.DateTimeFormat('en-US', {
         timeZone: noodle.timezone === 'auto' ? undefined : noodle.timezone,
         month: '2-digit',
         day: '2-digit',
         year: 'numeric',
-      }).format(new Date(noodle.date))
-    return todayDate === noodleDate
+      }).format(noodleDateFrom)
+      return todayDateRaw === noodleDateFromRaw
+    }
+    const noodleDateTo = new Date(noodle.dateTo!)
+    return todayDate >= noodleDateFrom && todayDate <= noodleDateTo
   })
 
   if (!currentActiveNoodles.length) return

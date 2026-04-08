@@ -9,6 +9,8 @@ export type Noodle = {
   timezone?: string
   // Date for the noodle
   date?: string
+  // Date to for the noodle
+  dateTo?: string
   // Logo for the noodle - could be any component. Relative parent - intro section
   logo: Component
   // Show npmx tagline or not (default is true)
@@ -41,6 +43,7 @@ export const ACTIVE_NOODLES: Noodle[] = [
     key: 'artemis',
     logo: NoodleArtemisLogo,
     date: '2026-04-08T12:00:00Z',
+    dateTo: '2026-04-12T01:00:00Z',
     timezone: 'America/Los_Angeles',
     tagline: true,
   },
