@@ -1610,10 +1610,10 @@
     }
   },
   "action_bar": {
-    "title": "EN TEXT TO REPLACE: action bar",
-    "selection": "EN TEXT TO REPLACE: 0 selected | 1 selected | {count} selected",
-    "shortcut": "EN TEXT TO REPLACE: Press \"{key}\" to focus actions",
-    "button_close_aria_label": "EN TEXT TO REPLACE: Close action bar"
+    "title": "actiebalk",
+    "selection": "{count} geselecteerd",
+    "shortcut": "Druk op \"{key}\" om naar de actiebalk te gaan",
+    "button_close_aria_label": "Sluit actiebalk"
   },
   "logo_menu": {
     "copy_svg": "Kopieer loga als SVG",
@@ -1665,5 +1665,5 @@
       "discord_link_text": "chat.npmx.dev"
     }
   },
-  "alt_logo_kawaii": "Een schattige, ronde en kleurrijke versie van het npmx-logo."
+  "alt_logo_kawaii": "Een schattige, ronde en kleurrijke versie van het npmx logo."
 }
