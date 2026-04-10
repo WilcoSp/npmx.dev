@@ -76,6 +76,23 @@
     "instant_search_turn_off": "uitzetten",
     "instant_search_advisory": "{label} {state} — {action}"
   },
+  "command_palette": {
+    "state": {},
+    "groups": {},
+    "actions": {},
+    "connections": {},
+    "navigation": {},
+    "links": {},
+    "package_links": {},
+    "theme": {},
+    "package": {},
+    "package_actions": {},
+    "code": {},
+    "diff": {},
+    "version": {},
+    "status": {},
+    "announcements": {}
+  },
   "nav": {
     "main_navigation": "Hoofd",
     "popular_packages": "Populaire pakketten",
@@ -441,8 +458,6 @@
       },
       "page_title": "Versie geschiedenis",
       "current_tags": "Huidige tags",
-      "version_filter_placeholder": "Filter versies.",
-      "version_filter_label": "Filter versies",
       "no_match_filter": "Geen versies die voldoen aan {filter}"
     },
     "dependencies": {
@@ -825,12 +840,10 @@
   "code": {
     "files_label": "Bestanden",
     "no_files": "No files in this directory",
-    "root": "root",
     "lines": "{count} line | {count} lines",
     "toggle_tree": "Bestandsstructuur weergeven/verbergen",
     "close_tree": "Sluit bestand structuur",
     "copy_link": "Kopieer link",
-    "raw": "Raw",
     "view_raw": "Bekijk origineel bestand",
     "file_too_large": "Bestand te groot om te weergeven",
     "file_size_warning": "{size} overschrijdt de limiet van 500 KB voor syntaxisaccentuering",
@@ -1121,6 +1134,10 @@
       "remove_package": "Verwijder {package}",
       "packages_selected": "{count}/{max} pakketten geselecteerd.",
       "add_hint": "Voeg tenminste 2 pakketten toe om te vergelijken"
+    },
+    "quadrant_chart": {
+      "copy_alt": {},
+      "explanation": {}
     },
     "no_dependency": {
       "label": "(Geen dependency)",
