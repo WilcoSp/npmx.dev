@@ -14,7 +14,7 @@
   "footer": {
     "about": "over ons",
     "blog": "blog",
-    "docs": "docs",
+    "docs": "documentatie",
     "source": "bron code",
     "social": "social",
     "chat": "chat",
@@ -28,6 +28,9 @@
       "search": "Zoeken",
       "package": "Pakket"
     },
+    "ctrl_key": "Ctrl",
+    "command_palette": "Open actiemenu",
+    "command_palette_description": "Gebruik het actiemenu om direct naar pagina's, pakketoverzichten, instellingen en externe links te gaan zonder je toetsenbord los te laten. Druk op macOS op ⌘K. Druk op Windows en Linux op {ctrlKey}+K.",
     "focus_search": "Focus op zoeken",
     "show_kbd_hints": "Toetsenbordtips uitlichten",
     "settings": "Open instellingen",
@@ -76,6 +79,113 @@
     "instant_search_turn_off": "uitzetten",
     "instant_search_advisory": "{label} {state} — {action}"
   },
+  "command_palette": {
+    "title": "Actie menu",
+    "quick_actions": "Ga naar...",
+    "subtitle": "navigeer door npmx en pas instellingen snel aan",
+    "subtitle_languages": "kies een taal of help mee met het verbeteren van vertalingen",
+    "instructions": "Typ om acties te filteren. Gebruik de pijltoetsen om door de resultaten te navigeren en Enter om een actie uit te voeren",
+    "input_label": "Actie menu zoeken",
+    "results_label": "Actie resultaten",
+    "placeholder": "typ een actie...",
+    "back": "Terug",
+    "empty": "Geen overeenkomende acties",
+    "empty_search_hint": "Druk op Enter om te zoeken naar \"{query}\".",
+    "current": "huidige",
+    "here": "u bent hier",
+    "connected": "verbonden",
+    "state": {
+      "on": "aan",
+      "off": "uit"
+    },
+    "groups": {
+      "actions": "Acties",
+      "help": "Help",
+      "language": "Taal",
+      "connections": "Verbinden",
+      "navigation": "Navigatie",
+      "links": "Links",
+      "npmx": "npmx",
+      "package": "Pakket",
+      "package_with_name": "Pakket ({name})",
+      "versions": "Versies",
+      "versions_with_name": "Versies van {name}"
+    },
+    "actions": {
+      "search": "Zoek",
+      "search_for": "Zoek voor \"{query}\"",
+      "keyboard_shortcuts": "toetsenbordnavigatie",
+      "help_translate": "Help vertalen"
+    },
+    "connections": {
+      "npm_connect": "Verbind met npm CLI",
+      "npm_connected": "npm CLI (~{username})",
+      "npm_disconnect": "Ontkoppel npm CLI",
+      "atmosphere_connect": "Verbind met Atmosphere",
+      "atmosphere_connected": "Atmosphere ({'@'}{handle})",
+      "atmosphere_disconnect": "Ontkoppel Atmosphere"
+    },
+    "navigation": {
+      "home": "start",
+      "packages": "pakketten (~{username})",
+      "orgs": "Organisaties (~{username})",
+      "profile": "profiel ({'@'}{handle})"
+    },
+    "links": {
+      "external": "Externe link"
+    },
+    "package_links": {
+      "stars": "Repository sterren",
+      "forks": "Repository forks"
+    },
+    "theme": {
+      "system": "Gebruik systeem thema",
+      "light": "Gebruik licht thema",
+      "dark": "Gebruik donker thema"
+    },
+    "package": {
+      "main": "Pakket pagina",
+      "docs": "Documentatie",
+      "code": "Code",
+      "diff": "Verschillen",
+      "compare": "Vergelijk dit pakket",
+      "download": "Download tarball"
+    },
+    "package_actions": {
+      "copy_run": "Kopieer uitvoor command"
+    },
+    "code": {
+      "copy_file": "Kopieer bestand inhoud"
+    },
+    "diff": {
+      "merge_modified_lines": "Gewijzigde regels samenvoegen",
+      "word_wrap": "Tekstomloop"
+    },
+    "version": {
+      "label": "{version}"
+    },
+    "status": {
+      "available_in_context": "{context}. Geen acties beschikbaar | {context}. 1 actie beschikbaar | {context}. {count} acties beschikbaar",
+      "matching_in_context": "{context}. Geen overeenkomende acties | {context}. 1 overeenkomende actie | {context}. {count} overeenkomende acties",
+      "no_matches_search_in_context": "{context}. Geen overeenkomende acties. Druk op Enter om te zoeken naar \"{query}\"."
+    },
+    "announcements": {
+      "language_changed": "Taal ingesteld op {language}.",
+      "relative_dates_on": "Relatieve datums aan.",
+      "relative_dates_off": "Relatieve datums uit.",
+      "theme_changed": "Thema ingesteld op {theme}.",
+      "accent_color_changed": "Accentkleur ingesteld op {color}.",
+      "background_theme_changed": "Achtergrondkleur ingesteld op {theme}.",
+      "download_started": "Downloaden {package} tarball.",
+      "copied_to_clipboard": "Gekopieerd naar klembord.",
+      "npm_disconnected": "npm CLI ontkoppeld.",
+      "atmosphere_disconnected": "Atmosphere ontkoppeld.",
+      "facets_all_selected": "Alle aspecten selecteren.",
+      "facets_all_deselected": "Alle aspecten zijn gedeselecteerd.",
+      "view_switched": "Overschakelt naar {view} weergaven.",
+      "setting_toggled": "{setting} {state}."
+    }
+  },
   "nav": {
     "main_navigation": "Hoofd",
     "popular_packages": "Populaire pakketten",
@@ -120,7 +230,7 @@
     "meta_description": "Pas uw npmx.dev ervaring aan met thema-, taal- en weergavevoorkeuren.",
     "sections": {
       "appearance": "Uiterlijk",
-      "display": "Display",
+      "display": "Weergaven",
       "search": "Zoekfuncties",
       "language": "Taal",
       "keyboard_shortcuts": "toetsenbordnavigatie"
@@ -151,6 +261,7 @@
     "translation_status": "De status van de algemene vertaling controleren",
     "accent_colors": {
       "label": "Accentkleuren",
+      "neutral": "Neutraal",
       "sky": "Hemelsblauw",
       "coral": "Koraalrood",
       "amber": "Ambergeel",
@@ -201,6 +312,8 @@
     "warnings": "Waarschuwingen:",
     "go_back_home": "Ga terug naar startpagina",
     "per_week": "/ week",
+    "yes": "Ja",
+    "no": "Nee",
     "vanity_downloads_hint": "Totaaloverzicht: geen pakketten weergegeven | Totaaloverzicht: voor het weergegeven pakket | Totaaloverzicht: som van {count} weergegeven pakketten",
     "sort": {
       "name": "naam",
@@ -223,11 +336,14 @@
       "gitea": "Bekijk op Gitea",
       "gitee": "Bekijk op Gitee",
       "radicle": "Bekijk op Radicle",
+      "socket_dev": "Bekijk op socket.dev",
       "sourcehut": "Bekijk op SourceHut",
       "tangled": "Bekijk op Tangled"
     },
     "collapse": "inklappen",
-    "expand": "uitklappen"
+    "collapse_with_name": "inklappen {name}",
+    "expand": "uitklappen",
+    "expand_with_name": "uitklappen {name}"
   },
   "profile": {
     "display_name": "Profiel naam",
@@ -441,8 +557,6 @@
       },
       "page_title": "Versie geschiedenis",
       "current_tags": "Huidige tags",
-      "version_filter_placeholder": "Filter versies.",
-      "version_filter_label": "Filter versies",
       "no_match_filter": "Geen versies die voldoen aan {filter}"
     },
     "dependencies": {
@@ -671,12 +785,12 @@
   },
   "operations": {
     "queue": {
-      "title": "Taken wachtrij",
+      "title": "Opdrachten wachtrij",
       "clear_all": "leegmaken",
-      "refresh": "Vernieuw taken",
-      "empty": "Geen taken in de wachtrij",
-      "empty_hint": "Taken toevoegen vanaf pakket- of organisatiepagina’s",
-      "active_label": "Actieve taken",
+      "refresh": "Vernieuw opdrachten",
+      "empty": "Geen opdrachten in de wachtrij",
+      "empty_hint": "Opdrachten toevoegen vanaf pakket- of organisatiepagina’s",
+      "active_label": "Actieve opdrachten",
       "otp_required": "OTP benodigd",
       "otp_prompt": "Voer de OTP in om door te gaan",
       "otp_placeholder": "Voer de OTP-code in...",
@@ -685,13 +799,13 @@
       "retry_web_auth": "Probeer opnieuw met web authenticatie",
       "retrying": "Retrying...",
       "open_web_auth": "Open web authenticatie link",
-      "approve_operation": "Taak goedkeuren",
-      "remove_operation": "Taak afwijzen",
+      "approve_operation": "Opdracht goedkeuren",
+      "remove_operation": "Opdracht afwijzen",
       "approve_all": "Alle goedkeuren",
       "execute": "Voer uit",
       "executing": "Uitvoeren...",
       "log": "Log",
-      "log_label": "Overzicht van voltooide taken",
+      "log_label": "Overzicht van voltooide opdrachten",
       "remove_from_log": "Verwijder van log"
     }
   },
@@ -824,26 +938,28 @@
   },
   "code": {
     "files_label": "Bestanden",
-    "no_files": "No files in this directory",
-    "root": "root",
-    "lines": "{count} line | {count} lines",
+    "no_files": "Er zijn geen bestanden in deze map",
+    "lines": "{count} lijn | {count} lijnen",
     "toggle_tree": "Bestandsstructuur weergeven/verbergen",
     "close_tree": "Sluit bestand structuur",
+    "copy_content": "Kopieer bestand inhoud",
     "copy_link": "Kopieer link",
-    "raw": "Raw",
     "view_raw": "Bekijk origineel bestand",
+    "toggle_container": "Breedte van de codecontainer wisselen",
+    "open_raw_file": "Open origineel bestand",
+    "open_path_dropdown": "Padsegmenten keuzemenu openen",
     "file_too_large": "Bestand te groot om te weergeven",
     "file_size_warning": "{size} overschrijdt de limiet van 500 KB voor syntaxisaccentuering",
     "failed_to_load": "Het is niet gelukt om bestand te laden",
     "unavailable_hint": "Bestand is misschien te groot of niet beschikbaar",
     "version_required": "Een versie is verplicht om de code te bekijken",
-    "go_to_package": "Go to package",
+    "go_to_package": "Ga naar pakket",
     "loading_tree": "Bestand structuur laden...",
     "failed_to_load_tree": "Het is niet gelukt om bestanden te laden voor deze versie",
-    "back_to_package": "Back to package",
+    "back_to_package": "Terug naar pakket",
     "table": {
-      "name": "Name",
-      "size": "Size"
+      "name": "Naam",
+      "size": "Grootte"
     },
     "markdown_view_mode": {
       "preview": "voorbeeld",
@@ -855,9 +971,9 @@
   },
   "badges": {
     "provenance": {
-      "verified": "verified",
-      "verified_title": "Verified provenance",
-      "verified_via": "Verified: published via {provider}"
+      "verified": "geverifieerd",
+      "verified_title": "geverifieerde herkomstgegevens",
+      "verified_via": "Geverifieerd: gepubliceerd via {provider}"
     },
     "jsr": {
       "title": "Ook verkrijgbaar op JSR"
@@ -1121,6 +1237,33 @@
       "remove_package": "Verwijder {package}",
       "packages_selected": "{count}/{max} pakketten geselecteerd.",
       "add_hint": "Voeg tenminste 2 pakketten toe om te vergelijken"
+    },
+    "quadrant_chart": {
+      "label_x_axis": "EN TEXT TO REPLACE: Traction",
+      "label_y_axis": "EN TEXT TO REPLACE: Ergonomics",
+      "label_top_right": "EN TEXT TO REPLACE: Solid picks",
+      "label_bottom_right": "EN TEXT TO REPLACE: popular with tradeoffs",
+      "label_bottom_left": "EN TEXT TO REPLACE: avoid",
+      "label_top_left": "EN TEXT TO REPLACE: hidden gems",
+      "title": "EN TEXT TO REPLACE: Package traction vs ergonomics",
+      "filename": "EN TEXT TO REPLACE: package-traction-vs-ergonomics-quadrant",
+      "label_freshness_score": "EN TEXT TO REPLACE: Freshness score",
+      "copy_alt": {
+        "description": "EN TEXT TO REPLACE: Quadrant chart mapping traction versus ergonomics for the {packages} packages. {analysis}. {watermark}.",
+        "side_analysis_top_right": "EN TEXT TO REPLACE: The following packages are positioned on the top-right quadrant (solid picks): {packages}",
+        "side_analysis_top_left": "EN TEXT TO REPLACE: The following packages are positioned on the top-left quadrant (hidden gems): {packages}",
+        "side_analysis_bottom_right": "EN TEXT TO REPLACE: The following packages are positioned on the bottom-right quadrant (popular with tradeoffs): {packages}",
+        "side_analysis_bottom_left": "EN TEXT TO REPLACE: The following packages are positioned on the bottom-left quadrant (avoid): {packages}"
+      },
+      "explanation": {
+        "tooltip_help": "EN TEXT TO REPLACE: Show scoring explanation",
+        "tooltip_help_adoption": "EN TEXT TO REPLACE: Show traction scoring explanation",
+        "tooltip_help_efficiency": "EN TEXT TO REPLACE: Show ergonomics scoring explanation",
+        "introduction": "EN TEXT TO REPLACE: The score is calculated by combining multiple signals into two axes:",
+        "adoption": "EN TEXT TO REPLACE: Traction: reflects usage and activity (downloads, freshness, likes)",
+        "efficiency": "EN TEXT TO REPLACE: Ergonomics: reflects footprint and quality (install size, dependencies, vulnerabilities, type support)",
+        "impact_details": "EN TEXT TO REPLACE: Each metric contributes with a different weight. Strong signals like downloads and install size have the largest impact, while others refine the result. Some signals (such as vulnerabilities or deprecation) apply penalties."
+      }
     },
     "no_dependency": {
       "label": "(Geen dependency)",
@@ -1473,9 +1616,9 @@
     "button_close_aria_label": "EN TEXT TO REPLACE: Close action bar"
   },
   "logo_menu": {
-    "copy_svg": "EN TEXT TO REPLACE: Copy logo as SVG",
-    "copied": "EN TEXT TO REPLACE: Copied!",
-    "browse_brand": "EN TEXT TO REPLACE: Browse brand kit"
+    "copy_svg": "Kopieer loga als SVG",
+    "copied": "Gekopieerd!",
+    "browse_brand": "Bekijk brand kit"
   },
   "brand": {
     "title": "Merk",
@@ -1521,5 +1664,6 @@
       "message": "Toegankelijkheid is belangrijk voor ons en we zouden het geweldig vinden als je deze visie met ons deelt. Zorg bij het gebruik van de genoemde media voor voldoende contrast met de achtergrond en gebruik een minimale grootte van 24px. Heb je andere bestanden of extra informatie over het project nodig? Neem dan gerust contact met ons op via {link}.",
       "discord_link_text": "chat.npmx.dev"
     }
-  }
+  },
+  "alt_logo_kawaii": "Een schattige, ronde en kleurrijke versie van het npmx-logo."
 }
