@@ -30,7 +30,7 @@
     },
     "ctrl_key": "Ctrl",
     "command_palette": "Open actiemenu",
-    "command_palette_description": "Gebruik het actiemenu om direct naar pagina's, pakketoverzichten, instellingen en externe links te gaan zonder je toetsenbord los te laten. Druk op macOS op ⌘K. Druk op Windows en Linux op {ctrlKey}+K.",
+    "command_palette_description": "Gebruik het actiemenu om direct naar pagina's, pakketoverzichten, instellingen en externe links te gaan zonder uw toetsenbord los te laten. Druk op macOS op ⌘K. Druk op Windows en Linux op {ctrlKey}+K.",
     "focus_search": "Focus op zoeken",
     "show_kbd_hints": "Toetsenbordtips uitlichten",
     "settings": "Open instellingen",
@@ -40,7 +40,7 @@
     "go_to_result": "Ga naar resultaten",
     "open_code_view": "Open code weergaven",
     "open_docs": "Open documentatie",
-    "disable_shortcuts": "Je kunt toetsenboordnavigatie uitschakelen in {instellingen}.",
+    "disable_shortcuts": "U kunt toetsenboordnavigatie uitschakelen in {instellingen}.",
     "open_main": "Open pakket overzicht",
     "open_diff": "Open versie verschillen"
   },
@@ -62,7 +62,7 @@
     "not_taken": "{name} is niet in gebruik",
     "claim_prompt": "Registeer deze pakketnaam op npm",
     "claim_button": "Registeer \"{name}\"",
-    "want_to_claim": "Wil je deze pakket naam registeren?",
+    "want_to_claim": "Wilt u deze pakket naam registeren?",
     "start_typing": "Start typen om te zoeken naar pakketten",
     "algolia_disclaimer": "Mogelijk gemaakt door Algolia",
     "exact_match": "precies",
@@ -301,7 +301,7 @@
     "loading": "Laden...",
     "loading_more": "Meer laden...",
     "loading_packages": "pakketten laden...",
-    "end_of_results": "Einde van resultaten",
+    "end_of_results": "Geen verdere resultaten",
     "try_again": "Probeer opnieuw",
     "close": "Sluiten",
     "or": "of",
@@ -357,9 +357,9 @@
     "not_found": "Profiel niet gevonden",
     "not_found_message": "Het profiel voor {handle} kon niet gevonden worden.",
     "invite": {
-      "message": "Het lijkt erop dat ze npmx nog niet gebruiken. Wil je ze hierop wijzen",
+      "message": "Het lijkt erop dat ze npmx nog niet gebruiken. Wilt u ze hierop wijzen",
       "share_button": "Deel op Bluesky",
-      "compose_text": "Hallo {'@'}{handle}! Heb je npmx.dev al bekeken? Het is een browser voor het npm register die snel, modern en open source is.\nhttps://npmx.dev"
+      "compose_text": "Hallo {'@'}{handle}! Hebt u npmx.dev al bekeken? Het is een browser voor het npm register die snel, modern en open source is.\nhttps://npmx.dev"
     }
   },
   "package": {
@@ -777,7 +777,7 @@
       "advanced": "Geavanceerde opties",
       "port_label": "Port",
       "warning": "WAARSCHUWING",
-      "warning_text": "Dit geeft npmx toegang tot je npm CLI. Maak alleen verbinding met sites die je vertrouwt.",
+      "warning_text": "Dit geeft npmx toegang tot uw npm CLI. Maak alleen verbinding met sites die u vertrouwt.",
       "connect": "Verbind",
       "connecting": "Verbinden...",
       "auto_open_url": "Automatisch authenticatiepagina openen"
@@ -888,26 +888,26 @@
       "suggestions_label": "Voorgestelde gebruikers"
     },
     "page": {
-      "packages_title": "Packages",
-      "no_packages": "No public packages found for",
-      "no_packages_hint": "This user may not exist or has no public packages.",
-      "failed_to_load": "Failed to load user packages",
-      "no_match": "No packages match \"{query}\"",
-      "filter_placeholder": "Filter {count} package... | Filter {count} packages..."
+      "packages_title": "Pakketten",
+      "no_packages": "Geen publieke pakketten gevonden voor",
+      "no_packages_hint": "Deze gebruiker bestaat misschien niet of heeft geen publieke pakketten beschikbaar.",
+      "failed_to_load": "Kon gebruikerspakketten niet laden",
+      "no_match": "Geen pakketten gevonden met \"{query}\"",
+      "filter_placeholder": "Filter {count} pakket... | Filter {count} pakketten..."
     },
     "orgs_page": {
-      "title": "Organizations",
-      "back_to_profile": "Back to profile",
-      "connect_required": "Connect the local CLI to view your organizations.",
-      "connect_hint_prefix": "Run",
-      "connect_hint_suffix": "to get started.",
-      "own_orgs_only": "You can only view your own organizations.",
-      "view_your_orgs": "View your organizations",
-      "loading": "Loading organizations...",
-      "empty": "No organizations found.",
-      "empty_hint": "Organizations are detected from your scoped packages.",
-      "count": "{count} Organization | {count} Organizations",
-      "packages_count": "{count} package | {count} packages"
+      "title": "Organisaties",
+      "back_to_profile": "Terug naar profiel",
+      "connect_required": "Verbind met locale CLI om uw organisaties te bekijken.",
+      "connect_hint_prefix": "Voer",
+      "connect_hint_suffix": "uit om te beginnen.",
+      "own_orgs_only": "U kan alleen uw eigen organisaties bekijken.",
+      "view_your_orgs": "Bekijk uw orginisaties",
+      "loading": "Organisaties laden...",
+      "empty": "Geen organisaties gevonden.",
+      "empty_hint": "Organisaties worden afgeleid uit uw scoped pakketten.",
+      "count": "{count} Organisatie | {count} Organisaties",
+      "packages_count": "{count} pakket | {count} pakketten"
     }
   },
   "claim": {
@@ -915,16 +915,16 @@
       "title": "Registeer pakket naam",
       "success": "Pakket registeren!",
       "success_detail": "{name}{'@'}0.0.0 is gepubliceerd op npm.",
-      "success_hint": "Je kunt nu nieuwe versies van dit pakket publiceren met npm publish.",
+      "success_hint": "U kunt nu nieuwe versies van dit pakket publiceren met npm publish.",
       "view_package": "Bekijk pakket",
       "invalid_name": "Incorrecte pakket naam:",
       "available": "Deze naam is beschikbaar!",
       "taken": "Deze naam is al in gebruik.",
-      "missing_permission": "Je hebt geen toestemming om een pakket toe te voegen aan de scope {'@'}{scope}.",
+      "missing_permission": "U hebt geen toestemming om een pakket toe te voegen aan de scope {'@'}{scope}.",
       "similar_warning": "Er bestaan vergelijkbare pakketten - npm kan deze naam afwijzen:",
       "related": "Gerelateerde pakketten:",
       "scope_warning_title": "Overweeg om in plaats daarvan een pakket met een scope te gebruiken.",
-      "scope_warning_text": "Pakketnamen zonder scope zijn een gedeelde bron. Claim alleen een naam als je van plan bent een pakket te publiceren en te onderhouden. Gebruik voor persoonlijke of organisatorische projecten een naam met een scope, zoals {'@'}{username}/{name}.",
+      "scope_warning_text": "Pakketnamen zonder scope zijn een gedeelde bron. Claim alleen een naam als u van plan bent een pakket te publiceren en te onderhouden. Gebruik voor persoonlijke of organisatorische projecten een naam met een scope, zoals {'@'}{username}/{name}.",
       "connect_required": "Maak verbinding met de lokale connector om deze pakketnaam te registreren.",
       "connect_button": "Connect to Connector",
       "publish_hint": "Hiermee wordt een minimaal tijdelijk pakket gepubliceerd.",
@@ -981,36 +981,36 @@
   },
   "filters": {
     "title": "Filters",
-    "search": "Search",
-    "search_scope": "Search scope",
-    "search_placeholder_name": "Filter by package name...",
-    "search_placeholder_description": "Filter by description...",
-    "search_placeholder_keywords": "Filter by keywords...",
-    "search_placeholder_all": "Search all or use name: desc: kw:",
-    "scope_name": "Name",
-    "scope_name_description": "Search package names only",
-    "scope_description": "Description",
-    "scope_description_description": "Search descriptions only",
-    "scope_keywords": "Keywords",
-    "scope_keywords_description": "Search keywords only",
-    "scope_all": "All",
-    "scope_all_description": "Search all fields, supports name: desc: kw: operators",
-    "weekly_downloads": "Weekly downloads",
-    "updated_within": "Updated within",
-    "security": "Security",
-    "keywords": "Keywords",
-    "more_keywords": "+{count} more",
-    "clear_all": "Clear all",
-    "remove_filter": "Remove {label} filter",
+    "search": "Zoek",
+    "search_scope": "Zoek scope",
+    "search_placeholder_name": "Filter bij pakket naam...",
+    "search_placeholder_description": "Filter bij beschrijving...",
+    "search_placeholder_keywords": "Filter bij trefwoorden...",
+    "search_placeholder_all": "Zoek alles of gebruik naam:, beschrijving:, tw:",
+    "scope_name": "Naam",
+    "scope_name_description": "Alleen zoeken op pakketnamen",
+    "scope_description": "Beschrijving",
+    "scope_description_description": "Alleen zoeken op beschrijving",
+    "scope_keywords": "Trefwoorden",
+    "scope_keywords_description": "Alleen zoeken op trefwoorden",
+    "scope_all": "Alle",
+    "scope_all_description": "Zoek alle velden, ondersteund naam: beschrijving: tf: beheerders",
+    "weekly_downloads": "Weekelijkse downloads",
+    "updated_within": "Bijgewerkt binnen",
+    "security": "Beveiliging",
+    "keywords": "Trefwoorden",
+    "more_keywords": "+{count} meer",
+    "clear_all": "Leegmaken",
+    "remove_filter": "Verwijder {label} filter",
     "chips": {
-      "search": "Search",
+      "search": "Zoek",
       "downloads": "Downloads",
-      "keyword": "Keyword",
-      "security": "Security",
-      "updated": "Updated"
+      "keyword": "Trefwoorden",
+      "security": "Beveiliging",
+      "updated": "Bijgewerkt"
     },
     "download_range": {
-      "any": "Any",
+      "any": "Elke",
       "lt100": "< 100",
       "100_1k": "100 - 1K",
       "1k_10k": "1K - 10K",
@@ -1018,19 +1018,19 @@
       "gt100k": "> 100K"
     },
     "updated": {
-      "any": "Any time",
-      "week": "Past week",
-      "month": "Past month",
-      "quarter": "Past 3 months",
-      "year": "Past year"
+      "any": "Ongeacht tijd",
+      "week": "Vorige week",
+      "month": "Vorige maand",
+      "quarter": "Vorige 3 maanden",
+      "year": "Vorig jaar"
     },
     "security_options": {
-      "all": "All packages",
-      "secure": "Without warnings",
-      "insecure": "With warnings"
+      "all": "Alle pakketten",
+      "secure": "Zonder waarschuwingen",
+      "insecure": "Met waarschuwingen"
     },
     "view_selected": "Bekijk geselecteerde",
-    "clear_selected_label": "EN TEXT TO REPLACE: Clear selected",
+    "clear_selected_label": "Selectie wissen",
     "sort": {
       "label": "Pakketten sorteren",
       "toggle_direction": "Sorteerrichting wijzigen",
@@ -1047,7 +1047,7 @@
     "columns": {
       "title": "Kolommen",
       "show": "Kolommen weergeven",
-      "reset": "Reset to defaults",
+      "reset": "Herstellen",
       "coming_soon": "Binnenkort",
       "name": "Naam",
       "version": "Versie",
@@ -1060,9 +1060,9 @@
       "selection": "Selecteer pakket"
     },
     "view_mode": {
-      "label": "View mode",
-      "cards": "Card view",
-      "table": "Table view"
+      "label": "Weergaven modus",
+      "cards": "Kaart weergaven",
+      "table": "Tabel weergaven"
     },
     "pagination": {
       "mode_label": "Pagineringmodus",
@@ -1076,13 +1076,13 @@
       "nav_label": "Paginering"
     },
     "count": {
-      "showing_filtered": "{filtered} of {count} package | {filtered} of {count} packages",
-      "showing_all": "{count} package | {count} packages",
+      "showing_filtered": "{filtered} van {count} pakket | {filtered} van {count} pakketten",
+      "showing_all": "0 pakketten | {count} pakket | {count} pakketten",
       "showing_paginated": "{pageSize} van {count} pakket | {pageSize} van {count} pakketten"
     },
     "table": {
-      "security_warning": "Security warning",
-      "secure": "Secure",
+      "security_warning": "Beveiliging waarschuwing",
+      "secure": "Veilig",
       "no_packages": "Geen pakketten gevonden"
     }
   },
@@ -1175,7 +1175,7 @@
       "title": "Atmosphere",
       "connected_as": "Verbonden als {'@'}{handle}",
       "disconnect": "Ontkoppelen",
-      "connect_prompt": "Verbind met je Atmosphere account",
+      "connect_prompt": "Verbind met uw Atmosphere account",
       "handle_label": "Handle",
       "handle_placeholder": "alice.npmx.social",
       "connect": "Verbinden",
@@ -1189,21 +1189,21 @@
   },
   "header": {
     "home": "npmx startpagina",
-    "packages": "packages",
+    "packages": "pakketten",
     "packages_dropdown": {
-      "title": "Your Packages",
-      "loading": "Loading...",
-      "error": "Failed to load packages",
-      "empty": "No packages found",
-      "view_all": "View all"
+      "title": "Uw pakketten",
+      "loading": "Laden...",
+      "error": "Laden van pakketten niet gelukt",
+      "empty": "Geen pakketten gevonden",
+      "view_all": "Bekijk alle"
     },
     "orgs": "orgs",
     "orgs_dropdown": {
       "title": "Your Organizations",
       "loading": "Loading...",
-      "error": "Failed to load organizations",
+      "error": "Laden van organisaties is mislukt",
       "empty": "No organizations found",
-      "view_all": "View all"
+      "view_all": "Bekijk alle"
     },
     "pr": "EN TEXT TO REPLACE: Open GitHub pull request #{prNumber}"
   },
@@ -1419,7 +1419,7 @@
     "meta_description": "De officiële AT Protocol Persoonlijke Data Server (PDS) voor de npmx community.",
     "join": {
       "title": "Word lid van de Community",
-      "description": "Of je nu je eerste account op Atmosphere account aanmaakt of een bestaand account migreert, je bent hier aan het juiste adres. Je kunt je huidige account migreren zonder je gebruikersnaam, je berichten of je volgers te verliezen.",
+      "description": "Of u nu uw eerste account op Atmosphere account aanmaakt of een bestaand account migreert, u bent hier aan het juiste adres. U kunt uw huidige account migreren zonder uw gebruikersnaam, uw berichten of uw volgers te verliezen.",
       "migrate": "Migeer met PDS MOOver"
     },
     "server": {
@@ -1555,8 +1555,8 @@
   "translation_status": {
     "title": "vertalingsstatus",
     "generated_at": "Laatst bijgewerkt: {date}",
-    "welcome": "Als je ons wilt helpen {npmx} te vertalen naar een van de onderstaande talen, dan ben je hier aan het juiste adres! Op deze pagina, die automatisch wordt bijgewerkt, vind je altijd alle inhoud waarvoor op dit moment hulp nodig is.",
-    "p1": "We gebruiken {lang} als standaardtaal, met in totaal {count}. Als je wilt helpen met het toevoegen van vertalingen, zoek dan de taal op in {bylang} en klap de details uit.",
+    "welcome": "Als u ons wilt helpen {npmx} te vertalen naar een van de onderstaande talen, dan bent u hier aan het juiste adres! Op deze pagina, die automatisch wordt bijgewerkt, vind u altijd alle inhoud waarvoor op dit moment hulp nodig is.",
+    "p1": "We gebruiken {lang} als standaardtaal, met in totaal {count}. Als u wilt helpen met het toevoegen van vertalingen, zoek dan de taal op in {bylang} en klap de details uit.",
     "p1_lang": "Amerikaans Engels (en-US)",
     "p1_count": "0 berichten | 1 bericht | {count} berichten",
     "p2": "Voordat u begint, raden we u aan onze {guide} te lezen om meer te weten te komen over ons vertaalproces en hoe u hieraan kunt bijdragen.",
@@ -1627,7 +1627,7 @@
     "intro": "Hulpbronnen en richtlijnen voor het gebruik van het merk npmx in uw projecten, artikelen en media.",
     "logos": {
       "title": "logos",
-      "description": "Download npmx logos in SVG- en PNG-formaat. Kies de juiste variant voor je achtergrond.",
+      "description": "Download npmx logos in SVG- en PNG-formaat. Kies de juiste variant voor uw achtergrond.",
       "wordmark": "VOLLEDIG WOORDMERK",
       "wordmark_alt": "npmx logo met volledige woordmarkering en blauwe schuine streep op een donkere achtergrond ",
       "wordmark_light_alt": "npmx logo met volledige woordmarkering en blauwe schuine streep op een lichte achtergrond ",
@@ -1643,7 +1643,7 @@
     },
     "customize": {
       "title": "pas uw logo aan",
-      "description": "Bekijk een voorbeeld van het npmx logo met je accentkleur en achtergrond. Het voorbeeld geeft je huidige instellingen weer — kies een kleur, schakel de achtergrond in of uit en download het logo.",
+      "description": "Bekijk een voorbeeld van het npmx logo met uw accentkleur en achtergrond. Het voorbeeld geeft uw huidige instellingen weer — kies een kleur, schakel de achtergrond in of uit en download het logo.",
       "accent_label": "accentkleur",
       "bg_label": "achtergrond",
       "download_svg_aria": "Download het aangepaste logo als SVG",
@@ -1661,7 +1661,7 @@
     },
     "guidelines": {
       "title": "even ter informatie",
-      "message": "Toegankelijkheid is belangrijk voor ons en we zouden het geweldig vinden als je deze visie met ons deelt. Zorg bij het gebruik van de genoemde media voor voldoende contrast met de achtergrond en gebruik een minimale grootte van 24px. Heb je andere bestanden of extra informatie over het project nodig? Neem dan gerust contact met ons op via {link}.",
+      "message": "Toegankelijkheid is belangrijk voor ons en we zouden het geweldig vinden als u deze visie met ons deelt. Zorg bij het gebruik van de genoemde media voor voldoende contrast met de achtergrond en gebruik een minimale grootte van 24px. Heb u andere bestanden of extra informatie over het project nodig? Neem dan gerust contact met ons op via {link}.",
       "discord_link_text": "chat.npmx.dev"
     }
   },
