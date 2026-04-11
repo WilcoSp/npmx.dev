@@ -149,7 +149,8 @@
       "code": "Code",
       "diff": "Diff",
       "compare": "Compare this package",
-      "download": "Download tarball"
+      "download": "Download tarball",
+      "changelog": "Changelog"
     },
     "package_actions": {
       "copy_run": "Copy run command"

@@ -70,6 +70,29 @@ const stickyStyle = computed(() => {
   }
 })
 
+// command pallet
+const { versions: commandPaletteVersions, ensureLoaded: ensureCommandPaletteVersionsLoaded } =
+  useCommandPalettePackageVersions(packageName)
+
+const commandPalettePackageContext = computed(() => {
+  const packageData = pkg.value
+  if (!packageData) return null
+
+  return {
+    packageName: packageData.name,
+    resolvedVersion: version.value ?? packageData['dist-tags']?.latest ?? null,
+    latestVersion: packageData['dist-tags']?.latest ?? null,
+    versions: commandPaletteVersions.value ?? Object.keys(packageData.versions ?? {}),
+    tarballUrl: packageData.requestedVersion?.dist.tarball ?? null,
+  }
+})
+
+useCommandPalettePackageContext(commandPalettePackageContext, {
+  onOpen: ensureCommandPaletteVersionsLoaded,
+})
+useCommandPalettePackageCommands(commandPalettePackageContext)
+
+// og image
 defineOgImageComponent('Default', {
   title: () => `${pkg.value?.name ?? 'Package'} - Changelogs`,
   description: () => pkg.value?.license ?? '',
