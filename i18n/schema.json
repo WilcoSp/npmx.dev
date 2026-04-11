@@ -1021,6 +1021,9 @@
             "radicle": {
               "type": "string"
             },
+            "socket_dev": {
+              "type": "string"
+            },
             "sourcehut": {
               "type": "string"
             },
@@ -1033,7 +1036,13 @@
         "collapse": {
           "type": "string"
         },
+        "collapse_with_name": {
+          "type": "string"
+        },
         "expand": {
+          "type": "string"
+        },
+        "expand_with_name": {
           "type": "string"
         }
       },
@@ -3776,6 +3785,12 @@
               "type": "object",
               "properties": {
                 "tooltip_help": {
+                  "type": "string"
+                },
+                "tooltip_help_adoption": {
+                  "type": "string"
+                },
+                "tooltip_help_efficiency": {
                   "type": "string"
                 },
                 "introduction": {
