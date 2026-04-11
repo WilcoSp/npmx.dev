@@ -187,7 +187,7 @@
     }
   },
   "nav": {
-    "main_navigation": "Hoofd",
+    "main_navigation": "Start",
     "popular_packages": "Populaire pakketten",
     "settings": "instellingen",
     "compare": "vergelijken",
@@ -916,7 +916,7 @@
       "success": "Pakket registeren!",
       "success_detail": "{name}{'@'}0.0.0 is gepubliceerd op npm.",
       "success_hint": "Je kunt nu nieuwe versies van dit pakket publiceren met npm publish.",
-      "view_package": "View Package",
+      "view_package": "Bekijk pakket",
       "invalid_name": "Incorrecte pakket naam:",
       "available": "Deze naam is beschikbaar!",
       "taken": "Deze naam is al in gebruik.",
@@ -1114,7 +1114,7 @@
       }
     },
     "sponsors": {
-      "title": "Sponsors"
+      "title": "Sponsoren"
     },
     "oss_partners": {
       "title": "Open Source Software Partners"
