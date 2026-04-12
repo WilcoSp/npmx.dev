@@ -312,8 +312,6 @@
     "warnings": "Waarschuwingen:",
     "go_back_home": "Ga terug naar startpagina",
     "per_week": "/ week",
-    "yes": "Ja",
-    "no": "Nee",
     "vanity_downloads_hint": "Totaaloverzicht: geen pakketten weergegeven | Totaaloverzicht: voor het weergegeven pakket | Totaaloverzicht: som van {count} weergegeven pakketten",
     "sort": {
       "name": "naam",
@@ -1238,32 +1236,8 @@
       "packages_selected": "{count}/{max} pakketten geselecteerd.",
       "add_hint": "Voeg tenminste 2 pakketten toe om te vergelijken"
     },
-    "quadrant_chart": {
-      "label_x_axis": "Adoptie",
-      "label_y_axis": "Ergonomie",
-      "label_top_right": "Sterke keuzes",
-      "label_bottom_right": "Populair met afwegingen",
-      "label_bottom_left": "Vermijden",
-      "label_top_left": "Verborgen pareltjes",
-      "title": "Pakketadoptie vs ergonomie",
-      "filename": "pakket-adoptie-vs-ergonomie-kwadrant",
-      "label_freshness_score": "Recentheidsscore",
-      "copy_alt": {
-        "description": "Kwadrantgrafiek die adoptie versus ergonomie weergeeft voor de pakketten {packages}. {analysis}. {watermark}.",
-        "side_analysis_top_right": "De volgende pakketten bevinden zich in het kwadrant rechtsboven (sterke keuzes): {packages}",
-        "side_analysis_top_left": "De volgende pakketten bevinden zich in het kwadrant linksboven (verborgen parels): {packages}",
-        "side_analysis_bottom_right": "De volgende pakketten bevinden zich in het kwadrant rechtsonder (populair met afwegingen): {packages}",
-        "side_analysis_bottom_left": "De volgende pakketten bevinden zich in het kwadrant linksonder (vermijden): {packages}"
-      },
-      "explanation": {
-        "tooltip_help": "Toon uitleg over de score",
-        "tooltip_help_adoption": "Toon uitleg over adoptiescore",
-        "tooltip_help_efficiency": "Toon uitleg over ergonomiescore",
-        "introduction": "De score wordt berekend door meerdere signalen te combineren in twee assen:",
-        "adoption": "Adoptie: geeft gebruik en activiteit weer (downloads, recentheid, vind leuks)",
-        "efficiency": "Ergonomie: geeft omvang en kwaliteit weer (installatiegrootte, afhankelijkheden, kwetsbaarheden, type ondersteuning)",
-        "impact_details": "Elke metriek draagt met een ander gewicht bij. Sterke signalen zoals downloads en installatiegrootte hebben de grootste impact, terwijl andere het resultaat verfijnen. Sommige signalen (zoals kwetsbaarheden of veroudering) zorgen voor strafpunten."
-      }
+    "scatter_chart": {
+      "copy_alt": {}
     },
     "no_dependency": {
       "label": "(Geen dependency)",
@@ -1442,7 +1416,21 @@
       "new_accounts": "...plus {count} meer die nieuw zijn in de Atmosphere"
     }
   },
-  "privacy_policy": { "title": "privacy beleid" },
+  "privacy_policy": {
+    "title": "privacy beleid",
+    "cookies": {
+      "what_are": {},
+      "types": {},
+      "local_storage": {},
+      "management": {}
+    },
+    "analytics": {},
+    "authenticated": {},
+    "data_retention": {},
+    "your_rights": {},
+    "contact": {},
+    "changes": {}
+  },
   "a11y": {
     "title": "toegankelijkheid",
     "footer_title": "toegankelijkheid",
@@ -1494,6 +1482,14 @@
       "error": "Fout bij het laden van de bestandslijst.",
       "empty": "Geen bestanden gevonden",
       "file_link": "Bewerk {file} ({lang}) op GitHub"
+    }
+  },
+  "vacations": {
+    "what": {},
+    "meantime": {},
+    "return": {},
+    "stats": {
+      "subtitle": {}
     }
   },
   "action_bar": {
