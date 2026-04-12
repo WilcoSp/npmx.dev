@@ -192,8 +192,8 @@ export default defineNuxtConfig({
     '/translation-status': { prerender: true },
     '/recharging': { prerender: true },
     '/pds': { isr: 86400 }, // revalidate daily
-    // proxy for insights
     '/blog/**': { prerender: true },
+    // proxy for insights
     '/_v/script.js': {
       proxy: 'https://npmx.dev/_vercel/insights/script.js',
     },
@@ -392,7 +392,7 @@ export default defineNuxtConfig({
         '@vueuse/integrations/useFocusTrap/component',
         'vue-data-ui/vue-ui-sparkline',
         'vue-data-ui/vue-ui-xy',
-        'vue-data-ui/vue-ui-quadrant',
+        'vue-data-ui/vue-ui-scatter',
         'vue-data-ui/vue-ui-horizontal-bar',
         'virtua/vue',
         'semver',
