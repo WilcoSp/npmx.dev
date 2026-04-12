@@ -40,7 +40,7 @@
     "go_to_result": "Ga naar resultaten",
     "open_code_view": "Open code weergaven",
     "open_docs": "Open documentatie",
-    "disable_shortcuts": "U kunt toetsenboordnavigatie uitschakelen in {instellingen}.",
+    "disable_shortcuts": "U kunt toetsenbordnavigatie uitschakelen in {instellingen}.",
     "open_main": "Open pakket overzicht",
     "open_diff": "Open versie verschillen"
   },
@@ -50,7 +50,7 @@
     "button": "zoek",
     "searching": "Zoeken...",
     "found_packages": "Geen pakketten gevonden | 1 pakket gevonden | {count} pakketten gevonden",
-    "found_packages_sorted": "Geen resultaten gevonden | Sorting top {count} result | Sorting top {count} results",
+    "found_packages_sorted": "Geen resultaten gevonden | Sorteer top {count} resultaat | Sorteer top {count} resultaten",
     "updating": "(updaten...)",
     "no_results": "Geen pakketten gevonden voor \"{query}\"",
     "rate_limited": "npm aanvraag limiet bereikt, probeer het zo nog eens.",
@@ -239,7 +239,7 @@
       "label": "Gegevensbron",
       "description": "Kies waar npmx zoekgegevens vandaan haalt. Individuele pakketpagina's gebruiken altijd rechtstreeks het npm-register.",
       "npm": "npm register",
-      "npm_description": "Haald zoek-, org- en gebruikerslijsten rechtstreeks op uit het officiële npm-register. Betrouwbaar, maar kan trager zijn.",
+      "npm_description": "haalt zoek-, org- en gebruikerslijsten rechtstreeks op uit het officiële npm-register. Betrouwbaar, maar kan trager zijn.",
       "algolia": "Algolia",
       "algolia_description": "Gebruikt Algolia voor snellere zoekopdrachten, organisatie- en gebruikerspagina's."
     },
@@ -362,7 +362,7 @@
   },
   "package": {
     "not_found": "Pakket niet gevonden",
-    "not_found_message": "Dit pakket kon nit gevonden worden.",
+    "not_found_message": "Dit pakket kon niet gevonden worden.",
     "no_description": "Geen beschrijving beschikbaar",
     "verified_provenance": "Geverifieerde herkomst",
     "navigation": "Pakket",
@@ -426,7 +426,7 @@
     "links": {
       "main": "Overzicht",
       "repo": "repo",
-      "homepage": "website",
+      "homepage": "startpagina",
       "issues": "issues",
       "jsr": "jsr",
       "code": "code",
@@ -493,8 +493,8 @@
     },
     "security_downgrade": {
       "title": "Vertrouwensvermindering",
-      "description_to_none_provenance": "Deze versie is gepubliseerd zonder {provenance}.",
-      "description_to_none_trustedPublisher": "Deze versie is gepubliseerd zonder {trustedPublishing}.",
+      "description_to_none_provenance": "Deze versie is gepubliceerd zonder {provenance}.",
+      "description_to_none_trustedPublisher": "Deze versie is gepubliceerd zonder {trustedPublishing}.",
       "description_to_provenance_trustedPublisher": "Deze versie gebruikt {provenance} maar niet {trustedPublishing}.",
       "fallback_install_provenance": "Installatie commands zijn vastgezet op {version}, de laatste versie met geverifieerde herkomst.",
       "fallback_install_trustedPublisher": "Installatie commands zijn vastgezet op {version}, the last version with vertrouwd publiceren.",
@@ -506,7 +506,7 @@
     "card": {
       "publisher": "Publiceerder",
       "published": "Gepubliceerd",
-      "weekly_downloads": "Weekelijkse downloads",
+      "weekly_downloads": "Wekelijkse downloads",
       "keywords": "Trefwoorden",
       "license": "Licentie",
       "select": "Selecteer pakket",
@@ -550,7 +550,7 @@
       "filter_tooltip_link": "semver bereik",
       "no_matches": "Geen versies in dit bereik",
       "copy_alt": {
-        "per_version_analysis": "{version} versie was gedownloadt {downloads} keren",
+        "per_version_analysis": "{version} versie was gedownload {downloads} keren",
         "general_description": "Staafdiagram met het aantal downloads per versie voor {versions_count} {semver_grouping_mode}-versies van het pakket {package_name}, {date_range_label} van versie {first_version} tot versie {last_version}. De meest gedownloade versie is {max_downloaded_version} met {max_version_downloads} downloads. {per_version_analysis}. {watermark}."
       },
       "page_title": "Versie geschiedenis",
@@ -646,7 +646,7 @@
         "trend_none": "voornamelijk plat",
         "trend_strong": "Sterk",
         "trend_weak": "zwak",
-        "trend_undefined": "undefined (insufficient data)",
+        "trend_undefined": "niet gedefinieerd (onvoldoende gegevens)",
         "button_label": "Alternatieve tekst kopiëren",
         "watermark": "Onderaan staat in een watermerk: \"./npmx @:tagline\"",
         "analysis": "{package_name} begint op {start_value} en eindigt op {end_value}, wat een {trend} trend laat zien met een helling van {downloads_slope} downloads per tijdsinterval.",
@@ -660,7 +660,7 @@
       }
     },
     "downloads": {
-      "title": "Weekelijkse Downloads",
+      "title": "Wekelijkse Downloads",
       "community_distribution": "Bekijk adoptiegraad",
       "subtitle": "Over alle versies",
       "sparkline_nav_hint": "Gebruik ← →"
@@ -900,7 +900,7 @@
       "connect_hint_prefix": "Voer",
       "connect_hint_suffix": "uit om te beginnen.",
       "own_orgs_only": "U kan alleen uw eigen organisaties bekijken.",
-      "view_your_orgs": "Bekijk uw orginisaties",
+      "view_your_orgs": "Bekijk uw organisaties",
       "loading": "Organisaties laden...",
       "empty": "Geen organisaties gevonden.",
       "empty_hint": "Organisaties worden afgeleid uit uw scoped pakketten.",
@@ -1130,7 +1130,7 @@
       "description": "npmx is volledig open source en is ontwikkeld door een geweldige community van bijdragers. Doe mee en laten we samen de npm browserervaring bouwen die we altijd al wilden hebben.",
       "loading": "Laden bijdragers...",
       "error": "Niet gelukt om bedragers te laden",
-      "view_profile": "Bekijk het GitHub-profiel van {naam}"
+      "view_profile": "Bekijk het GitHub-profiel van {name}"
     },
     "get_involved": {
       "title": "Doe mee",
@@ -1256,7 +1256,7 @@
       "selected_all_category_facets": "Alle {category} aspecten geselecteerd",
       "deselected_all_category_facets": "Alle {category} aspecten gedeselecteerd",
       "coming_soon": "Binnenkort",
-      "select_all": "Selecteer alle acpecten",
+      "select_all": "Selecteer alle aspecten",
       "deselect_all": "Alle aspecten deselecteren",
       "binary_only_tooltip": "Dit pakket maakt binaries beschikbaar en exporteert niets",
       "categories": {
@@ -1322,7 +1322,7 @@
       "values": {
         "any": "Alle",
         "none": "Geen",
-        "unknown": "Unknown",
+        "unknown": "Onbekend",
         "deprecated": "Afgeraden",
         "not_deprecated": "Nee",
         "types_included": "Inbegrepen",
@@ -1373,18 +1373,18 @@
       "modified": "aangepast"
     },
     "files_button": "bestanden",
-    "select_file_prompt": "Seleceer een bestand vanuit de zijbalk om de verschillen te zien",
-    "close_files_panel": "Sluit bestanden panel",
+    "select_file_prompt": "Selecteer een bestand vanuit de zijbalk om de verschillen te zien",
+    "close_files_panel": "Sluit bestandenpaneel",
     "filter_files_label": "Bestanden filteren op type wijziginge",
     "change_ratio": "Wijziging verhouding",
     "char_edits": "Tekenbewerkingen",
     "diff_distance": "Verschilafstand",
     "loading_diff": "Verschillen laden...",
-    "loading_diff_error": "aden van het verschillen is mislukt",
+    "loading_diff_error": "Laden van het verschillen is mislukt",
     "merge_modified_lines": "Gewijzigde regels samenvoegen",
     "no_content_changes": "Geen inhoudelijke wijzigingen gedetecteerd",
     "options": "Opties",
-    "view_file": "Belijk bestand",
+    "view_file": "Bekijk bestand",
     "view_in_code_browser": "Bekijk in code browser",
     "word_wrap": "Tekstomloop"
   },
@@ -1394,7 +1394,7 @@
     "join": {
       "title": "Word lid van de Community",
       "description": "Of u nu uw eerste account op Atmosphere account aanmaakt of een bestaand account migreert, u bent hier aan het juiste adres. U kunt uw huidige account migreren zonder uw gebruikersnaam, uw berichten of uw volgers te verliezen.",
-      "migrate": "Migeer met PDS MOOver"
+      "migrate": "Migreer met PDS MOOver"
     },
     "server": {
       "title": "Server gegevens",
@@ -1437,7 +1437,7 @@
     "welcome": "We willen dat {app} door zoveel mogelijk mensen gebruikt kan worden.",
     "approach": {
       "title": "Onze aanpak",
-      "p1": "We try to follow the Web Content Accessibility Guidelines (WCAG) 2.2 and use them as a reference when building features. We don't claim full conformance with any level of WCAG — accessibility is a continual process and there is always more work to do.",
+      "p1": "We proberen de Richtlijnen voor Toegankelijkheid van Webcontent (WCAG) 2.2 te volgen en gebruiken deze als referentie bij het bouwen van functies. We claimen geen volledige conformiteit met enig niveau van WCAG — toegankelijkheid is een continu proces en er is altijd werk aan de winkel.",
       "p2": "Deze site is een {about}. Toegankelijkheidsverbeteringen worden stapsgewijs doorgevoerd als onderdeel van onze reguliere ontwikkeling.",
       "about_link": "open source, community gedreven project"
     },
@@ -1447,13 +1447,13 @@
       "li1": "Gebruik waar nodig semantische HTML- en ARIA-attributen.",
       "li2": "Gebruik relatieve tekstgroottes, zodat u deze in uw browser kunt aanpassen.",
       "li3": "Ondersteuning voor toetsenbordnavigatie in de hele interface.",
-      "li4": "Respect the prefers-reduced-motion and prefers-color-scheme media queries.",
+      "li4": "Respecteer de prefers-reduced-motion en prefers-color-scheme media queries.",
       "li5": "Ontwerp met voldoende kleurcontrast in gedachten.",
       "li6": "Zorg ervoor dat essentiële inhoud beschikbaar is zonder JavaScript, hoewel sommige interactieve functies dit wel vereisen."
     },
     "limitations": {
       "title": "Bekende beperkingen",
-      "p1": "Some parts of the site — particularly third-party content like package READMEs — may not meet accessibility standards. We are working to improve these areas over time."
+      "p1": "Sommige delen van de site — met name inhoud van derden zoals de readme's van pakketten — voldoen mogelijk niet aan de toegankelijkheidsnormen. We werken eraan om deze gebieden in de loop van de tijd te verbeteren."
     },
     "contact": {
       "title": "Feedback",
@@ -1499,7 +1499,7 @@
     "button_close_aria_label": "Sluit actiebalk"
   },
   "logo_menu": {
-    "copy_svg": "Kopieer loga als SVG",
+    "copy_svg": "Kopieer logo als SVG",
     "copied": "Gekopieerd!",
     "browse_brand": "Bekijk brand kit"
   },
