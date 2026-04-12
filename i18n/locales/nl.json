@@ -1199,13 +1199,13 @@
     },
     "orgs": "orgs",
     "orgs_dropdown": {
-      "title": "Your Organizations",
-      "loading": "Loading...",
+      "title": "Uw Organisaties",
+      "loading": "Laden...",
       "error": "Laden van organisaties is mislukt",
-      "empty": "No organizations found",
+      "empty": "Geen orginisaties gevonden",
       "view_all": "Bekijk alle"
     },
-    "pr": "EN TEXT TO REPLACE: Open GitHub pull request #{prNumber}"
+    "pr": "Ga naar GitHub pull request #{prNumber}"
   },
   "compare": {
     "packages": {
@@ -1225,9 +1225,9 @@
       "empty_description": "Zoek en voeg ten minste 2 bovenstaande pakketten toe om een vergelijking van hun statistieken naast elkaar te zien.",
       "table_view": "Tabel",
       "charts_view": "Grafiek",
-      "no_chartable_data": "EN TEXT TO REPLACE: No chartable data available for the selected facets.",
-      "bar_chart_nav_hint": "EN TEXT TO REPLACE: Use ↑ ↓",
-      "line_chart_nav_hint": "EN TEXT TO REPLACE: Use ← →"
+      "no_chartable_data": "Geen grafiekbare data beschikbaar voor de geselecteerde aspecten.",
+      "bar_chart_nav_hint": "Gebruik ↑ ↓",
+      "line_chart_nav_hint": "Gebruik ← →"
     },
     "selector": {
       "search_label": "Zoek voor pakketten",
@@ -1239,30 +1239,30 @@
       "add_hint": "Voeg tenminste 2 pakketten toe om te vergelijken"
     },
     "quadrant_chart": {
-      "label_x_axis": "EN TEXT TO REPLACE: Traction",
-      "label_y_axis": "EN TEXT TO REPLACE: Ergonomics",
-      "label_top_right": "EN TEXT TO REPLACE: Solid picks",
-      "label_bottom_right": "EN TEXT TO REPLACE: popular with tradeoffs",
-      "label_bottom_left": "EN TEXT TO REPLACE: avoid",
-      "label_top_left": "EN TEXT TO REPLACE: hidden gems",
-      "title": "EN TEXT TO REPLACE: Package traction vs ergonomics",
-      "filename": "EN TEXT TO REPLACE: package-traction-vs-ergonomics-quadrant",
-      "label_freshness_score": "EN TEXT TO REPLACE: Freshness score",
+      "label_x_axis": "Adoptie",
+      "label_y_axis": "Ergonomie",
+      "label_top_right": "Sterke keuzes",
+      "label_bottom_right": "Populair met afwegingen",
+      "label_bottom_left": "Vermijden",
+      "label_top_left": "Verborgen pareltjes",
+      "title": "Pakketadoptie vs ergonomie",
+      "filename": "pakket-adoptie-vs-ergonomie-kwadrant",
+      "label_freshness_score": "Recentheidsscore",
       "copy_alt": {
-        "description": "EN TEXT TO REPLACE: Quadrant chart mapping traction versus ergonomics for the {packages} packages. {analysis}. {watermark}.",
-        "side_analysis_top_right": "EN TEXT TO REPLACE: The following packages are positioned on the top-right quadrant (solid picks): {packages}",
-        "side_analysis_top_left": "EN TEXT TO REPLACE: The following packages are positioned on the top-left quadrant (hidden gems): {packages}",
-        "side_analysis_bottom_right": "EN TEXT TO REPLACE: The following packages are positioned on the bottom-right quadrant (popular with tradeoffs): {packages}",
-        "side_analysis_bottom_left": "EN TEXT TO REPLACE: The following packages are positioned on the bottom-left quadrant (avoid): {packages}"
+        "description": "Kwadrantgrafiek die adoptie versus ergonomie weergeeft voor de pakketten {packages}. {analysis}. {watermark}.",
+        "side_analysis_top_right": "De volgende pakketten bevinden zich in het kwadrant rechtsboven (sterke keuzes): {packages}",
+        "side_analysis_top_left": "De volgende pakketten bevinden zich in het kwadrant linksboven (verborgen parels): {packages}",
+        "side_analysis_bottom_right": "De volgende pakketten bevinden zich in het kwadrant rechtsonder (populair met afwegingen): {packages}",
+        "side_analysis_bottom_left": "De volgende pakketten bevinden zich in het kwadrant linksonder (vermijden): {packages}"
       },
       "explanation": {
-        "tooltip_help": "EN TEXT TO REPLACE: Show scoring explanation",
-        "tooltip_help_adoption": "EN TEXT TO REPLACE: Show traction scoring explanation",
-        "tooltip_help_efficiency": "EN TEXT TO REPLACE: Show ergonomics scoring explanation",
-        "introduction": "EN TEXT TO REPLACE: The score is calculated by combining multiple signals into two axes:",
-        "adoption": "EN TEXT TO REPLACE: Traction: reflects usage and activity (downloads, freshness, likes)",
-        "efficiency": "EN TEXT TO REPLACE: Ergonomics: reflects footprint and quality (install size, dependencies, vulnerabilities, type support)",
-        "impact_details": "EN TEXT TO REPLACE: Each metric contributes with a different weight. Strong signals like downloads and install size have the largest impact, while others refine the result. Some signals (such as vulnerabilities or deprecation) apply penalties."
+        "tooltip_help": "Toon uitleg over de score",
+        "tooltip_help_adoption": "Toon uitleg over adoptiescore",
+        "tooltip_help_efficiency": "Toon uitleg over ergonomiescore",
+        "introduction": "De score wordt berekend door meerdere signalen te combineren in twee assen:",
+        "adoption": "Adoptie: geeft gebruik en activiteit weer (downloads, recentheid, vind leuks)",
+        "efficiency": "Ergonomie: geeft omvang en kwaliteit weer (installatiegrootte, afhankelijkheden, kwetsbaarheden, type ondersteuning)",
+        "impact_details": "Elke metriek draagt met een ander gewicht bij. Sterke signalen zoals downloads en installatiegrootte hebben de grootste impact, terwijl andere het resultaat verfijnen. Sommige signalen (zoals kwetsbaarheden of veroudering) zorgen voor strafpunten."
       }
     },
     "no_dependency": {
@@ -1277,10 +1277,10 @@
     "facets": {
       "all": "alles",
       "none": "geen",
-      "select_all_category_facets": "EN TEXT TO REPLACE: Select all {category} facets",
-      "deselect_all_category_facets": "EN TEXT TO REPLACE: Deselect all {category} facets",
-      "selected_all_category_facets": "EN TEXT TO REPLACE: Selected all {category} facets",
-      "deselected_all_category_facets": "EN TEXT TO REPLACE: Deselected all {category} facets",
+      "select_all_category_facets": "Selecteer alle {category} aspecten",
+      "deselect_all_category_facets": "Deselecteer alle {category} aspecten",
+      "selected_all_category_facets": "Alle {category} aspecten geselecteerd",
+      "deselected_all_category_facets": "Alle {category} aspecten gedeselecteerd",
       "coming_soon": "Binnenkort",
       "select_all": "Selecteer alle acpecten",
       "deselect_all": "Alle aspecten deselecteren",
@@ -1360,59 +1360,59 @@
         "title": "Trends vergelijken"
       }
     },
-    "file_changes": "File Changes",
-    "files_count": "{count} file | {count} files",
-    "lines_hidden": "{count} line hidden | {count} lines hidden",
-    "file_too_large": "File too large to compare",
-    "file_size_warning": "{size} exceeds the 250KB limit for comparison",
+    "file_changes": "Bestand Veranderingen",
+    "files_count": "{count} bestand | {count} bestanden",
+    "lines_hidden": "{count} verborgen lijn | {count} verborgen lijn",
+    "file_too_large": "Bestand te groot om te vergelijken",
+    "file_size_warning": "{size} overschrijdt de limiet van 250 KB voor vergelijking",
     "compare_versions": "verschillen",
     "compare_versions_title": "Vergelijk met de laatste versie",
-    "comparing_versions_label": "EN TEXT TO REPLACE: Comparing versions...",
-    "version_back_to_package": "EN TEXT TO REPLACE: Back to package",
-    "version_error_message": "EN TEXT TO REPLACE: Failed to compare versions.",
+    "comparing_versions_label": "Versies vergelijken...",
+    "version_back_to_package": "Terug naar pakket",
+    "version_error_message": "Niet gelukt om versies te vergelijken.",
     "version_invalid_url_format": {
-      "hint": "EN TEXT TO REPLACE: Invalid comparison URL. Use format: {0}",
-      "from_version": "EN TEXT TO REPLACE: from",
-      "to_version": "EN TEXT TO REPLACE: to"
+      "hint": "Ongeldige vergelijkings-URL. Gebruik het formaat: {0}",
+      "from_version": "van",
+      "to_version": "t/m"
     },
-    "version_selector_title": "EN TEXT TO REPLACE: Compare with version",
-    "summary": "Summary",
+    "version_selector_title": "Vergelijk met versies",
+    "summary": "samenvatting",
     "deps_count": "{count} dep | {count} deps",
     "dependencies": "Dependencies",
     "dev_dependencies": "Dev Dependencies",
     "peer_dependencies": "Peer Dependencies",
-    "optional_dependencies": "Optional Dependencies",
-    "no_dependency_changes": "No dependency changes",
+    "optional_dependencies": "Optionele Dependencies",
+    "no_dependency_changes": "Geen dependency veranderingen",
     "file_filter_option": {
-      "all": "All ({count})",
-      "added": "Added ({count})",
-      "removed": "Removed ({count})",
-      "modified": "Modified ({count})"
+      "all": "Alle ({count})",
+      "added": "({count}) toegevoegd",
+      "removed": "({count}) verwijderd",
+      "modified": "({count}) aangepast"
     },
-    "search_files_placeholder": "Search files...",
-    "no_files_all": "No files",
-    "no_files_search": "No files matching \"{query}\"",
-    "no_files_filtered": "No {filter} files",
+    "search_files_placeholder": "Bestanden zoeken...",
+    "no_files_all": "Geen bestanden",
+    "no_files_search": "Geen bestanden gevonden die overeenkomen met \"{query}\"",
+    "no_files_filtered": "Geen {filter} bestanden",
     "filter": {
-      "added": "added",
-      "removed": "removed",
-      "modified": "modified"
+      "added": "toegevoegd",
+      "removed": "verwijderd",
+      "modified": "aangepast"
     },
-    "files_button": "Files",
-    "select_file_prompt": "Select a file from the sidebar to view its diff",
-    "close_files_panel": "Close files panel",
-    "filter_files_label": "Filter files by change type",
-    "change_ratio": "EN TEXT TO REPLACE: Change ratio",
-    "char_edits": "EN TEXT TO REPLACE: Char edits",
-    "diff_distance": "EN TEXT TO REPLACE: Diff distance",
-    "loading_diff": "EN TEXT TO REPLACE: Loading diff...",
-    "loading_diff_error": "EN TEXT TO REPLACE: Failed to load diff",
-    "merge_modified_lines": "EN TEXT TO REPLACE: Merge modified lines",
-    "no_content_changes": "EN TEXT TO REPLACE: No content changes detected",
-    "options": "EN TEXT TO REPLACE: Options",
-    "view_file": "EN TEXT TO REPLACE: View file",
-    "view_in_code_browser": "EN TEXT TO REPLACE: View in code browser",
-    "word_wrap": "EN TEXT TO REPLACE: Word wrap"
+    "files_button": "bestanden",
+    "select_file_prompt": "Seleceer een bestand vanuit de zijbalk om de verschillen te zien",
+    "close_files_panel": "Sluit bestanden panel",
+    "filter_files_label": "Bestanden filteren op type wijziginge",
+    "change_ratio": "Wijziging verhouding",
+    "char_edits": "Tekenbewerkingen",
+    "diff_distance": "Verschilafstand",
+    "loading_diff": "Verschillen laden...",
+    "loading_diff_error": "aden van het verschillen is mislukt",
+    "merge_modified_lines": "Gewijzigde regels samenvoegen",
+    "no_content_changes": "Geen inhoudelijke wijzigingen gedetecteerd",
+    "options": "Opties",
+    "view_file": "Belijk bestand",
+    "view_in_code_browser": "Bekijk in code browser",
+    "word_wrap": "Tekstomloop"
   },
   "pds": {
     "title": "npmx.social",
@@ -1442,86 +1442,7 @@
       "new_accounts": "...plus {count} meer die nieuw zijn in de Atmosphere"
     }
   },
-  "privacy_policy": {
-    "title": "privacy beleid",
-    "last_updated": "Last updated: {date}",
-    "welcome": "Welcome to {app}. We are committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights regarding your information.",
-    "cookies": {
-      "what_are": {
-        "title": "What are cookies?",
-        "p1": "Cookies are small text files stored on your device when you visit a website. Their purpose is to enhance your browsing experience by remembering certain preferences and settings."
-      },
-      "types": {
-        "title": "What cookies do we use?",
-        "p1": "We only use {bold} for purposes strictly necessary for the site's functionality. We do not use third-party or advertising cookies.",
-        "bold": "essential technical cookies",
-        "li1": "{li11}{separator} {li12}",
-        "li2": "{li21}{separator} {li22}",
-        "separator": ":",
-        "cookie_vdpl": "__vdpl",
-        "cookie_vdpl_desc": "This cookie is used by our hosting provider (Vercel) for skew protection. It ensures you fetch assets from the correct deployment version if a new update is released while you are browsing. It does not track you.",
-        "cookie_h3": "h3",
-        "cookie_h3_desc": "This is our secure session cookie. It stores the OAuth access token when you connect your Atmosphere account. It is essential for maintaining your authenticated session."
-      },
-      "local_storage": {
-        "title": "Local storage",
-        "p1": "In addition to session cookies, we use your browser's {bold} to save your display preferences. This allows us to remember the theme (light/dark) and some other {settings} you have selected, so you don't have to reconfigure them on each visit.",
-        "bold": "Local Storage",
-        "p2": "This information is purely functional, stored only on your device, and {bold2}. We use it exclusively to improve your experience on our website.",
-        "bold2": "contains no personal data nor is it used to track you",
-        "settings": "settings"
-      },
-      "management": {
-        "title": "Managing cookies",
-        "p1": "You can configure your browser to accept, reject, or delete cookies according to your preferences. However, please note that {bold}.",
-        "bold": "rejecting essential cookies may prevent full access to the application",
-        "p2": "Below are links with instructions for cookie management in the most commonly used browsers:",
-        "chrome": "Google Chrome (opens in a new window)",
-        "firefox": "Mozilla Firefox (opens in a new window)",
-        "edge": "Microsoft Edge (opens in a new window)"
-      }
-    },
-    "analytics": {
-      "title": "Analytics",
-      "p1": "We use {bold} to understand how visitors use our website. This helps us improve the user experience and identify issues.",
-      "bold": "Vercel Web Analytics",
-      "p2": "Vercel Analytics is designed with privacy in mind:",
-      "li1": "It does not use cookies",
-      "li2": "It does not collect personal identifiers",
-      "li3": "It does not track users across websites",
-      "li4": "All data is aggregated and anonymised",
-      "p3": "The only information collected includes: page URLs, referrer, country/region, device type, browser, and operating system. This data cannot be used to identify individual users."
-    },
-    "authenticated": {
-      "title": "Authenticated users",
-      "p1": "When you connect your {bold} account to npmx, we store your OAuth access token in a secure, HTTP-only session cookie. This token is used solely to authenticate requests on your behalf.",
-      "bold": "Atmosphere",
-      "p2": "We do not store your credentials, and we do not access any data beyond what is necessary to provide the features you use. You can disconnect your account at any time from the {settings} page.",
-      "settings": "settings"
-    },
-    "data_retention": {
-      "title": "Data retention",
-      "p1": "Session cookies are automatically deleted when you close your browser or after a period of inactivity. Local storage preferences remain on your device until you clear your browser data. Analytics data is retained in aggregate form and cannot be linked to individual users."
-    },
-    "your_rights": {
-      "title": "Your rights",
-      "p1": "You have the right to:",
-      "li1": "Access information about what data we collect",
-      "li2": "Clear your local storage and cookies at any time",
-      "li3": "Disconnect your authenticated session",
-      "li4": "Request information about our data practices",
-      "p2": "Since we do not collect personal data, there is typically no personal information to delete or export."
-    },
-    "contact": {
-      "title": "Contact us",
-      "p1": "For any questions or concerns about this privacy policy, you can contact us by opening an issue on our {link}.",
-      "link": "GitHub repository"
-    },
-    "changes": {
-      "title": "Changes to this policy",
-      "p1": "We may update this privacy policy from time to time. Any changes will be published on this page with an updated revision date."
-    }
-  },
+  "privacy_policy": { "title": "privacy beleid" },
   "a11y": {
     "title": "toegankelijkheid",
     "footer_title": "toegankelijkheid",
@@ -1573,40 +1494,6 @@
       "error": "Fout bij het laden van de bestandslijst.",
       "empty": "Geen bestanden gevonden",
       "file_link": "Bewerk {file} ({lang}) op GitHub"
-    }
-  },
-  "vacations": {
-    "title": "EN TEXT TO REPLACE: on vacation",
-    "meta_description": "EN TEXT TO REPLACE: The npmx team was recharging. Discord reopened after a week.",
-    "heading": "EN TEXT TO REPLACE: recharging",
-    "subtitle": "EN TEXT TO REPLACE: we were building npmx at a pace that was costing {some} of us sleep. we didn't want that to be the norm! so we took a week off. together.",
-    "illustration_alt": "EN TEXT TO REPLACE: a single row of cosy icons",
-    "poke_log": "EN TEXT TO REPLACE: Poke the campfire",
-    "what": {
-      "title": "EN TEXT TO REPLACE: what happened",
-      "p1": "EN TEXT TO REPLACE: discord was closed {dates}.",
-      "dates": "EN TEXT TO REPLACE: February 14 – 21",
-      "p2": "EN TEXT TO REPLACE: all invite links were gone and channels were locked – except {garden}, which stayed open for folks who wanted to keep hanging out.",
-      "garden": "EN TEXT TO REPLACE: #garden"
-    },
-    "meantime": {
-      "title": "EN TEXT TO REPLACE: in the meantime",
-      "p1": "EN TEXT TO REPLACE: {site} and {repo} stayed open – people still dug in, filed some issues, opened a few PRs, but mainly everyone spent time somewhere near a cosy fireplace.",
-      "repo_link": "EN TEXT TO REPLACE: the repo"
-    },
-    "return": {
-      "title": "EN TEXT TO REPLACE: we came back!",
-      "p1": "EN TEXT TO REPLACE: we came back recharged and ready for the final push to March 3rd. {social} for updates.",
-      "social_link": "EN TEXT TO REPLACE: follow us on Bluesky"
-    },
-    "stats": {
-      "contributors": "EN TEXT TO REPLACE: Contributors",
-      "commits": "EN TEXT TO REPLACE: Commits",
-      "pr": "EN TEXT TO REPLACE: PRs Merged",
-      "subtitle": {
-        "some": "EN TEXT TO REPLACE: some",
-        "all": "EN TEXT TO REPLACE: all"
-      }
     }
   },
   "action_bar": {
