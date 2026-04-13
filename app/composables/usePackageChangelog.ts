@@ -8,7 +8,6 @@ export function usePackageChangelog(
     const name = toValue(packageName)
     if (!name) return 'data:text/json,null' // returns null
     const ver = toValue(version)
-    const base = `/api/changelog/info/${name}`
-    return ver ? `${base}/v/${ver}` : base
+    return `/api/changelog/info/${name}/v/${ver || 'latest'}`
   })
 }

@@ -170,13 +170,11 @@ defineOgImageComponent('Default', {
               :viewOnGit
             />
           </LazyChangelogMarkdown>
-
-          <!-- <p class="mt-5" v-else-></p> -->
         </template>
         <template #fallback>
           <section class="flex flex-col gap-2 py-3">
             <SkeletonBlock class="h-8 w-40 rounded" />
-            <ul class="ms-3 list-disc my-[1rem] ps-[1.5rem] marker:color-[--border-hover]">
+            <ul class="ms-3 list-disc my-[1rem] ps-[1.5rem] marker:color-border-hover">
               <li class="mb-1" v-for="_n in 5">
                 <SkeletonBlock class="h-7 w-full max-w-2xl rounded" />
               </li>
