@@ -8,8 +8,15 @@ import { convertBlobOrFileToRawUrl, type RepositoryInfo } from '#shared/utils/gi
 import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
 import { convertToEmoji } from '#shared/utils/emoji'
 import { toProxiedImageUrl } from '#server/utils/image-proxy'
-import { highlightCodeSync } from './shiki'
 import { escapeHtml } from './docs/text'
+import {
+  blockquote,
+  createCodeHighlighter,
+  isNpmJsUrlThatCanBeRedirected,
+  calculateSemanticDepth,
+  ALLOWED_ATTR,
+  ALLOWED_TAGS,
+} from './mdKit'
 
 /**
  * Playground provider configuration
@@ -139,70 +146,6 @@ function matchPlaygroundProvider(url: string): PlaygroundProvider | null {
   return null
 }
 
-// allow h1-h6, but replace h1-h2 later since we shift README headings down by 2 levels
-// (page h1 = package name, h2 = "Readme" section, so README h1 → h3)
-export const ALLOWED_TAGS = [
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'p',
-  'br',
-  'hr',
-  'ul',
-  'ol',
-  'li',
-  'blockquote',
-  'pre',
-  'code',
-  'a',
-  'strong',
-  'em',
-  'del',
-  's',
-  'table',
-  'thead',
-  'tbody',
-  'tr',
-  'th',
-  'td',
-  'img',
-  'picture',
-  'source',
-  'details',
-  'summary',
-  'div',
-  'span',
-  'sup',
-  'sub',
-  'kbd',
-  'mark',
-  'button',
-]
-
-export const ALLOWED_ATTR: Record<string, string[]> = {
-  '*': ['id'], // Allow id on all tags
-  'a': ['href', 'title', 'target', 'rel'],
-  'img': ['src', 'alt', 'title', 'width', 'height', 'align'],
-  'source': ['src', 'srcset', 'type', 'media'],
-  'button': ['class', 'title', 'type', 'aria-label', 'data-copy'],
-  'th': ['colspan', 'rowspan', 'align', 'valign', 'width'],
-  'td': ['colspan', 'rowspan', 'align', 'valign', 'width'],
-  'h3': ['data-level', 'align'],
-  'h4': ['data-level', 'align'],
-  'h5': ['data-level', 'align'],
-  'h6': ['data-level', 'align'],
-  'blockquote': ['data-callout'],
-  'details': ['open'],
-  'code': ['class'],
-  'pre': ['class', 'style'],
-  'span': ['class', 'style'],
-  'div': ['class', 'style', 'align'],
-  'p': ['align'],
-}
-
 function getHeadingPlainText(text: string): string {
   return decodeHtmlEntities(stripHtmlTags(text).trim())
 }
@@ -251,20 +194,6 @@ marked.use({
   },
 })
 
-/** These path on npmjs.com don't belong to packages or search, so we shouldn't try to replace them with npmx.dev urls */
-const reservedPathsNpmJs = [
-  'products',
-  'login',
-  'signup',
-  'advisories',
-  'blog',
-  'about',
-  'press',
-  'policies',
-]
-
-const npmJsHosts = new Set(['www.npmjs.com', 'npmjs.com', 'www.npmjs.org', 'npmjs.org'])
-
 const USER_CONTENT_PREFIX = 'user-content-'
 
 function withUserContentPrefix(value: string): string {
@@ -295,21 +224,6 @@ function normalizePreservedAnchorAttrs(attrs: string): string {
     .trim()
 
   return cleanedAttrs ? ` ${cleanedAttrs}` : ''
-}
-
-export const isNpmJsUrlThatCanBeRedirected = (url: URL) => {
-  if (!npmJsHosts.has(url.host)) {
-    return false
-  }
-
-  if (
-    url.pathname === '/' ||
-    reservedPathsNpmJs.some(path => url.pathname.startsWith(`/${path}`))
-  ) {
-    return false
-  }
-
-  return true
 }
 
 /**
@@ -432,15 +346,6 @@ export function prefixId(tagName: string, attribs: sanitizeHtml.Attributes) {
   return { tagName, attribs }
 }
 
-// README h1 always becomes h3
-// For deeper levels, ensure sequential order
-// Don't allow jumping more than 1 level deeper than previous
-export function calculateSemanticDepth(depth: number, lastSemanticLevel: number) {
-  if (depth === 1) return 3
-  const maxAllowed = Math.min(lastSemanticLevel + 1, 6)
-  return Math.min(depth + 2, maxAllowed)
-}
-
 /**
  * Render YAML frontmatter as a GitHub-style key-value table.
  */
@@ -489,7 +394,6 @@ export async function renderReadmeHtml(
     // If frontmatter parsing fails, render the full content as-is
   }
 
-  const shiki = await getShikiHighlighter()
   const renderer = new marked.Renderer()
 
   // Collect playground links during parsing
@@ -576,17 +480,7 @@ export async function renderReadmeHtml(
   }
 
   // Syntax highlighting for code blocks (uses shared highlighter)
-  renderer.code = ({ text, lang }: Tokens.Code) => {
-    const html = highlightCodeSync(shiki, text, lang || 'text')
-    // Add copy button
-    return `<div class="readme-code-block" >
-<button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-lucide:check" copy-icon="i-lucide:copy" data-copy>
-<span class="i-lucide:copy" aria-hidden="true"></span>
-<span class="sr-only">Copy code</span>
-</button>
-${html}
-</div>`
-  }
+  renderer.code = await createCodeHighlighter()
 
   // Resolve image URLs (with GitHub blob → raw conversion)
   renderer.image = ({ href, title, text }: Tokens.Image) => {
@@ -643,19 +537,7 @@ ${html}
   }
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
-  renderer.blockquote = function ({ tokens }: Tokens.Blockquote) {
-    const body = this.parser.parse(tokens)
-
-    const calloutMatch = body.match(/^<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:<br>)?\s*/i)
-
-    if (calloutMatch?.[1]) {
-      const calloutType = calloutMatch[1].toLowerCase()
-      const cleanedBody = body.replace(calloutMatch[0], '<p>')
-      return `<blockquote data-callout="${calloutType}">${cleanedBody}</blockquote>\n`
-    }
-
-    return `<blockquote>${body}</blockquote>\n`
-  }
+  renderer.blockquote = blockquote
 
   marked.setOptions({ renderer })
 

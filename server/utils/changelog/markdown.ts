@@ -1,14 +1,16 @@
 import { type Tokens, marked } from 'marked'
-import {
-  type prefixId as prefixIdFn,
-  ALLOWED_ATTR,
-  ALLOWED_TAGS,
-  calculateSemanticDepth,
-  isNpmJsUrlThatCanBeRedirected,
-} from '../readme'
+import { type prefixId as prefixIdFn } from '../readme'
 import { stripHtmlTags, slugify } from '#shared/utils/html'
 import sanitizeHtml from 'sanitize-html'
 import { hasProtocol } from 'ufo'
+import {
+  blockquote,
+  createCodeHighlighter,
+  isNpmJsUrlThatCanBeRedirected,
+  calculateSemanticDepth,
+  ALLOWED_ATTR,
+  ALLOWED_TAGS,
+} from '../mdKit'
 
 const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
@@ -16,8 +18,6 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   const renderer = new marked.Renderer({
     gfm: true,
   })
-
-  const shiki = await getShikiHighlighter()
 
   renderer.link = function ({ href, title, tokens }: Tokens.Link) {
     const eTitle = escapeHtml(title ?? '')
@@ -35,32 +35,10 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   }
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
-  renderer.blockquote = function ({ tokens }: Tokens.Blockquote) {
-    const body = this.parser.parse(tokens)
-
-    const calloutMatch = body.match(/^<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:<br>)?\s*/i)
-
-    if (calloutMatch?.[1]) {
-      const calloutType = calloutMatch[1].toLowerCase()
-      const cleanedBody = body.replace(calloutMatch[0], '<p>')
-      return `<blockquote data-callout="${calloutType}">${cleanedBody}</blockquote>\n`
-    }
-
-    return `<blockquote>${body}</blockquote>\n`
-  }
+  renderer.blockquote = blockquote
 
   // Syntax highlighting for code blocks (uses shared highlighter)
-  renderer.code = ({ text, lang }: Tokens.Code) => {
-    const html = highlightCodeSync(shiki, text, lang || 'text')
-    // Add copy button
-    return `<div class="readme-code-block" >
-  <button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-carbon:checkmark" copy-icon="i-carbon:copy" data-copy>
-  <span class="i-carbon:copy" aria-hidden="true"></span>
-  <span class="sr-only">Copy code</span>
-  </button>
-  ${html}
-  </div>`
-  }
+  renderer.code = await createCodeHighlighter()
 
   return (markdown: string | null, releaseId?: string | number) => {
     // Collect table of contents items during parsing
