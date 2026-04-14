@@ -4,6 +4,7 @@ import { stripHtmlTags, slugify } from '#shared/utils/html'
 import sanitizeHtml from 'sanitize-html'
 import { hasProtocol } from 'ufo'
 import {
+  type ProcessLinkFn,
   blockquote,
   createCodeHighlighter,
   isNpmJsUrlThatCanBeRedirected,
@@ -12,27 +13,12 @@ import {
   ALLOWED_TAGS,
 } from '../mdKit'
 
-const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
+// const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
 export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   const renderer = new marked.Renderer({
     gfm: true,
   })
-
-  renderer.link = function ({ href, title, tokens }: Tokens.Link) {
-    const eTitle = escapeHtml(title ?? '')
-    const text = this.parser.parseInline(tokens)
-    const titleAttr = eTitle ? ` title="${eTitle}"` : ''
-    const plainText = escapeHtml(stripHtmlTags(text).trim())
-
-    if (href.startsWith('mailto:') && !EMAIL_REGEX.test(plainText)) {
-      return text
-    }
-
-    const intermediateTitleAttr = `data-title-intermediate="${plainText || eTitle}"`
-
-    return `<a href="${href}"${titleAttr}${intermediateTitleAttr} target="_blank">${text}</a>`
-  }
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
   renderer.blockquote = blockquote
@@ -52,6 +38,20 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
     }
 
     const idPrefix = releaseId ? `user-content-${releaseId}` : `user-content`
+
+    const processLink: ProcessLinkFn = (href: string, _label: string) => {
+      const resolvedHref = resolveUrl(href, mdRepoInfo, idPrefix)
+
+      // Security attributes for external links
+      let extraAttrs =
+        resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })
+          ? ' rel="nofollow noreferrer noopener" target="_blank"'
+          : ''
+
+      return { resolvedHref, extraAttrs }
+    }
+
+    renderer.link = createLink(processLink)
 
     // Track used heading slugs to handle duplicates (GitHub-style: foo, foo-1, foo-2)
     const usedSlugs = new Map<string, number>()

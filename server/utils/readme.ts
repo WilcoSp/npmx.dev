@@ -1,5 +1,15 @@
 import type { ReadmeResponse, TocItem } from '#shared/types/readme'
 import type { Tokens } from 'marked'
+import {
+  type ProcessLinkFn,
+  blockquote,
+  createCodeHighlighter,
+  isNpmJsUrlThatCanBeRedirected,
+  calculateSemanticDepth,
+  ALLOWED_ATTR,
+  ALLOWED_TAGS,
+  createLink,
+} from './mdKit'
 import matter from 'gray-matter'
 import { marked } from 'marked'
 import sanitizeHtml from 'sanitize-html'
@@ -9,14 +19,6 @@ import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
 import { convertToEmoji } from '#shared/utils/emoji'
 import { toProxiedImageUrl } from '#server/utils/image-proxy'
 import { escapeHtml } from './docs/text'
-import {
-  blockquote,
-  createCodeHighlighter,
-  isNpmJsUrlThatCanBeRedirected,
-  calculateSemanticDepth,
-  ALLOWED_ATTR,
-  ALLOWED_TAGS,
-} from './mdKit'
 
 /**
  * Playground provider configuration
@@ -493,7 +495,7 @@ export async function renderReadmeHtml(
   // Helper: resolve a link href, collect playground links, and build <a> attributes.
   // Used by both the markdown renderer.link and the HTML <a> interceptor so that
   // all link processing happens in a single pass during marked rendering.
-  function processLink(href: string, label: string): { resolvedHref: string; extraAttrs: string } {
+  const processLink: ProcessLinkFn = (href: string, label: string) => {
     const resolvedHref = resolveUrl(href, packageName, repoInfo)
 
     // Collect playground links
@@ -509,7 +511,7 @@ export async function renderReadmeHtml(
     }
 
     // Security attributes for external links
-    let extraAttrs =
+    const extraAttrs =
       resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })
         ? ' rel="nofollow noreferrer noopener" target="_blank"'
         : ''
@@ -517,24 +519,7 @@ export async function renderReadmeHtml(
     return { resolvedHref, extraAttrs }
   }
 
-  // Resolve link URLs, add security attributes, and collect playground links
-  // — all in a single pass during marked rendering (no deferred processing)
-  renderer.link = function ({ href, title, tokens }: Tokens.Link) {
-    const text = this.parser.parseInline(tokens)
-    const titleAttr = title ? ` title="${title}"` : ''
-    let plainText = stripHtmlTags(text).trim()
-
-    // If plain text is empty, check if we have an image with alt text
-    if (!plainText && tokens.length === 1 && tokens[0]?.type === 'image') {
-      plainText = tokens[0].text
-    }
-
-    const { resolvedHref, extraAttrs } = processLink(href, plainText || title || '')
-
-    if (!resolvedHref) return text
-
-    return `<a href="${resolvedHref}"${titleAttr}${extraAttrs}>${text}</a>`
-  }
+  renderer.link = createLink(processLink)
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
   renderer.blockquote = blockquote

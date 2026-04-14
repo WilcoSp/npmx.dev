@@ -40,6 +40,46 @@ export const blockquote: RendererApi['blockquote'] = function (
   return `<blockquote>${body}</blockquote>\n`
 }
 
+// link
+
+export type ProcessLinkFn = (
+  href: string,
+  label: string,
+  // readme.ts also needs the extraAttrs for more things, so can't be a boolean
+) => { resolvedHref: string; extraAttrs: string }
+
+const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
+
+/**
+ * Resolve link URLs, add security attributes, and collect playground links
+ *
+ * — all in a single pass during marked rendering (no deferred processing)
+ */
+export function createLink(processLink: ProcessLinkFn): RendererApi['link'] {
+  return function (this: Renderer<string, string>, { href, title, tokens }: Tokens.Link) {
+    const eTitle = escapeHtml(title ?? '')
+    const text = this.parser.parseInline(tokens)
+    const titleAttr = eTitle ? ` title="${eTitle}"` : ''
+    let plainText = stripHtmlTags(text).trim()
+
+    // If plain text is empty, check if we have an image with alt text
+    if (!plainText && tokens.length === 1 && tokens[0]?.type === 'image') {
+      plainText = tokens[0].text
+    }
+
+    const { resolvedHref, extraAttrs } = processLink(href, plainText || eTitle || '')
+
+    if (!resolvedHref) return text
+
+    // prevents package@1.0.0 being made into an email
+    if (href.startsWith('mailto:') && !EMAIL_REGEX.test(plainText)) {
+      return text
+    }
+
+    return `<a href="${resolvedHref}"${titleAttr}${extraAttrs}>${text}</a>`
+  }
+}
+
 export const isNpmJsUrlThatCanBeRedirected = (url: URL) => {
   if (!npmJsHosts.has(url.host)) {
     return false
