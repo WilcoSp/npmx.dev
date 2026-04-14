@@ -531,11 +531,23 @@ export async function renderReadmeHtml(
       toc.push({ text: plainText, id, depth })
     }
 
+    // The browser doesn't support anchors within anchors and automatically extracts them from each other,
+    // causing a hydration error. To prevent this from happening in such cases, we use the anchor separately
+    if (htmlAnchorRe.test(displayHtml)) {
+      return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}>${displayHtml}<a href="#${id}"></a></h${semanticLevel}>\n`
+    }
+
     return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}><a href="#${id}">${displayHtml}</a></h${semanticLevel}>\n`
   }
 
+  const anchorTokenRegex = /^<a(\s.+)?\/?>$/
   renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-    const displayHtml = this.parser.parseInline(tokens)
+    const isAnchorHeading =
+      anchorTokenRegex.test(tokens[0]?.raw ?? '') && tokens[tokens.length - 1]?.raw === '</a>'
+
+    // for anchor headings, we will ignore user-added id and add our own
+    const tokensWithoutAnchor = isAnchorHeading ? tokens.slice(1, -1) : tokens
+    const displayHtml = this.parser.parseInline(tokensWithoutAnchor)
     const plainText = getHeadingPlainText(displayHtml)
     const slugSource = getHeadingSlugSource(displayHtml)
     return processHeading(depth, displayHtml, plainText, slugSource)
@@ -624,6 +636,8 @@ ${html}
     }
 
     const { resolvedHref, extraAttrs } = processLink(href, plainText || title || '')
+
+    if (!resolvedHref) return text
 
     return `<a href="${resolvedHref}"${titleAttr}${extraAttrs}>${text}</a>`
   }
