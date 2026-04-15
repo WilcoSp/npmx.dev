@@ -1,11 +1,11 @@
-import type { ReadmeResponse, TocItem } from '#shared/types/readme'
+import type { ReadmeResponse } from '#shared/types/readme'
 import type { Tokens } from 'marked'
 import {
   type ProcessLinkFn,
   blockquote,
   createCodeHighlighter,
   isNpmJsUrlThatCanBeRedirected,
-  calculateSemanticDepth,
+  // calculateSemanticDepth,
   ALLOWED_ATTR,
   ALLOWED_TAGS,
   createLink,
@@ -202,9 +202,9 @@ function withUserContentPrefix(value: string): string {
   return value.startsWith(USER_CONTENT_PREFIX) ? value : `${USER_CONTENT_PREFIX}${value}`
 }
 
-function toUserContentId(value: string): string {
-  return `${USER_CONTENT_PREFIX}${value}`
-}
+// function toUserContentId(value: string): string {
+//   return `${USER_CONTENT_PREFIX}${value}`
+// }
 
 function toUserContentHash(value: string): string {
   return `#${withUserContentPrefix(value)}`
@@ -403,61 +403,66 @@ export async function renderReadmeHtml(
   const seenUrls = new Set<string>()
 
   // Collect table of contents items during parsing
-  const toc: TocItem[] = []
+  // const toc: TocItem[] = []
 
   // Track used heading slugs to handle duplicates (GitHub-style: foo, foo-1, foo-2)
-  const usedSlugs = new Map<string, number>()
+  // const usedSlugs = new Map<string, number>()
 
   // Track heading hierarchy to ensure sequential order for accessibility
   // Page h1 = package name, h2 = "Readme" section heading
   // So README starts at h3, and we ensure no levels are skipped
   // Visual styling preserved via data-level attribute (original depth)
-  let lastSemanticLevel = 2 // Start after h2 (the "Readme" section heading)
+  // let lastSemanticLevel = 2 // Start after h2 (the "Readme" section heading)
 
   // Shared heading processing for both markdown and HTML headings
-  function processHeading(
-    depth: number,
-    displayHtml: string,
-    plainText: string,
-    slugSource: string,
-    preservedAttrs = '',
-  ) {
-    const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
-    lastSemanticLevel = semanticLevel
+  // function processHeading(
+  //   depth: number,
+  //   displayHtml: string,
+  //   plainText: string,
+  //   slugSource: string,
+  //   preservedAttrs = '',
+  // ) {
+  //   const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
+  //   lastSemanticLevel = semanticLevel
 
-    let slug = slugify(slugSource)
-    if (!slug) slug = 'heading'
+  //   let slug = slugify(slugSource)
+  //   if (!slug) slug = 'heading'
 
-    const count = usedSlugs.get(slug) ?? 0
-    usedSlugs.set(slug, count + 1)
-    const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
-    const id = toUserContentId(uniqueSlug)
+  //   const count = usedSlugs.get(slug) ?? 0
+  //   usedSlugs.set(slug, count + 1)
+  //   const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
+  //   const id = toUserContentId(uniqueSlug)
 
-    if (plainText) {
-      toc.push({ text: plainText, id, depth })
-    }
+  //   if (plainText) {
+  //     toc.push({ text: plainText, id, depth })
+  //   }
 
-    // The browser doesn't support anchors within anchors and automatically extracts them from each other,
-    // causing a hydration error. To prevent this from happening in such cases, we use the anchor separately
-    if (htmlAnchorRe.test(displayHtml)) {
-      return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}>${displayHtml}<a href="#${id}"></a></h${semanticLevel}>\n`
-    }
+  //   // The browser doesn't support anchors within anchors and automatically extracts them from each other,
+  //   // causing a hydration error. To prevent this from happening in such cases, we use the anchor separately
+  //   if (htmlAnchorRe.test(displayHtml)) {
+  //     return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}>${displayHtml}<a href="#${id}"></a></h${semanticLevel}>\n`
+  //   }
 
-    return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}><a href="#${id}">${displayHtml}</a></h${semanticLevel}>\n`
-  }
+  //   return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}><a href="#${id}">${displayHtml}</a></h${semanticLevel}>\n`
+  // }
 
-  const anchorTokenRegex = /^<a(\s.+)?\/?>$/
-  renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-    const isAnchorHeading =
-      anchorTokenRegex.test(tokens[0]?.raw ?? '') && tokens[tokens.length - 1]?.raw === '</a>'
+  // const anchorTokenRegex = /^<a(\s.+)?\/?>$/
 
-    // for anchor headings, we will ignore user-added id and add our own
-    const tokensWithoutAnchor = isAnchorHeading ? tokens.slice(1, -1) : tokens
-    const displayHtml = this.parser.parseInline(tokensWithoutAnchor)
-    const plainText = getHeadingPlainText(displayHtml)
-    const slugSource = getHeadingSlugSource(displayHtml)
-    return processHeading(depth, displayHtml, plainText, slugSource)
-  }
+  const { toc, heading, processHeading } = createHeading()
+
+  renderer.heading = heading
+
+  // renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
+  //   const isAnchorHeading =
+  //     anchorTokenRegex.test(tokens[0]?.raw ?? '') && tokens.at(-1)?.raw === '</a>'
+
+  //   // for anchor headings, we will ignore user-added id and add our own
+  //   const tokensWithoutAnchor = isAnchorHeading ? tokens.slice(1, -1) : tokens
+  //   const displayHtml = this.parser.parseInline(tokensWithoutAnchor)
+  //   const plainText = getHeadingPlainText(displayHtml)
+  //   const slugSource = getHeadingSlugSource(displayHtml)
+  //   return processHeading(depth, displayHtml, plainText, slugSource)
+  // }
 
   // Intercept HTML headings so they get id, TOC entry, and correct semantic level.
   // Also intercept raw HTML <a> tags so playground links are collected in the same pass.

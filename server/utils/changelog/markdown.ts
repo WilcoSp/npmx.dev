@@ -1,6 +1,6 @@
-import { type Tokens, marked } from 'marked'
 import { type prefixId as prefixIdFn } from '../readme'
-import { stripHtmlTags, slugify } from '#shared/utils/html'
+import { marked } from 'marked'
+import { slugify } from '#shared/utils/html'
 import sanitizeHtml from 'sanitize-html'
 import { hasProtocol } from 'ufo'
 import {
@@ -8,9 +8,10 @@ import {
   blockquote,
   createCodeHighlighter,
   isNpmJsUrlThatCanBeRedirected,
-  calculateSemanticDepth,
+  // calculateSemanticDepth,
   ALLOWED_ATTR,
   ALLOWED_TAGS,
+  createHeading,
 } from '../mdKit'
 
 // const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
@@ -28,12 +29,12 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
   return (markdown: string | null, releaseId?: string | number) => {
     // Collect table of contents items during parsing
-    const toc: TocItem[] = []
+    // const toc: TocItem[] = []
 
     if (!markdown) {
       return {
         html: null,
-        toc,
+        toc: [],
       }
     }
 
@@ -54,41 +55,47 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
     renderer.link = createLink(processLink)
 
     // Track used heading slugs to handle duplicates (GitHub-style: foo, foo-1, foo-2)
-    const usedSlugs = new Map<string, number>()
+    // const usedSlugs = new Map<string, number>()
 
-    let lastSemanticLevel = releaseId ? 2 : 1 // Start after h2 (the "Readme" section heading)
-    renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-      // Calculate the target semantic level based on document structure
-      // Start at h3 (since page h1 + section h2 already exist)
-      // But ensure we never skip levels - can only go down by 1 or stay same/go up
-      const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
-      lastSemanticLevel = semanticLevel
-      const text = this.parser.parseInline(tokens)
+    // let lastSemanticLevel = releaseId ? 2 : 1 // Start after h2 (the "Readme" section heading)
+    // renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
+    //   // Calculate the target semantic level based on document structure
+    //   // Start at h3 (since page h1 + section h2 already exist)
+    //   // But ensure we never skip levels - can only go down by 1 or stay same/go up
+    //   const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
+    //   lastSemanticLevel = semanticLevel
+    //   const text = this.parser.parseInline(tokens)
 
-      // Generate GitHub-style slug for anchor links
-      // adding release id to prevent conflicts
-      let slug = slugify(text)
-      if (!slug) slug = 'heading' // Fallback for empty headings
+    //   // Generate GitHub-style slug for anchor links
+    //   // adding release id to prevent conflicts
+    //   let slug = slugify(text)
+    //   if (!slug) slug = 'heading' // Fallback for empty headings
 
-      // Handle duplicate slugs (GitHub-style: foo, foo-1, foo-2)
-      const count = usedSlugs.get(slug) ?? 0
-      usedSlugs.set(slug, count + 1)
-      const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
+    //   // Handle duplicate slugs (GitHub-style: foo, foo-1, foo-2)
+    //   const count = usedSlugs.get(slug) ?? 0
+    //   usedSlugs.set(slug, count + 1)
+    //   const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
 
-      // Prefix with 'user-content-' to avoid collisions with page IDs
-      // (e.g., #install, #dependencies, #versions are used by the package page)
-      const id = `${idPrefix}-${uniqueSlug}`
+    //   // Prefix with 'user-content-' to avoid collisions with page IDs
+    //   // (e.g., #install, #dependencies, #versions are used by the package page)
+    //   const id = `${idPrefix}-${uniqueSlug}`
 
-      // Collect TOC item with plain text (HTML stripped & emoji's added)
-      const plainText = convertToEmoji(stripHtmlTags(text))
-        .replace(/&nbsp;?/g, '') // remove non breaking spaces
-        .trim()
-      if (plainText) {
-        toc.push({ text: plainText, id, depth })
-      }
+    //   // Collect TOC item with plain text (HTML stripped & emoji's added)
+    //   const plainText = convertToEmoji(stripHtmlTags(text))
+    //     .replace(/&nbsp;?/g, '') // remove non breaking spaces
+    //     .trim()
+    //   if (plainText) {
+    //     toc.push({ text: plainText, id, depth })
+    //   }
 
-      return `<h${semanticLevel} id="${id}" data-level="${depth}">${text} <a href="#${id}"> </a></h${semanticLevel}>\n`
-    }
+    //   return `<h${semanticLevel} id="${id}" data-level="${depth}">${text} <a href="#${id}"> </a></h${semanticLevel}>\n`
+    // }
+
+    const { heading, toc } = createHeading({
+      lastSemanticLevel: releaseId ? 2 : 1,
+      idPrefix: releaseId?.toString(),
+    })
+    renderer.heading = heading
 
     // Helper to prefix id attributes with 'user-content-'
     const prefixId: typeof prefixIdFn = (tagName: string, attribs: sanitizeHtml.Attributes) => {

@@ -48,6 +48,7 @@ export default defineCachedEventHandler(
       const owner = getRouterParam(event, 'owner')
       return `changelogRelease:v1:${provider}:${owner}:${repo}`
     },
+    shouldBypassCache: () => import.meta.dev,
   },
 )
 
