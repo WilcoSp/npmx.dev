@@ -9,6 +9,7 @@ import {
   ALLOWED_ATTR,
   ALLOWED_TAGS,
   createLink,
+  createHeading,
 } from './mdKit'
 import matter from 'gray-matter'
 import { marked } from 'marked'

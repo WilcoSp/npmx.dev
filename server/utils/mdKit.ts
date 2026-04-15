@@ -1,5 +1,6 @@
 import type { Tokens, RendererApi, Renderer } from 'marked'
 import { highlightCodeSync, getShikiHighlighter } from './shiki'
+import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
 
 /// for marked
 
@@ -106,12 +107,12 @@ export async function createCodeHighlighter(): Promise<RendererApi['code']> {
     const html = highlightCodeSync(shiki, text, lang || 'text')
     // Add copy button
     return `<div class="readme-code-block" >
-    <button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-carbon:checkmark" copy-icon="i-carbon:copy" data-copy>
-    <span class="i-carbon:copy" aria-hidden="true"></span>
-    <span class="sr-only">Copy code</span>
-    </button>
-    ${html}
-    </div>`
+  <button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-lucide:check" copy-icon="i-lucide:copy" data-copy>
+  <span class="i-lucide:copy" aria-hidden="true"></span>
+  <span class="sr-only">Copy code</span>
+  </button>
+  ${html}
+  </div>`
   }
 }
 
