@@ -484,7 +484,8 @@
         "warning": "Waarschuwing",
         "caution": "Let op"
       },
-      "copy_as_markdown": "kopieer README als Markdown"
+      "copy_as_markdown": "kopieer README als Markdown",
+      "error_loading": "Het laden van de README gegevens is mislukt"
     },
     "provenance_section": {
       "title": "Herkomst verificatie gegevens",
