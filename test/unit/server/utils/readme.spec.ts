@@ -592,7 +592,7 @@ describe('HTML output', () => {
   })
 
   describe('heading anchors (renderer.heading)', () => {
-    it('strips a full-line anchor wrapper and uses inner text for slug, toc, and permalink', async () => {
+    it('keeps the full-line anchor wrapper and places the link to the heading at the end', async () => {
       const markdown = '## <a href="https://example.com">My Section</a>'
       const result = await renderReadmeHtml(markdown, 'test-pkg')
 
