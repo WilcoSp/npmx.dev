@@ -1,6 +1,7 @@
 import type { Tokens, RendererApi, Renderer } from 'marked'
-import { highlightCodeSync, getShikiHighlighter } from './shiki'
+import { highlightCodeSync } from './shiki'
 import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
+import { escapeHtml } from './docs/text'
 
 /// for marked
 
@@ -141,8 +142,7 @@ function toUserContentId(value: string, idPrefix?: string): string {
   return idPrefix ? `${USER_CONTENT_PREFIX}${idPrefix}-${value}` : `${USER_CONTENT_PREFIX}${value}`
 }
 
-const anchorTokenRegex = /^<a(\s.+)?\/?>$/
-const htmlAnchorRe = /<a(\s[^>]*?)href=(["'])([^"']*)\2([^>]*)>([\s\S]*?)<\/a>/gi
+const htmlAnchorRe = /<a(\s[^>]*?)href=(["'])([^"']*)\2([^>]*)>([\s\S]*?)<\/a>/i
 
 export function createHeading(options: { lastSemanticLevel?: number; idPrefix?: string } = {}) {
   let { lastSemanticLevel = 2, idPrefix } = options
@@ -153,12 +153,7 @@ export function createHeading(options: { lastSemanticLevel?: number; idPrefix?: 
     this: Renderer<string, string>,
     { tokens, depth },
   ) {
-    const isAnchorHeading =
-      anchorTokenRegex.test(tokens[0]?.raw ?? '') && tokens[tokens.length - 1]?.raw === '</a>'
-
-    // for anchor headings, we will ignore user-added id and add our own
-    const tokensWithoutAnchor = isAnchorHeading ? tokens.slice(1, -1) : tokens
-    const displayHtml = this.parser.parseInline(tokensWithoutAnchor)
+    const displayHtml = this.parser.parseInline(tokens)
     const plainText = getHeadingPlainText(displayHtml)
     const slugSource = getHeadingSlugSource(displayHtml)
     return processHeading(depth, displayHtml, plainText, slugSource)
@@ -197,84 +192,6 @@ export function createHeading(options: { lastSemanticLevel?: number; idPrefix?: 
 
   return { heading, toc, processHeading }
 }
-
-///! readme
-// renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-//   const isAnchorHeading =
-//     anchorTokenRegex.test(tokens[0]?.raw ?? '') && tokens[tokens.length - 1]?.raw === '</a>'
-
-//   // for anchor headings, we will ignore user-added id and add our own
-//   const tokensWithoutAnchor = isAnchorHeading ? tokens.slice(1, -1) : tokens
-//   const displayHtml = this.parser.parseInline(tokensWithoutAnchor)
-//   const plainText = getHeadingPlainText(displayHtml)
-//   const slugSource = getHeadingSlugSource(displayHtml)
-//   return processHeading(depth, displayHtml, plainText, slugSource)
-// }
-
-// function processHeading(
-//   depth: number,
-//   displayHtml: string,
-//   plainText: string,
-//   slugSource: string,
-//   preservedAttrs = '',
-// ) {
-//   const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
-//   lastSemanticLevel = semanticLevel
-
-//   let slug = slugify(slugSource)
-//   if (!slug) slug = 'heading'
-
-//   const count = usedSlugs.get(slug) ?? 0
-//   usedSlugs.set(slug, count + 1)
-//   const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
-//   const id = toUserContentId(uniqueSlug)
-
-//   if (plainText) {
-//     toc.push({ text: plainText, id, depth })
-//   }
-
-//   // The browser doesn't support anchors within anchors and automatically extracts them from each other,
-//   // causing a hydration error. To prevent this from happening in such cases, we use the anchor separately
-//   if (htmlAnchorRe.test(displayHtml)) {
-//     return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}>${displayHtml}<a href="#${id}"></a></h${semanticLevel}>\n`
-//   }
-
-//   return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}><a href="#${id}">${displayHtml}</a></h${semanticLevel}>\n`
-// }
-
-///! changelog
-// renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-//   // Calculate the target semantic level based on document structure
-//   // Start at h3 (since page h1 + section h2 already exist)
-//   // But ensure we never skip levels - can only go down by 1 or stay same/go up
-//   const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
-//   lastSemanticLevel = semanticLevel
-//   const text = this.parser.parseInline(tokens)
-
-//   // Generate GitHub-style slug for anchor links
-//   // adding release id to prevent conflicts
-//   let slug = slugify(text)
-//   if (!slug) slug = 'heading' // Fallback for empty headings
-
-//   // Handle duplicate slugs (GitHub-style: foo, foo-1, foo-2)
-//   const count = usedSlugs.get(slug) ?? 0
-//   usedSlugs.set(slug, count + 1)
-//   const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
-
-//   // Prefix with 'user-content-' to avoid collisions with page IDs
-//   // (e.g., #install, #dependencies, #versions are used by the package page)
-//   const id = `${idPrefix}-${uniqueSlug}`
-
-//   // Collect TOC item with plain text (HTML stripped & emoji's added)
-//   const plainText = convertToEmoji(stripHtmlTags(text))
-//     .replace(/&nbsp;?/g, '') // remove non breaking spaces
-//     .trim()
-//   if (plainText) {
-//     toc.push({ text: plainText, id, depth })
-//   }
-
-//   return `<h${semanticLevel} id="${id}" data-level="${depth}">${text} <a href="#${id}"> </a></h${semanticLevel}>\n`
-// }
 
 /// sanatizer
 

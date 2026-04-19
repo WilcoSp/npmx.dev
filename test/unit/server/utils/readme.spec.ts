@@ -598,7 +598,7 @@ describe('HTML output', () => {
 
       expect(result.toc).toEqual([{ text: 'My Section', depth: 2, id: 'user-content-my-section' }])
       expect(result.html).toBe(
-        `<h3 id="user-content-my-section" data-level="2"><a href="#user-content-my-section">My Section</a></h3>\n`,
+        `<h3 id="user-content-my-section" data-level="2"><a href="https://example.com" rel="nofollow noreferrer noopener" target="_blank">My Section</a><a href="#user-content-my-section"></a></h3>\n`,
       )
     })
 
