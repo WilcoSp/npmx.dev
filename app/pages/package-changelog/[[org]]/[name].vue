@@ -93,11 +93,21 @@ useCommandPalettePackageContext(commandPalettePackageContext, {
 useCommandPalettePackageCommands(commandPalettePackageContext)
 
 // og image
-defineOgImageComponent('Default', {
-  title: () => `${pkg.value?.name ?? 'Package'} - Changelogs`,
-  description: () => pkg.value?.license ?? '',
-  primaryColor: '#60a5fa',
-})
+defineOgImage(
+  'Page',
+  {
+    title: () => `${pkg.value?.name ?? 'Package'} - Changelogs`,
+  },
+  [
+    { key: 'og', alt: () => `npm package ${packageName.value} changelogs` },
+    {
+      key: 'whatsapp',
+      width: 800,
+      height: 800,
+      alt: () => `npm package ${packageName.value} changelogs`,
+    },
+  ],
+)
 </script>
 <template>
   <main class="flex-1 flex flex-col" :style="stickyStyle" v-if="!resolvingError">

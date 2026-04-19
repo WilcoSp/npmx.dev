@@ -11,7 +11,7 @@ const props = defineProps<{
   latestVersion?: SlimVersion | null
   provenanceData?: ProvenanceDetails | null
   provenanceStatus?: string | null
-  page: 'main' | 'docs' | 'code' | 'diff' | 'changelog'
+  page: 'main' | 'docs' | 'code' | 'diff' | 'changelog' | 'timeline'
   versionUrlPattern: string
 }>()
 
@@ -177,6 +177,19 @@ const changelogLink = computed((): RouteLocationRaw | null => {
   return changelogRoute(props.pkg.name, props.resolvedVersion)
 })
 
+const timelineLink = computed((): RouteLocationRaw | null => {
+  if (props.pkg == null || props.resolvedVersion == null) return null
+  const split = props.pkg.name.split('/')
+  return {
+    name: 'timeline',
+    params: {
+      org: split.length === 2 ? split[0] : undefined,
+      packageName: split.length === 2 ? split[1]! : split[0]!,
+      version: props.resolvedVersion,
+    },
+  }
+})
+
 useShortcuts({
   '.': () => codeLink.value,
   'm': () => mainLink.value,
@@ -184,6 +197,7 @@ useShortcuts({
   'c': () => props.pkg && { name: 'compare' as const, query: { packages: props.pkg.name } },
   'f': () => diffLink.value,
   '-': () => changelogLink.value,
+  't': () => timelineLink.value,
 })
 </script>
 
@@ -354,6 +368,15 @@ useShortcuts({
           :class="page === 'changelog' ? 'border-accent text-accent!' : 'border-transparent'"
         >
           {{ $t('package.links.changelog') }}
+        </LinkBase>
+        <LinkBase
+          v-if="timelineLink"
+          :to="timelineLink"
+          aria-keyshortcuts="t"
+          class="decoration-none border-b-2 p-1 hover:border-accent/50 focus-visible:[outline-offset:-2px]!"
+          :class="page === 'timeline' ? 'border-accent text-accent!' : 'border-transparent'"
+        >
+          {{ $t('package.links.timeline') }}
         </LinkBase>
       </nav>
     </div>

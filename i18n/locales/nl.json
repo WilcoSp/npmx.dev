@@ -2,13 +2,13 @@
   "$schema": "../schema.json",
   "seo": {
     "home": {
-      "title": "npmx - Pakket Browser voor de npm Register",
-      "description": "Een snelle, moderne browser voor het npm register. Zoek, blader en ontdek pakketten met een moderne interface."
+      "title": "npmx - Pakket Browser voor het npm-Register",
+      "description": "Een snelle, moderne browser voor het npm-register. Zoek, blader en ontdek pakketten met een moderne interface."
     }
   },
   "built_at": "gebouwd {0}",
   "alt_logo": "npmx logo",
-  "tagline": "een snelle, moderne browser voor de npm register",
+  "tagline": "een snelle, moderne browser voor het npm-register",
   "non_affiliation_disclaimer": "niet affiliëerd met npm, Inc.",
   "trademark_disclaimer": "npm is een geregisteerd trademark van npm, Inc. Deze website is niet affiliëerd met npm, Inc.",
   "footer": {
@@ -239,7 +239,7 @@
     "data_source": {
       "label": "Gegevensbron",
       "description": "Kies waar npmx zoekgegevens vandaan haalt. Individuele pakketpagina's gebruiken altijd rechtstreeks het npm-register.",
-      "npm": "npm register",
+      "npm": "npm-register",
       "npm_description": "haalt zoek-, org- en gebruikerslijsten rechtstreeks op uit het officiële npm-register. Betrouwbaar, maar kan trager zijn.",
       "algolia": "Algolia",
       "algolia_description": "Gebruikt Algolia voor snellere zoekopdrachten, organisatie- en gebruikerspagina's."
@@ -361,7 +361,7 @@
     "invite": {
       "message": "Het lijkt erop dat ze npmx nog niet gebruiken. Wilt u ze hierop wijzen",
       "share_button": "Deel op Bluesky",
-      "compose_text": "Hallo {'@'}{handle}! Hebt u npmx.dev al bekeken? Het is een browser voor het npm register die snel, modern en open source is.\nhttps://npmx.dev"
+      "compose_text": "Hallo {'@'}{handle}! Hebt u npmx.dev al bekeken? Het is een browser voor het npm-register die snel, modern en open source is.\nhttps://npmx.dev"
     }
   },
   "package": {
@@ -438,7 +438,8 @@
       "fund": "Steunen",
       "compare": "vergelijk",
       "compare_this_package": "Vergelijk dit pakket",
-      "changelog": "wijzigingenoverzicht"
+      "changelog": "wijzigingenoverzicht",
+      "timeline": "tijdlijn"
     },
     "likes": {
       "like": "Dit pakket leuk vinden",
@@ -483,7 +484,8 @@
         "warning": "Waarschuwing",
         "caution": "Let op"
       },
-      "copy_as_markdown": "kopieer README als Markdown"
+      "copy_as_markdown": "kopieer README als Markdown",
+      "error_loading": "Het laden van de README gegevens is mislukt"
     },
     "provenance_section": {
       "title": "Herkomst verificatie gegevens",
@@ -1092,12 +1094,12 @@
   "about": {
     "title": "Over",
     "heading": "over ons",
-    "meta_description": "npmx is een snelle, moderne browser voor de npm register. Een betere UX/DX om npm-pakketten te ontdekken.",
+    "meta_description": "npmx is een snelle, moderne browser voor het npm-register. Een betere UX/DX om npm-pakketten te ontdekken.",
     "what_we_are": {
       "title": "Wat zijn we",
       "better_ux_dx": "betere UX/DX",
       "admin_ui": "admin UI",
-      "description": "npmx is een {betterUxDx} voor het npm register en bijbehorende hulpmiddelen. We bieden een snelle, moderne interface voor het ontdekken van pakketten, met functies zoals dark mode, toetsenbordnavigatie, code-browsing en koppelingen met alternatieve registers zoals {jsr}.",
+      "description": "npmx is een {betterUxDx} voor het npm-register en bijbehorende hulpmiddelen. We bieden een snelle, moderne interface voor het ontdekken van pakketten, met functies zoals dark mode, toetsenbordnavigatie, code-browsing en koppelingen met alternatieve registers zoals {jsr}.",
       "admin_description": "We streven er ook naar om een betere {adminUi} te bieden voor het beheer van uw pakketten, teams en organisaties — allemaal vanuit de browser, aangedreven door uw lokale npm CLI."
     },
     "what_we_are_not": {

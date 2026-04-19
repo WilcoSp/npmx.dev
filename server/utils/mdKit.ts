@@ -293,9 +293,9 @@ export const ALLOWED_ATTR: Record<string, string[]> = {
   'blockquote': ['data-callout'],
   'details': ['open'],
   'code': ['class'],
-  'pre': ['class', 'style'],
+  'pre': ['class'],
   'span': ['class', 'style'],
-  'div': ['class', 'style', 'align'],
+  'div': ['class', 'align'],
   'p': ['align'],
 }
 
