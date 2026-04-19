@@ -10,13 +10,16 @@ import {
   ALLOWED_TAGS,
   createLink,
   createHeading,
+  createHtml,
+  USER_CONTENT_PREFIX,
+  MarkedHeadingExtension,
 } from './mdKit'
 import matter from 'gray-matter'
 import { marked } from 'marked'
 import sanitizeHtml from 'sanitize-html'
 import { hasProtocol } from 'ufo'
 import { convertBlobOrFileToRawUrl, type RepositoryInfo } from '#shared/utils/git-providers'
-import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
+import { decodeHtmlEntities, slugify } from '#shared/utils/html'
 import { convertToEmoji } from '#shared/utils/emoji'
 import { toProxiedImageUrl } from '#server/utils/image-proxy'
 import { escapeHtml } from './docs/text'
@@ -149,55 +152,11 @@ function matchPlaygroundProvider(url: string): PlaygroundProvider | null {
   return null
 }
 
-function getHeadingPlainText(text: string): string {
-  return decodeHtmlEntities(stripHtmlTags(text).trim())
-}
-
-function getHeadingSlugSource(text: string): string {
-  return stripHtmlTags(text).trim()
-}
-
-/**
- * Lazy ATX heading extension for marked: allows headings without a space after `#`.
- *
- * Reimplements the behavior of markdown-it-lazy-headers
- * (https://npmx.dev/package/markdown-it-lazy-headers), which is used by npm's own markdown renderer
- * marky-markdown (https://npmx.dev/package/marky-markdown).
- *
- * CommonMark requires a space after # for ATX headings, but many READMEs in the npm registry omit
- * this space. This extension allows marked to parse these headings the same way npm does.
- */
 marked.use({
   tokenizer: {
-    heading(src: string) {
-      // Only match headings where `#` is immediately followed by non-whitespace, non-`#` content.
-      // Normal headings (with space) return false to fall through to marked's default tokenizer.
-      const match = /^ {0,3}(#{1,6})([^\s#][^\n]*)(?:\n+|$)/.exec(src)
-      if (!match) return false
-
-      let text = match[2]!.trim()
-
-      // Strip trailing # characters only if preceded by a space (CommonMark behavior).
-      // e.g., "#heading ##" → "heading", but "#heading#" stays as "heading#"
-      if (text.endsWith('#')) {
-        const stripped = text.replace(/#+$/, '')
-        if (!stripped || stripped.endsWith(' ')) {
-          text = stripped.trim()
-        }
-      }
-
-      return {
-        type: 'heading' as const,
-        raw: match[0]!,
-        depth: match[1]!.length as number,
-        text,
-        tokens: this.lexer.inline(text),
-      }
-    },
+    heading: MarkedHeadingExtension,
   },
 })
-
-const USER_CONTENT_PREFIX = 'user-content-'
 
 function withUserContentPrefix(value: string): string {
   return value.startsWith(USER_CONTENT_PREFIX) ? value : `${USER_CONTENT_PREFIX}${value}`
@@ -217,16 +176,6 @@ function decodeHashFragment(value: string): string {
   } catch {
     return value
   }
-}
-
-function normalizePreservedAnchorAttrs(attrs: string): string {
-  const cleanedAttrs = attrs
-    .replace(/\s+href\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/\s+rel\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/\s+target\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .trim()
-
-  return cleanedAttrs ? ` ${cleanedAttrs}` : ''
 }
 
 /**
@@ -366,17 +315,6 @@ function renderFrontmatterTable(data: Record<string, unknown>): string {
   return `<table><thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>\n${rows}\n</tbody></table>\n`
 }
 
-// Extract and preserve allowed attributes from HTML heading tags
-function extractHeadingAttrs(attrsString: string): string {
-  if (!attrsString) return ''
-  const preserved: string[] = []
-  const alignMatch = /\balign=(["']?)([^"'\s>]+)\1/i.exec(attrsString)
-  if (alignMatch?.[2]) {
-    preserved.push(`align="${alignMatch[2]}"`)
-  }
-  return preserved.length > 0 ? ` ${preserved.join(' ')}` : ''
-}
-
 export async function renderReadmeHtml(
   content: string,
   packageName: string,
@@ -453,40 +391,6 @@ export async function renderReadmeHtml(
 
   renderer.heading = heading
 
-  // renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-  //   const isAnchorHeading =
-  //     anchorTokenRegex.test(tokens[0]?.raw ?? '') && tokens.at(-1)?.raw === '</a>'
-
-  //   // for anchor headings, we will ignore user-added id and add our own
-  //   const tokensWithoutAnchor = isAnchorHeading ? tokens.slice(1, -1) : tokens
-  //   const displayHtml = this.parser.parseInline(tokensWithoutAnchor)
-  //   const plainText = getHeadingPlainText(displayHtml)
-  //   const slugSource = getHeadingSlugSource(displayHtml)
-  //   return processHeading(depth, displayHtml, plainText, slugSource)
-  // }
-
-  // Intercept HTML headings so they get id, TOC entry, and correct semantic level.
-  // Also intercept raw HTML <a> tags so playground links are collected in the same pass.
-  const htmlHeadingRe = /<h([1-6])(\s[^>]*)?>([\s\S]*?)<\/h\1>/gi
-  const htmlAnchorRe = /<a(\s[^>]*?)href=(["'])([^"']*)\2([^>]*)>([\s\S]*?)<\/a>/gi
-  renderer.html = function ({ text }: Tokens.HTML) {
-    let result = text.replace(htmlHeadingRe, (_, level, attrs = '', inner) => {
-      const depth = parseInt(level)
-      const plainText = getHeadingPlainText(inner)
-      const slugSource = getHeadingSlugSource(inner)
-      const preservedAttrs = extractHeadingAttrs(attrs)
-      return processHeading(depth, inner, plainText, slugSource, preservedAttrs).trimEnd()
-    })
-    // Process raw HTML <a> tags for playground link collection and URL resolution
-    result = result.replace(htmlAnchorRe, (_full, beforeHref, _quote, href, afterHref, inner) => {
-      const label = decodeHtmlEntities(stripHtmlTags(inner).trim())
-      const { resolvedHref, extraAttrs } = processLink(href, label)
-      const preservedAttrs = normalizePreservedAnchorAttrs(`${beforeHref ?? ''}${afterHref ?? ''}`)
-      return `<a${preservedAttrs} href="${resolvedHref}"${extraAttrs}>${inner}</a>`
-    })
-    return result
-  }
-
   // Syntax highlighting for code blocks (uses shared highlighter)
   renderer.code = await createCodeHighlighter()
 
@@ -526,6 +430,7 @@ export async function renderReadmeHtml(
   }
 
   renderer.link = createLink(processLink)
+  renderer.html = createHtml({ processHeading, processLink })
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
   renderer.blockquote = blockquote

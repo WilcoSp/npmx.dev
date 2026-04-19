@@ -8,10 +8,12 @@ import {
   blockquote,
   createCodeHighlighter,
   isNpmJsUrlThatCanBeRedirected,
-  // calculateSemanticDepth,
   ALLOWED_ATTR,
   ALLOWED_TAGS,
   createHeading,
+  createLink,
+  createHtml,
+  MarkedHeadingExtension,
 } from '../mdKit'
 
 // const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
@@ -19,6 +21,12 @@ import {
 export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   const renderer = new marked.Renderer({
     gfm: true,
+  })
+
+  marked.use({
+    tokenizer: {
+      heading: MarkedHeadingExtension,
+    },
   })
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
@@ -54,48 +62,13 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
     renderer.link = createLink(processLink)
 
-    // Track used heading slugs to handle duplicates (GitHub-style: foo, foo-1, foo-2)
-    // const usedSlugs = new Map<string, number>()
-
-    // let lastSemanticLevel = releaseId ? 2 : 1 // Start after h2 (the "Readme" section heading)
-    // renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-    //   // Calculate the target semantic level based on document structure
-    //   // Start at h3 (since page h1 + section h2 already exist)
-    //   // But ensure we never skip levels - can only go down by 1 or stay same/go up
-    //   const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
-    //   lastSemanticLevel = semanticLevel
-    //   const text = this.parser.parseInline(tokens)
-
-    //   // Generate GitHub-style slug for anchor links
-    //   // adding release id to prevent conflicts
-    //   let slug = slugify(text)
-    //   if (!slug) slug = 'heading' // Fallback for empty headings
-
-    //   // Handle duplicate slugs (GitHub-style: foo, foo-1, foo-2)
-    //   const count = usedSlugs.get(slug) ?? 0
-    //   usedSlugs.set(slug, count + 1)
-    //   const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
-
-    //   // Prefix with 'user-content-' to avoid collisions with page IDs
-    //   // (e.g., #install, #dependencies, #versions are used by the package page)
-    //   const id = `${idPrefix}-${uniqueSlug}`
-
-    //   // Collect TOC item with plain text (HTML stripped & emoji's added)
-    //   const plainText = convertToEmoji(stripHtmlTags(text))
-    //     .replace(/&nbsp;?/g, '') // remove non breaking spaces
-    //     .trim()
-    //   if (plainText) {
-    //     toc.push({ text: plainText, id, depth })
-    //   }
-
-    //   return `<h${semanticLevel} id="${id}" data-level="${depth}">${text} <a href="#${id}"> </a></h${semanticLevel}>\n`
-    // }
-
-    const { heading, toc } = createHeading({
+    const { heading, toc, processHeading } = createHeading({
       lastSemanticLevel: releaseId ? 2 : 1,
       idPrefix: releaseId?.toString(),
     })
     renderer.heading = heading
+
+    renderer.html = createHtml({ processHeading, processLink })
 
     // Helper to prefix id attributes with 'user-content-'
     const prefixId: typeof prefixIdFn = (tagName: string, attribs: sanitizeHtml.Attributes) => {
