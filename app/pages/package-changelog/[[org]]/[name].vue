@@ -94,7 +94,7 @@ useCommandPalettePackageCommands(commandPalettePackageContext)
 
 // og image
 defineOgImage(
-  'Page',
+  'Page.takumi',
   {
     title: () => `${pkg.value?.name ?? 'Package'} - Changelogs`,
   },
