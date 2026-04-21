@@ -96,7 +96,7 @@ useCommandPalettePackageCommands(commandPalettePackageContext)
 defineOgImage(
   'Page.takumi',
   {
-    title: () => `${pkg.value?.name ?? 'Package'} - Changelogs`,
+    title: () => `${packageName.value ?? 'Package'} - Changelogs`,
   },
   [
     { key: 'og', alt: () => `npm package ${packageName.value} changelogs` },
