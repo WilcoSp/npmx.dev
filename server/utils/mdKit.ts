@@ -42,8 +42,27 @@ export const blockquote: RendererApi['blockquote'] = function (
   return `<blockquote>${body}</blockquote>\n`
 }
 
-// link
+/**
+ * created code highlighter with Shiki for Marked
+ */
+export async function createCodeHighlighter(): Promise<RendererApi['code']> {
+  const shiki = await getShikiHighlighter()
 
+  // Syntax highlighting for code blocks (uses shared highlighter)
+  return ({ text, lang }: Tokens.Code) => {
+    const html = highlightCodeSync(shiki, text, lang || 'text')
+    // Add copy button
+    return `<div class="readme-code-block" >
+  <button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-lucide:check" copy-icon="i-lucide:copy" data-copy>
+  <span class="i-lucide:copy" aria-hidden="true"></span>
+  <span class="sr-only">Copy code</span>
+  </button>
+  ${html}
+  </div>`
+  }
+}
+
+// link
 export type ProcessLinkFn = (
   href: string,
   label: string,
@@ -97,23 +116,16 @@ export const isNpmJsUrlThatCanBeRedirected = (url: URL) => {
   return true
 }
 
-/**
- * created code highlighter with Shiki for Marked
- */
-export async function createCodeHighlighter(): Promise<RendererApi['code']> {
-  const shiki = await getShikiHighlighter()
+// image
 
-  // Syntax highlighting for code blocks (uses shared highlighter)
-  return ({ text, lang }: Tokens.Code) => {
-    const html = highlightCodeSync(shiki, text, lang || 'text')
-    // Add copy button
-    return `<div class="readme-code-block" >
-  <button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-lucide:check" copy-icon="i-lucide:copy" data-copy>
-  <span class="i-lucide:copy" aria-hidden="true"></span>
-  <span class="sr-only">Copy code</span>
-  </button>
-  ${html}
-  </div>`
+export type ProcessImageFn = (href: string) => string
+
+export const createImage = function (processImage: ProcessImageFn): RendererApi['image'] {
+  return function (this: Renderer<string, string>, { href, title, text }) {
+    const resolvedHref = processImage(href)
+    const titleAttr = title ? ` title="${escapeHtml(title)}"` : ''
+    const altAttr = text ? ` alt="${escapeHtml(text)}"` : ''
+    return `<img src="${resolvedHref}"${altAttr}${titleAttr}>`
   }
 }
 
