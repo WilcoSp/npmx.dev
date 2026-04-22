@@ -1,11 +1,9 @@
 import type { ReadmeResponse } from '#shared/types/readme'
-import type { Tokens } from 'marked'
 import {
   type ProcessLinkFn,
   blockquote,
   createCodeHighlighter,
   isNpmJsUrlThatCanBeRedirected,
-  // calculateSemanticDepth,
   ALLOWED_ATTR,
   ALLOWED_TAGS,
   createLink,
@@ -13,6 +11,8 @@ import {
   createHtml,
   USER_CONTENT_PREFIX,
   MarkedHeadingExtension,
+  renderToRawHtml,
+  createImage,
 } from './mdKit'
 import matter from 'gray-matter'
 import { marked } from 'marked'
@@ -348,17 +348,19 @@ export async function renderReadmeHtml(
   // Syntax highlighting for code blocks (uses shared highlighter)
   renderer.code = await createCodeHighlighter()
 
-  function processImage(href: string) {
+  function processImageUrl(href: string) {
     return resolveImageUrl(href, packageName, repoInfo)
   }
 
   // Resolve image URLs (with GitHub blob → raw conversion)
-  renderer.image = ({ href, title, text }: Tokens.Image) => {
-    const resolvedHref = processImage(href)
-    const titleAttr = title ? ` title="${escapeHtml(title)}"` : ''
-    const altAttr = text ? ` alt="${escapeHtml(text)}"` : ''
-    return `<img src="${resolvedHref}"${altAttr}${titleAttr}>`
-  }
+  // renderer.image = ({ href, title, text }: Tokens.Image) => {
+  //   const resolvedHref = processImageUrl(href)
+  //   const titleAttr = title ? ` title="${escapeHtml(title)}"` : ''
+  //   const altAttr = text ? ` alt="${escapeHtml(text)}"` : ''
+  //   return `<img src="${resolvedHref}"${altAttr}${titleAttr}>`
+  // }
+
+  renderer.image = createImage(processImageUrl)
 
   // Helper: resolve a link href, collect playground links, and build <a> attributes.
   // Used by both the markdown renderer.link and the HTML <a> interceptor so that
@@ -393,13 +395,7 @@ export async function renderReadmeHtml(
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
   renderer.blockquote = blockquote
 
-  marked.setOptions({ renderer })
-
-  // Strip trailing whitespace (tabs/spaces) from code block closing fences.
-  // While marky-markdown handles these gracefully, marked fails to recognize
-  // the end of a code block if the closing fences are followed by unexpected whitespaces.
-  const normalizedContent = markdownBody.replace(/^( {0,3}(?:`{3,}|~{3,}))\s*$/gm, '$1')
-  const rawHtml = frontmatterHtml + (marked.parse(normalizedContent) as string)
+  const rawHtml = renderToRawHtml({ renderer, markdownBody, frontmatterHtml })
 
   const sanitized = sanitizeHtml(rawHtml, {
     allowedTags: ALLOWED_TAGS,

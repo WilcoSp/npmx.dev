@@ -1,7 +1,9 @@
-import type { Tokens, RendererApi, Renderer, TokenizerObject } from 'marked'
+import { type Tokens, type RendererApi, type Renderer, type TokenizerObject, marked } from 'marked'
 import { highlightCodeSync } from './shiki'
 import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
 import { escapeHtml } from './docs/text'
+import sanitizeHtml from 'sanitize-html'
+import { hasProtocol } from 'ufo'
 
 /// for marked
 
@@ -302,6 +304,29 @@ export function createHtml({
   }
 }
 
+// html rendering
+
+export function renderToRawHtml({
+  renderer,
+  markdownBody,
+  frontmatterHtml = '',
+}: {
+  renderer: Renderer
+  markdownBody: string
+  frontmatterHtml?: string
+}) {
+  // Strip trailing whitespace (tabs/spaces) from code block closing fences.
+  // While marky-markdown handles these gracefully, marked fails to recognize
+  // the end of a code block if the closing fences are followed by unexpected whitespaces.
+  const normalizedContent = markdownBody.replace(/^( {0,3}(?:`{3,}|~{3,}))\s*$/gm, '$1')
+  return (
+    frontmatterHtml +
+    (marked.parse(normalizedContent, {
+      renderer,
+    }) as string)
+  )
+}
+
 /// sanatizer
 
 export const ALLOWED_ATTR: Record<string, string[]> = {
@@ -367,3 +392,116 @@ export const ALLOWED_TAGS = [
   'mark',
   'button',
 ]
+
+export function sanaitzeRawHtml(
+  rawHtml: string,
+  {
+    processImageUrl,
+    processLink,
+  }: { processImageUrl: ProcessImageFn; processLink: ProcessLinkFn; idPrefix: string },
+) {
+  return sanitizeHtml(rawHtml, {
+    allowedTags: ALLOWED_TAGS,
+    allowedAttributes: ALLOWED_ATTR,
+    allowedSchemes: ['http', 'https', 'mailto'],
+    // disallow styles other than the ones shiki emits
+    allowedStyles: {
+      span: {
+        'color': [/^#[0-9a-f]{3,8}$/i],
+        '--shiki-light': [/^#[0-9a-f]{3,8}$/i],
+      },
+    },
+    transformTags: {
+      // Headings are already processed to correct semantic levels by processHeading()
+      // during the marked rendering pass. The sanitizer just needs to preserve them.
+      // For any stray headings that didn't go through processHeading (shouldn't happen),
+      // we still apply a safe fallback shift.
+      h1: (_, attribs) => {
+        if (attribs['data-level']) return { tagName: 'h1', attribs }
+        return { tagName: 'h3', attribs: { ...attribs, 'data-level': '1' } }
+      },
+      h2: (_, attribs) => {
+        if (attribs['data-level']) return { tagName: 'h2', attribs }
+        return { tagName: 'h4', attribs: { ...attribs, 'data-level': '2' } }
+      },
+      h3: (_, attribs) => {
+        if (attribs['data-level']) return { tagName: 'h3', attribs }
+        return { tagName: 'h5', attribs: { ...attribs, 'data-level': '3' } }
+      },
+      h4: (_, attribs) => {
+        if (attribs['data-level']) return { tagName: 'h4', attribs }
+        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '4' } }
+      },
+      h5: (_, attribs) => {
+        if (attribs['data-level']) return { tagName: 'h5', attribs }
+        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '5' } }
+      },
+      h6: (_, attribs) => {
+        if (attribs['data-level']) return { tagName: 'h6', attribs }
+        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '6' } }
+      },
+      img: (tagName, attribs) => {
+        if (attribs.src) {
+          attribs.src = processImageUrl(attribs.src)
+        }
+        return { tagName, attribs }
+      },
+      source: (tagName, attribs) => {
+        if (attribs.src) {
+          attribs.src = processImageUrl(attribs.src)
+        }
+        if (attribs.srcset) {
+          attribs.srcset = attribs.srcset
+            .split(',')
+            .map(entry => {
+              const parts = entry.trim().split(/\s+/)
+              const url = parts[0]
+              if (!url) return entry.trim()
+              const descriptor = parts[1]
+              const resolvedUrl = processImageUrl(url)
+              return descriptor ? `${resolvedUrl} ${descriptor}` : resolvedUrl
+            })
+            .join(', ')
+        }
+        return { tagName, attribs }
+      },
+
+      a: (tagName, attribs) => {
+        if (!attribs.href) {
+          return { tagName, attribs }
+        }
+
+        const { resolvedHref } = processLink(attribs.href, '')
+
+        // Collect playground links from inline HTML <a> tags that weren't
+        // caught by renderer.link or renderer.html
+        // const provider = matchPlaygroundProvider(resolvedHref)
+        // if (provider && !seenUrls.has(resolvedHref)) {
+        //   seenUrls.add(resolvedHref)
+        //   collectedLinks.push({
+        //     url: resolvedHref,
+        //     provider: provider.id,
+        //     providerName: provider.name,
+        //     // sanitize-html transformTags doesn't provide element text content,
+        //     // so we fall back to the provider name for the label
+        //     label: provider.name,
+        //   })
+        // }
+
+        // Add security attributes for external links (idempotent)
+        if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
+          attribs.rel = 'nofollow noreferrer noopener'
+          attribs.target = '_blank'
+        }
+        attribs.href = resolvedHref
+        return { tagName, attribs }
+      },
+
+      div: prefixId,
+      p: prefixId,
+      span: prefixId,
+      section: prefixId,
+      article: prefixId,
+    },
+  })
+}

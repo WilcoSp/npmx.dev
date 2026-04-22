@@ -14,6 +14,8 @@ import {
   createLink,
   createHtml,
   MarkedHeadingExtension,
+  renderToRawHtml,
+  createImage,
 } from '../mdKit'
 
 // const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
@@ -35,11 +37,11 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   // Syntax highlighting for code blocks (uses shared highlighter)
   renderer.code = await createCodeHighlighter()
 
-  return (markdown: string | null, releaseId?: string | number) => {
+  return (markdownBody: string | null, releaseId?: string | number) => {
     // Collect table of contents items during parsing
     // const toc: TocItem[] = []
 
-    if (!markdown) {
+    if (!markdownBody) {
       return {
         html: null,
         toc: [],
@@ -70,6 +72,8 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
     renderer.html = createHtml({ processHeading, processLink })
 
+    renderer.image = createImage(href => resolveImageUrl(href, mdRepoInfo, idPrefix))
+
     // Helper to prefix id attributes with 'user-content-'
     const prefixId: typeof prefixIdFn = (tagName: string, attribs: sanitizeHtml.Attributes) => {
       if (attribs.id && !attribs.id.startsWith('user-content-')) {
@@ -78,17 +82,10 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
       return { tagName, attribs }
     }
 
+    const rawHtml = renderToRawHtml({ renderer, markdownBody })
+
     return {
-      html: sanitizeRawHTML(
-        convertToEmoji(
-          marked.parse(markdown, {
-            renderer,
-          }) as string,
-        ),
-        mdRepoInfo,
-        prefixId,
-        idPrefix,
-      ),
+      html: sanitizeRawHTML(convertToEmoji(rawHtml), mdRepoInfo, prefixId, idPrefix),
       toc,
     }
   }
@@ -130,13 +127,13 @@ export function sanitizeRawHTML(
       },
       img: (tagName, attribs) => {
         if (attribs.src) {
-          attribs.src = resolveUrl(attribs.src, mdRepoInfo, idPrefix)
+          attribs.src = resolveImageUrl(attribs.src, mdRepoInfo, idPrefix)
         }
         return { tagName, attribs }
       },
       source: (tagName, attribs) => {
         if (attribs.src) {
-          attribs.src = resolveUrl(attribs.src, mdRepoInfo, idPrefix)
+          attribs.src = resolveImageUrl(attribs.src, mdRepoInfo, idPrefix)
         }
         if (attribs.srcset) {
           attribs.srcset = attribs.srcset
@@ -233,6 +230,17 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
   }
 
   return url
+}
+
+function resolveImageUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string): string {
+  // Skip already-proxied URLs (from a previous resolveImageUrl call in the
+  // marked renderer — sanitizeHtml transformTags may call this again)
+  if (url.startsWith('/api/registry/image-proxy')) {
+    return url
+  }
+  const rawUrl = resolveUrl(url, repoInfo, idPrefix)
+  const { imageProxySecret } = useRuntimeConfig()
+  return toProxiedImageUrl(rawUrl, imageProxySecret)
 }
 
 /**
