@@ -493,7 +493,11 @@ export function sanitizeRawHTML(
         }
         return { tagName, attribs }
       },
-
+      // Markdown links are fully processed in renderer.link (single-pass).
+      // However, inline HTML <a> tags inside paragraphs are NOT seen by
+      // renderer.html (marked parses them as paragraph tokens, not html tokens).
+      // So we still need to collect playground links here for those cases via processUrl from readme.
+      // The seenUrls set ensures no duplicates across both paths.
       a: (tagName, attribs) => {
         if (!attribs.href) {
           return { tagName, attribs }
