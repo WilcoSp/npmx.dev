@@ -592,13 +592,13 @@ describe('HTML output', () => {
   })
 
   describe('heading anchors (renderer.heading)', () => {
-    it('strips a full-line anchor wrapper and uses inner text for slug, toc, and permalink', async () => {
+    it('keeps the full-line anchor wrapper and places the link to the heading at the end', async () => {
       const markdown = '## <a href="https://example.com">My Section</a>'
       const result = await renderReadmeHtml(markdown, 'test-pkg')
 
       expect(result.toc).toEqual([{ text: 'My Section', depth: 2, id: 'user-content-my-section' }])
       expect(result.html).toBe(
-        `<h3 id="user-content-my-section" data-level="2"><a href="#user-content-my-section">My Section</a></h3>\n`,
+        `<h3 id="user-content-my-section" data-level="2"><a href="https://example.com" rel="nofollow noreferrer noopener" target="_blank">My Section</a><a href="#user-content-my-section"></a></h3>\n`,
       )
     })
 

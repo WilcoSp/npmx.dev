@@ -1,227 +1,104 @@
-import { type Tokens, marked } from 'marked'
 import {
-  type prefixId as prefixIdFn,
-  ALLOWED_ATTR,
-  ALLOWED_TAGS,
-  calculateSemanticDepth,
+  type ProcessImageUrlFn,
+  type ProcessLinkFn,
+  type ToUserContentIdFn,
+  USER_CONTENT_PREFIX,
+  blockquote,
+  createCodeHighlighter,
+  createHeading,
+  createHtml,
+  createImage,
+  createLink,
+  decodeHashFragment,
   isNpmJsUrlThatCanBeRedirected,
-} from '../readme'
-import { stripHtmlTags, slugify } from '#shared/utils/html'
-import sanitizeHtml from 'sanitize-html'
+  markedHeadingExtension,
+  renderToRawHtml,
+  sanitizeRawHTML,
+} from '../mdKit'
+import { slugify } from '#shared/utils/html'
+import { marked } from 'marked'
 import { hasProtocol, joinRelativeURL } from 'ufo'
 
-const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
+// const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
 export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   const renderer = new marked.Renderer({
     gfm: true,
   })
 
-  const shiki = await getShikiHighlighter()
-
-  renderer.link = function ({ href, title, tokens }: Tokens.Link) {
-    const eTitle = escapeHtml(title ?? '')
-    const text = this.parser.parseInline(tokens)
-    const titleAttr = eTitle ? ` title="${eTitle}"` : ''
-    const plainText = escapeHtml(stripHtmlTags(text).trim())
-
-    if (href.startsWith('mailto:') && !EMAIL_REGEX.test(plainText)) {
-      return text
-    }
-
-    const intermediateTitleAttr = `data-title-intermediate="${plainText || eTitle}"`
-
-    return `<a href="${href}"${titleAttr}${intermediateTitleAttr} target="_blank">${text}</a>`
-  }
+  marked.use({
+    tokenizer: {
+      heading: markedHeadingExtension,
+    },
+  })
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
-  renderer.blockquote = function ({ tokens }: Tokens.Blockquote) {
-    const body = this.parser.parse(tokens)
-
-    const calloutMatch = body.match(/^<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:<br>)?\s*/i)
-
-    if (calloutMatch?.[1]) {
-      const calloutType = calloutMatch[1].toLowerCase()
-      const cleanedBody = body.replace(calloutMatch[0], '<p>')
-      return `<blockquote data-callout="${calloutType}">${cleanedBody}</blockquote>\n`
-    }
-
-    return `<blockquote>${body}</blockquote>\n`
-  }
+  renderer.blockquote = blockquote
 
   // Syntax highlighting for code blocks (uses shared highlighter)
-  renderer.code = ({ text, lang }: Tokens.Code) => {
-    const html = highlightCodeSync(shiki, text, lang || 'text')
-    // Add copy button
-    return `<div class="readme-code-block" >
-  <button type="button" class="readme-copy-button" aria-label="Copy code" check-icon="i-carbon:checkmark" copy-icon="i-carbon:copy" data-copy>
-  <span class="i-carbon:copy" aria-hidden="true"></span>
-  <span class="sr-only">Copy code</span>
-  </button>
-  ${html}
-  </div>`
-  }
+  renderer.code = await createCodeHighlighter()
 
-  return (markdown: string | null, releaseId?: string | number) => {
+  return (markdownBody: string | null, releaseId?: string | number) => {
     // Collect table of contents items during parsing
-    const toc: TocItem[] = []
+    // const toc: TocItem[] = []
 
-    if (!markdown) {
+    if (!markdownBody) {
       return {
         html: null,
-        toc,
+        toc: [],
       }
     }
 
     const idPrefix = releaseId ? `user-content-${releaseId}` : `user-content`
 
-    // Track used heading slugs to handle duplicates (GitHub-style: foo, foo-1, foo-2)
-    const usedSlugs = new Map<string, number>()
+    const lastSemanticLevel = releaseId ? 2 : 1
 
-    let lastSemanticLevel = releaseId ? 2 : 1 // Start after h2 (the "Readme" section heading)
-    renderer.heading = function ({ tokens, depth }: Tokens.Heading) {
-      // Calculate the target semantic level based on document structure
-      // Start at h3 (since page h1 + section h2 already exist)
-      // But ensure we never skip levels - can only go down by 1 or stay same/go up
-      const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
-      lastSemanticLevel = semanticLevel
-      const text = this.parser.parseInline(tokens)
-
-      // Generate GitHub-style slug for anchor links
-      // adding release id to prevent conflicts
-      let slug = slugify(text)
-      if (!slug) slug = 'heading' // Fallback for empty headings
-
-      // Handle duplicate slugs (GitHub-style: foo, foo-1, foo-2)
-      const count = usedSlugs.get(slug) ?? 0
-      usedSlugs.set(slug, count + 1)
-      const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
-
-      // Prefix with 'user-content-' to avoid collisions with page IDs
-      // (e.g., #install, #dependencies, #versions are used by the package page)
-      const id = `${idPrefix}-${uniqueSlug}`
-
-      // Collect TOC item with plain text (HTML stripped & emoji's added)
-      const plainText = convertToEmoji(stripHtmlTags(text))
-        .replace(/&nbsp;?/g, '') // remove non breaking spaces
-        .trim()
-      if (plainText) {
-        toc.push({ text: plainText, id, depth })
-      }
-
-      return `<h${semanticLevel} id="${id}" data-level="${depth}">${text} <a href="#${id}"> </a></h${semanticLevel}>\n`
+    function toUserContentId(id: string) {
+      return `${idPrefix}-${id}`
     }
 
-    // Helper to prefix id attributes with 'user-content-'
-    const prefixId: typeof prefixIdFn = (tagName: string, attribs: sanitizeHtml.Attributes) => {
-      if (attribs.id && !attribs.id.startsWith('user-content-')) {
-        attribs.id = `${idPrefix}-${attribs.id}`
-      }
-      return { tagName, attribs }
+    const processLink: ProcessLinkFn = (href: string, _label: string) => {
+      const resolvedHref = resolveUrl(href, mdRepoInfo, toUserContentId)
+
+      // Security attributes for external links
+      let extraAttrs =
+        resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })
+          ? ' rel="nofollow noreferrer noopener" target="_blank"'
+          : ''
+
+      return { resolvedHref, extraAttrs }
     }
+
+    renderer.link = createLink(processLink)
+
+    const { heading, toc, processHeading } = createHeading({
+      lastSemanticLevel,
+      toUserContentId,
+    })
+    renderer.heading = heading
+
+    renderer.html = createHtml({ processHeading, processLink })
+
+    const processImageUrl: ProcessImageUrlFn = href =>
+      resolveImageUrl(href, mdRepoInfo, toUserContentId)
+
+    renderer.image = createImage(processImageUrl)
+
+    const rawHtml = renderToRawHtml({ renderer, markdownBody })
 
     return {
-      html: sanitizeRawHTML(
-        convertToEmoji(
-          marked.parse(markdown, {
-            renderer,
-          }) as string,
-        ),
-        mdRepoInfo,
-        prefixId,
-        idPrefix,
-      ),
+      html: sanitizeRawHTML(convertToEmoji(rawHtml), {
+        processImageUrl,
+        processLink,
+        toUserContentId,
+        lastSemanticLevel,
+      }),
       toc,
     }
   }
 }
 
-export function sanitizeRawHTML(
-  rawHtml: string,
-  mdRepoInfo: MarkdownRepoInfo,
-  prefixId: typeof prefixIdFn,
-  idPrefix: string,
-) {
-  return sanitizeHtml(rawHtml, {
-    allowedTags: ALLOWED_TAGS,
-    allowedAttributes: ALLOWED_ATTR,
-    allowedSchemes: ['http', 'https', 'mailto'],
-    // Transform img src URLs (GitHub blob → raw, relative → GitHub raw)
-    transformTags: {
-      h1: (_, attribs) => {
-        return { tagName: 'h3', attribs: { ...attribs, 'data-level': '1' } }
-      },
-      h2: (_, attribs) => {
-        return { tagName: 'h4', attribs: { ...attribs, 'data-level': '2' } }
-      },
-      h3: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h3', attribs: attribs }
-        return { tagName: 'h5', attribs: { ...attribs, 'data-level': '3' } }
-      },
-      h4: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h4', attribs: attribs }
-        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '4' } }
-      },
-      h5: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h5', attribs: attribs }
-        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '5' } }
-      },
-      h6: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h6', attribs: attribs }
-        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '6' } }
-      },
-      img: (tagName, attribs) => {
-        if (attribs.src) {
-          attribs.src = resolveUrl(attribs.src, mdRepoInfo, idPrefix)
-        }
-        return { tagName, attribs }
-      },
-      source: (tagName, attribs) => {
-        if (attribs.src) {
-          attribs.src = resolveUrl(attribs.src, mdRepoInfo, idPrefix)
-        }
-        if (attribs.srcset) {
-          attribs.srcset = attribs.srcset
-            .split(',')
-            .map(entry => {
-              const parts = entry.trim().split(/\s+/)
-              const url = parts[0]
-              if (!url) return entry.trim()
-              const descriptor = parts[1]
-              const resolvedUrl = resolveUrl(url, mdRepoInfo, idPrefix)
-              return descriptor ? `${resolvedUrl} ${descriptor}` : resolvedUrl
-            })
-            .join(', ')
-        }
-        return { tagName, attribs }
-      },
-      a: (tagName, attribs) => {
-        if (!attribs.href) {
-          return { tagName, attribs }
-        }
-
-        const resolvedHref = resolveUrl(attribs.href, mdRepoInfo, idPrefix)
-
-        // Add security attributes for external links
-        if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
-          attribs.rel = 'nofollow noreferrer noopener'
-          attribs.target = '_blank'
-        } else {
-          attribs.target = ''
-        }
-        attribs.href = resolvedHref
-        return { tagName, attribs }
-      },
-      div: prefixId,
-      p: prefixId,
-      span: prefixId,
-      section: prefixId,
-      article: prefixId,
-    },
-  })
-}
-
-interface MarkdownRepoInfo {
+export interface MarkdownRepoInfo {
   /** Raw file URL base (e.g., https://raw.githubusercontent.com/owner/repo/HEAD) */
   rawBaseUrl: string
   /** Blob/rendered file URL base (e.g., https://github.com/owner/repo/blob/HEAD) */
@@ -232,14 +109,14 @@ interface MarkdownRepoInfo {
   path?: string
 }
 
-function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
+function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: ToUserContentIdFn) {
   if (!url) return url
   if (url.startsWith('#')) {
-    if (url.startsWith('#user-content')) {
+    if (url.startsWith(`#${USER_CONTENT_PREFIX}`)) {
       return url
     }
     // Prefix anchor links to match heading IDs (avoids collision with page IDs)
-    return `#${idPrefix}-${slugify(url.slice(1))}`
+    return `#${toUserContentId(slugify(decodeHashFragment(url.slice(1))))}`
   }
   if (hasProtocol(url, { acceptRelative: true })) {
     try {
@@ -274,6 +151,21 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
   }
 
   return url
+}
+
+function resolveImageUrl(
+  url: string,
+  repoInfo: MarkdownRepoInfo,
+  toUserContentId: ToUserContentIdFn,
+): string {
+  // Skip already-proxied URLs (from a previous resolveImageUrl call in the
+  // marked renderer — sanitizeHtml transformTags may call this again)
+  if (url.startsWith('/api/registry/image-proxy')) {
+    return url
+  }
+  const rawUrl = resolveUrl(url, repoInfo, toUserContentId)
+  const { imageProxySecret } = useRuntimeConfig()
+  return toProxiedImageUrl(rawUrl, imageProxySecret)
 }
 
 /**

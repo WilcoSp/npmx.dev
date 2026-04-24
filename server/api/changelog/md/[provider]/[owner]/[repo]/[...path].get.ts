@@ -46,6 +46,7 @@ export default defineCachedEventHandler(
       const path = getRouterParam(event, 'path') ?? ''
       return `changelogMarkdown:v1:${provider}:${owner}:${repo}:${path.replaceAll('/', ':')}`
     },
+    shouldBypassCache: () => import.meta.dev,
   },
 )
 
