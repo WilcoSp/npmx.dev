@@ -1,23 +1,23 @@
 import {
+  type ProcessImageUrlFn,
   type ProcessLinkFn,
   type ToUserContentIdFn,
-  type ProcessImageUrlFn,
+  USER_CONTENT_PREFIX,
   blockquote,
   createCodeHighlighter,
-  isNpmJsUrlThatCanBeRedirected,
   createHeading,
-  createLink,
   createHtml,
+  createImage,
+  createLink,
+  decodeHashFragment,
+  isNpmJsUrlThatCanBeRedirected,
   markedHeadingExtension,
   renderToRawHtml,
-  createImage,
   sanitizeRawHTML,
-  USER_CONTENT_PREFIX,
-  decodeHashFragment,
 } from '../mdKit'
-import { marked } from 'marked'
 import { slugify } from '#shared/utils/html'
-import { hasProtocol } from 'ufo'
+import { marked } from 'marked'
+import { hasProtocol, joinRelativeURL } from 'ufo'
 
 // const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
@@ -147,8 +147,7 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: To
   }
 
   if (!hasProtocol(url)) {
-    // the '/' ensure bare relative links stay after "....../HEAD"
-    return checkResolvedUrl(new URL(url, `${baseUrl}/${repoInfo.path ?? '/'}`).href, baseUrl)
+    return checkResolvedUrl(joinRelativeURL(baseUrl, repoInfo.path ?? '', url), baseUrl)
   }
 
   return url
