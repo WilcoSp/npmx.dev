@@ -8,7 +8,7 @@ import {
 } from '../readme'
 import { stripHtmlTags, slugify } from '#shared/utils/html'
 import sanitizeHtml from 'sanitize-html'
-import { hasProtocol } from 'ufo'
+import { hasProtocol, joinRelativeURL } from 'ufo'
 
 const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
@@ -270,8 +270,7 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
   }
 
   if (!hasProtocol(url)) {
-    // the '/' ensure bare relative links stay after "....../HEAD"
-    return checkResolvedUrl(new URL(url, `${baseUrl}/${repoInfo.path ?? '/'}`).href, baseUrl)
+    return checkResolvedUrl(joinRelativeURL(baseUrl, repoInfo.path ?? '', url), baseUrl)
   }
 
   return url
