@@ -71,6 +71,14 @@ export type ProcessLinkFn = (
   // readme.ts also needs the extraAttrs for more things, so can't be a boolean
 ) => { resolvedHref: string; extraAttrs: string }
 
+export function decodeHashFragment(value: string): string {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
 const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
 /**

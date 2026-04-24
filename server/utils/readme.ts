@@ -12,6 +12,7 @@ import {
   renderToRawHtml,
   createImage,
   sanitizeRawHTML,
+  decodeHashFragment,
 } from './mdKit'
 import matter from 'gray-matter'
 import { marked } from 'marked'
@@ -166,14 +167,6 @@ function toUserContentId(value: string): string {
 
 function toUserContentHash(value: string): string {
   return `#${withUserContentPrefix(value)}`
-}
-
-function decodeHashFragment(value: string): string {
-  try {
-    return decodeURIComponent(value)
-  } catch {
-    return value
-  }
 }
 
 /**

@@ -12,6 +12,8 @@ import {
   renderToRawHtml,
   createImage,
   sanitizeRawHTML,
+  USER_CONTENT_PREFIX,
+  decodeHashFragment,
 } from '../mdKit'
 import { marked } from 'marked'
 import { slugify } from '#shared/utils/html'
@@ -107,11 +109,11 @@ interface MarkdownRepoInfo {
 function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: ToUserContentIdFn) {
   if (!url) return url
   if (url.startsWith('#')) {
-    if (url.startsWith('#user-content')) {
+    if (url.startsWith(`#${USER_CONTENT_PREFIX}`)) {
       return url
     }
     // Prefix anchor links to match heading IDs (avoids collision with page IDs)
-    return `#${toUserContentId(slugify(url.slice(1)))}`
+    return `#${toUserContentId(slugify(decodeHashFragment(url.slice(1))))}`
   }
   if (hasProtocol(url, { acceptRelative: true })) {
     try {
