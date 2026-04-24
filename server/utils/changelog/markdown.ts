@@ -1,22 +1,21 @@
-import { type prefixId as prefixIdFn } from '../readme'
-import { marked } from 'marked'
-import { slugify } from '#shared/utils/html'
-import sanitizeHtml from 'sanitize-html'
-import { hasProtocol } from 'ufo'
 import {
   type ProcessLinkFn,
+  type ToUserContentIdFn,
+  type ProcessImageUrlFn,
   blockquote,
   createCodeHighlighter,
   isNpmJsUrlThatCanBeRedirected,
-  ALLOWED_ATTR,
-  ALLOWED_TAGS,
   createHeading,
   createLink,
   createHtml,
   MarkedHeadingExtension,
   renderToRawHtml,
   createImage,
+  sanitizeRawHTML,
 } from '../mdKit'
+import { marked } from 'marked'
+import { slugify } from '#shared/utils/html'
+import { hasProtocol } from 'ufo'
 
 // const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
@@ -50,8 +49,12 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
     const idPrefix = releaseId ? `user-content-${releaseId}` : `user-content`
 
+    function toUserContentId(id: string) {
+      return `${idPrefix}-${id}`
+    }
+
     const processLink: ProcessLinkFn = (href: string, _label: string) => {
-      const resolvedHref = resolveUrl(href, mdRepoInfo, idPrefix)
+      const resolvedHref = resolveUrl(href, mdRepoInfo, toUserContentId)
 
       // Security attributes for external links
       let extraAttrs =
@@ -66,114 +69,28 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
     const { heading, toc, processHeading } = createHeading({
       lastSemanticLevel: releaseId ? 2 : 1,
-      idPrefix: releaseId?.toString(),
+      toUserContentId,
     })
     renderer.heading = heading
 
     renderer.html = createHtml({ processHeading, processLink })
 
-    renderer.image = createImage(href => resolveImageUrl(href, mdRepoInfo, idPrefix))
+    const processImageUrl: ProcessImageUrlFn = href =>
+      resolveImageUrl(href, mdRepoInfo, toUserContentId)
 
-    // Helper to prefix id attributes with 'user-content-'
-    const prefixId: typeof prefixIdFn = (tagName: string, attribs: sanitizeHtml.Attributes) => {
-      if (attribs.id && !attribs.id.startsWith('user-content-')) {
-        attribs.id = `${idPrefix}-${attribs.id}`
-      }
-      return { tagName, attribs }
-    }
+    renderer.image = createImage(processImageUrl)
 
     const rawHtml = renderToRawHtml({ renderer, markdownBody })
 
     return {
-      html: sanitizeRawHTML(convertToEmoji(rawHtml), mdRepoInfo, prefixId, idPrefix),
+      html: sanitizeRawHTML(convertToEmoji(rawHtml), {
+        processImageUrl,
+        processLink,
+        toUserContentId,
+      }),
       toc,
     }
   }
-}
-
-export function sanitizeRawHTML(
-  rawHtml: string,
-  mdRepoInfo: MarkdownRepoInfo,
-  prefixId: typeof prefixIdFn,
-  idPrefix: string,
-) {
-  return sanitizeHtml(rawHtml, {
-    allowedTags: ALLOWED_TAGS,
-    allowedAttributes: ALLOWED_ATTR,
-    allowedSchemes: ['http', 'https', 'mailto'],
-    // Transform img src URLs (GitHub blob → raw, relative → GitHub raw)
-    transformTags: {
-      h1: (_, attribs) => {
-        return { tagName: 'h3', attribs: { ...attribs, 'data-level': '1' } }
-      },
-      h2: (_, attribs) => {
-        return { tagName: 'h4', attribs: { ...attribs, 'data-level': '2' } }
-      },
-      h3: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h3', attribs: attribs }
-        return { tagName: 'h5', attribs: { ...attribs, 'data-level': '3' } }
-      },
-      h4: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h4', attribs: attribs }
-        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '4' } }
-      },
-      h5: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h5', attribs: attribs }
-        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '5' } }
-      },
-      h6: (_, attribs) => {
-        if (attribs['data-level']) return { tagName: 'h6', attribs: attribs }
-        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '6' } }
-      },
-      img: (tagName, attribs) => {
-        if (attribs.src) {
-          attribs.src = resolveImageUrl(attribs.src, mdRepoInfo, idPrefix)
-        }
-        return { tagName, attribs }
-      },
-      source: (tagName, attribs) => {
-        if (attribs.src) {
-          attribs.src = resolveImageUrl(attribs.src, mdRepoInfo, idPrefix)
-        }
-        if (attribs.srcset) {
-          attribs.srcset = attribs.srcset
-            .split(',')
-            .map(entry => {
-              const parts = entry.trim().split(/\s+/)
-              const url = parts[0]
-              if (!url) return entry.trim()
-              const descriptor = parts[1]
-              const resolvedUrl = resolveUrl(url, mdRepoInfo, idPrefix)
-              return descriptor ? `${resolvedUrl} ${descriptor}` : resolvedUrl
-            })
-            .join(', ')
-        }
-        return { tagName, attribs }
-      },
-      a: (tagName, attribs) => {
-        if (!attribs.href) {
-          return { tagName, attribs }
-        }
-
-        const resolvedHref = resolveUrl(attribs.href, mdRepoInfo, idPrefix)
-
-        // Add security attributes for external links
-        if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
-          attribs.rel = 'nofollow noreferrer noopener'
-          attribs.target = '_blank'
-        } else {
-          attribs.target = ''
-        }
-        attribs.href = resolvedHref
-        return { tagName, attribs }
-      },
-      div: prefixId,
-      p: prefixId,
-      span: prefixId,
-      section: prefixId,
-      article: prefixId,
-    },
-  })
 }
 
 interface MarkdownRepoInfo {
@@ -187,14 +104,14 @@ interface MarkdownRepoInfo {
   path?: string
 }
 
-function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
+function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: ToUserContentIdFn) {
   if (!url) return url
   if (url.startsWith('#')) {
     if (url.startsWith('#user-content')) {
       return url
     }
     // Prefix anchor links to match heading IDs (avoids collision with page IDs)
-    return `#${idPrefix}-${slugify(url.slice(1))}`
+    return toUserContentId(slugify(url.slice(1)))
   }
   if (hasProtocol(url, { acceptRelative: true })) {
     try {
@@ -232,13 +149,17 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
   return url
 }
 
-function resolveImageUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string): string {
+function resolveImageUrl(
+  url: string,
+  repoInfo: MarkdownRepoInfo,
+  toUserContentId: ToUserContentIdFn,
+): string {
   // Skip already-proxied URLs (from a previous resolveImageUrl call in the
   // marked renderer — sanitizeHtml transformTags may call this again)
   if (url.startsWith('/api/registry/image-proxy')) {
     return url
   }
-  const rawUrl = resolveUrl(url, repoInfo, idPrefix)
+  const rawUrl = resolveUrl(url, repoInfo, toUserContentId)
   const { imageProxySecret } = useRuntimeConfig()
   return toProxiedImageUrl(rawUrl, imageProxySecret)
 }

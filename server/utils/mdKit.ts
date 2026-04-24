@@ -120,11 +120,11 @@ export const isNpmJsUrlThatCanBeRedirected = (url: URL) => {
 
 // image
 
-export type ProcessImageFn = (href: string) => string
+export type ProcessImageUrlFn = (href: string) => string
 
-export const createImage = function (processImage: ProcessImageFn): RendererApi['image'] {
+export const createImage = function (processImageUrl: ProcessImageUrlFn): RendererApi['image'] {
   return function (this: Renderer<string, string>, { href, title, text }) {
-    const resolvedHref = processImage(href)
+    const resolvedHref = processImageUrl(href)
     const titleAttr = title ? ` title="${escapeHtml(title)}"` : ''
     const altAttr = text ? ` alt="${escapeHtml(text)}"` : ''
     return `<img src="${resolvedHref}"${altAttr}${titleAttr}>`
@@ -188,11 +188,9 @@ export function getHeadingSlugSource(text: string): string {
   return stripHtmlTags(text).trim()
 }
 
-function toUserContentId(value: string, idPrefix?: string): string {
-  return idPrefix ? `${USER_CONTENT_PREFIX}${idPrefix}-${value}` : `${USER_CONTENT_PREFIX}${value}`
-}
-
 const htmlAnchorRe = /<a(\s[^>]*?)href=(["'])([^"']*)\2([^>]*)>([\s\S]*?)<\/a>/i
+
+export type ToUserContentIdFn = (id: string) => string
 
 type ProcessHeadingFn = (
   depth: number,
@@ -202,8 +200,11 @@ type ProcessHeadingFn = (
   preservedAttrs?: string,
 ) => string
 
-export function createHeading(options: { lastSemanticLevel?: number; idPrefix?: string } = {}) {
-  let { lastSemanticLevel = 2, idPrefix } = options
+export function createHeading(options: {
+  lastSemanticLevel?: number
+  toUserContentId: ToUserContentIdFn
+}) {
+  let { lastSemanticLevel = 2, toUserContentId } = options
   const toc: TocItem[] = []
   const usedSlugs = new Map<string, number>()
 
@@ -233,7 +234,7 @@ export function createHeading(options: { lastSemanticLevel?: number; idPrefix?: 
     const count = usedSlugs.get(slug) ?? 0
     usedSlugs.set(slug, count + 1)
     const uniqueSlug = count === 0 ? slug : `${slug}-${count}`
-    const id = toUserContentId(uniqueSlug, idPrefix)
+    const id = toUserContentId(uniqueSlug)
 
     if (plainText) {
       toc.push({ text: plainText, id, depth })
@@ -285,6 +286,10 @@ export function createHtml({
   processHeading: ProcessHeadingFn
   processLink: ProcessLinkFn
 }) {
+  // function withUserContentPrefix(value: string): string {
+  // return value.startsWith(USER_CONTENT_PREFIX) ? value : `${USER_CONTENT_PREFIX}${value}`
+  // }
+
   return function ({ text }: Tokens.HTML) {
     let result = text.replace(htmlHeadingRe, (_, level, attrs = '', inner) => {
       const depth = parseInt(level)
@@ -393,13 +398,28 @@ export const ALLOWED_TAGS = [
   'button',
 ]
 
-export function sanaitzeRawHtml(
+export function sanitizeRawHTML(
   rawHtml: string,
   {
     processImageUrl,
     processLink,
-  }: { processImageUrl: ProcessImageFn; processLink: ProcessLinkFn; idPrefix: string },
+    toUserContentId,
+  }: {
+    processImageUrl: ProcessImageUrlFn
+    processLink: ProcessLinkFn
+    toUserContentId: ToUserContentIdFn
+  },
 ) {
+  // Helper to prefix id attributes with 'user-content-'
+  function prefixId(tagName: string, attribs: sanitizeHtml.Attributes) {
+    if (attribs.id) {
+      attribs.id = attribs.id.startsWith(USER_CONTENT_PREFIX)
+        ? attribs.id
+        : toUserContentId(attribs.id)
+    }
+    return { tagName, attribs }
+  }
+
   return sanitizeHtml(rawHtml, {
     allowedTags: ALLOWED_TAGS,
     allowedAttributes: ALLOWED_ATTR,
@@ -472,21 +492,6 @@ export function sanaitzeRawHtml(
         }
 
         const { resolvedHref } = processLink(attribs.href, '')
-
-        // Collect playground links from inline HTML <a> tags that weren't
-        // caught by renderer.link or renderer.html
-        // const provider = matchPlaygroundProvider(resolvedHref)
-        // if (provider && !seenUrls.has(resolvedHref)) {
-        //   seenUrls.add(resolvedHref)
-        //   collectedLinks.push({
-        //     url: resolvedHref,
-        //     provider: provider.id,
-        //     providerName: provider.name,
-        //     // sanitize-html transformTags doesn't provide element text content,
-        //     // so we fall back to the provider name for the label
-        //     label: provider.name,
-        //   })
-        // }
 
         // Add security attributes for external links (idempotent)
         if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
