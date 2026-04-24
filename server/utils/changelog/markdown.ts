@@ -98,7 +98,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   }
 }
 
-interface MarkdownRepoInfo {
+export interface MarkdownRepoInfo {
   /** Raw file URL base (e.g., https://raw.githubusercontent.com/owner/repo/HEAD) */
   rawBaseUrl: string
   /** Blob/rendered file URL base (e.g., https://github.com/owner/repo/blob/HEAD) */
