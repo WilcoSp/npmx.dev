@@ -24,12 +24,20 @@ const { changelogRenderer } = await import('#server/utils/changelog/markdown')
 function changelogMdinfo(): MarkdownRepoInfo {
   return {
     blobBaseUrl: `https://github.com/test-owner/test-repo/blob/HEAD`,
-    rawBaseUrl: `https://raw.githubusercontent.com/test-owner/t-repo/HEAD`,
+    rawBaseUrl: `https://raw.githubusercontent.com/test-owner/test-repo/HEAD`,
+  }
+}
+
+function changelogMdInfoWithPath() {
+  return {
+    blobBaseUrl: `https://github.com/test-owner/test-repo/blob/HEAD`,
+    rawBaseUrl: `https://raw.githubusercontent.com/test-owner/test-repo/HEAD`,
+    path: 'packages/test/changelog.md',
   }
 }
 
 describe('Markdown File URL Resolution', () => {
-  describe('resolves from /markdown.md', () => {
+  describe('resolves from /markdown.md & releases', () => {
     it('resolves relative .md links to blob URL for rendered viewing', async () => {
       const info = changelogMdinfo()
       const renderer = await changelogRenderer(info)
@@ -92,6 +100,117 @@ describe('Markdown File URL Resolution', () => {
 
       expect(result.html).toContain(
         'href="https://github.com/test-owner/test-repo/blob/HEAD/CONTRIBUTING.md#installation"',
+      )
+    })
+
+    it('resolves non-.md files to raw URL (not blob)', async () => {
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[Image](./assets/logo.png)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        'href="https://raw.githubusercontent.com/test-owner/test-repo/HEAD/assets/logo.png"',
+      )
+    })
+
+    it('resolves to the root when going to far back', async () => {
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[License](../../../LICENSE)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        'href="https://raw.githubusercontent.com/test-owner/test-repo/HEAD/LICENSE"',
+      )
+    })
+  })
+
+  describe('resolves from a deeper changelog.md', () => {
+    it('resolves relative .md links to blob URL for rendered viewing', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[Contributing](./CONTRIBUTING.md)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        `href="https://github.com/test-owner/test-repo/blob/HEAD/packages/test/CONTRIBUTING.md"`,
+      )
+    })
+
+    it('resolves without ./ or / .md links to a relative blob URL', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[Guide](GUIDE.MD)`
+      const result = renderer(markdown)
+      expect(result.html).toContain(
+        'href="https://github.com/test-owner/test-repo/blob/HEAD/packages/test/GUIDE.MD"',
+      )
+    })
+
+    it('resolves absolute .md links to blob URL', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[Security](/SECURITY.MD)`
+
+      const result = renderer(markdown)
+      expect(result.html).toContain(
+        'href="https://github.com/test-owner/test-repo/blob/HEAD/SECURITY.MD"',
+      )
+    })
+
+    it('resolves nested relative .md links to blob URL', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[API Docs](./docs/api/reference.md)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        'href="https://github.com/test-owner/test-repo/blob/HEAD/packages/test/docs/api/reference.md"',
+      )
+    })
+
+    it('resolves relative .md links with query strings to blob URL', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[FAQ](./FAQ.md?ref=main)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        'href="https://github.com/test-owner/test-repo/blob/HEAD/packages/test/FAQ.md?ref=main"',
+      )
+    })
+
+    it('resolves relative .md links with anchors to blob URL', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[Install Section](./CONTRIBUTING.md#installation)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        'href="https://github.com/test-owner/test-repo/blob/HEAD/packages/test/CONTRIBUTING.md#installation"',
+      )
+    })
+
+    it('resolves non-.md files to raw URL (not blob)', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[Image](./assets/logo.png)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        'href="https://raw.githubusercontent.com/test-owner/test-repo/HEAD/packages/test/assets/logo.png"',
+      )
+    })
+
+    it('resolves to the root when going to far back', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[License](../../../LICENSE)`
+      const result = renderer(markdown)
+
+      expect(result.html).toContain(
+        'href="https://raw.githubusercontent.com/test-owner/test-repo/HEAD/LICENSE"',
       )
     })
   })

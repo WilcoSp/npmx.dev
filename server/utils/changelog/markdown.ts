@@ -17,7 +17,8 @@ import {
 } from '../mdKit'
 import { slugify } from '#shared/utils/html'
 import { marked } from 'marked'
-import { hasProtocol, joinRelativeURL } from 'ufo'
+import { hasProtocol, joinRelativeURL, parseFilename } from 'ufo'
+import { convertToEmoji } from '#shared/utils/emoji'
 
 // const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
 
@@ -147,7 +148,7 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: To
   }
 
   if (!hasProtocol(url)) {
-    return checkResolvedUrl(joinRelativeURL(baseUrl, repoInfo.path ?? '', url), baseUrl)
+    return checkResolvedUrl(new URL(url, `${baseUrl}/${repoInfo.path ?? ''}`).href, baseUrl)
   }
 
   return url
@@ -170,11 +171,11 @@ function resolveImageUrl(
 
 /**
  * check resolved url that it still contains the base url
- * @returns the resolved url if starting with baseUrl else baseUrl
+ * @returns the resolved url if starting with baseUrl else baseUrl/filename.ext
  */
 function checkResolvedUrl(resolved: string, baseUrl: string) {
   if (resolved.startsWith(baseUrl)) {
     return resolved
   }
-  return baseUrl
+  return joinRelativeURL(baseUrl, parseFilename(resolved)!)
 }
