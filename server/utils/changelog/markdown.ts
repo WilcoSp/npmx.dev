@@ -8,7 +8,7 @@ import {
   createHeading,
   createLink,
   createHtml,
-  MarkedHeadingExtension,
+  markedHeadingExtension,
   renderToRawHtml,
   createImage,
   sanitizeRawHTML,
@@ -28,7 +28,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
   marked.use({
     tokenizer: {
-      heading: MarkedHeadingExtension,
+      heading: markedHeadingExtension,
     },
   })
 
@@ -51,6 +51,8 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
     const idPrefix = releaseId ? `user-content-${releaseId}` : `user-content`
 
+    const lastSemanticLevel = releaseId ? 2 : 1
+
     function toUserContentId(id: string) {
       return `${idPrefix}-${id}`
     }
@@ -70,7 +72,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
     renderer.link = createLink(processLink)
 
     const { heading, toc, processHeading } = createHeading({
-      lastSemanticLevel: releaseId ? 2 : 1,
+      lastSemanticLevel,
       toUserContentId,
     })
     renderer.heading = heading
@@ -89,6 +91,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
         processImageUrl,
         processLink,
         toUserContentId,
+        lastSemanticLevel,
       }),
       toc,
     }

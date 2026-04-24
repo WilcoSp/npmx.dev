@@ -8,7 +8,7 @@ import {
   createHeading,
   createHtml,
   USER_CONTENT_PREFIX,
-  MarkedHeadingExtension,
+  markedHeadingExtension,
   renderToRawHtml,
   createImage,
   sanitizeRawHTML,
@@ -153,7 +153,7 @@ function matchPlaygroundProvider(url: string): PlaygroundProvider | null {
 
 marked.use({
   tokenizer: {
-    heading: MarkedHeadingExtension,
+    heading: markedHeadingExtension,
   },
 })
 
@@ -334,14 +334,6 @@ export async function renderReadmeHtml(
     return resolveImageUrl(href, packageName, repoInfo)
   }
 
-  // Resolve image URLs (with GitHub blob → raw conversion)
-  // renderer.image = ({ href, title, text }: Tokens.Image) => {
-  //   const resolvedHref = processImageUrl(href)
-  //   const titleAttr = title ? ` title="${escapeHtml(title)}"` : ''
-  //   const altAttr = text ? ` alt="${escapeHtml(text)}"` : ''
-  //   return `<img src="${resolvedHref}"${altAttr}${titleAttr}>`
-  // }
-
   renderer.image = createImage(processImageUrl)
 
   // Helper: resolve a link href, collect playground links, and build <a> attributes.
@@ -378,115 +370,6 @@ export async function renderReadmeHtml(
   renderer.blockquote = blockquote
 
   const rawHtml = renderToRawHtml({ renderer, markdownBody, frontmatterHtml })
-
-  // const sanitized = sanitizeHtml(rawHtml, {
-  //   allowedTags: ALLOWED_TAGS,
-  //   allowedAttributes: ALLOWED_ATTR,
-  //   allowedSchemes: ['http', 'https', 'mailto'],
-  //   // disallow styles other than the ones shiki emits
-  //   allowedStyles: {
-  //     span: {
-  //       'color': [/^#[0-9a-f]{3,8}$/i],
-  //       '--shiki-light': [/^#[0-9a-f]{3,8}$/i],
-  //     },
-  //   },
-  //   // Transform img src URLs (GitHub blob → raw, relative → GitHub raw)
-  //   transformTags: {
-  //     // Headings are already processed to correct semantic levels by processHeading()
-  //     // during the marked rendering pass. The sanitizer just needs to preserve them.
-  //     // For any stray headings that didn't go through processHeading (shouldn't happen),
-  //     // we still apply a safe fallback shift.
-  //     h1: (_, attribs) => {
-  //       if (attribs['data-level']) return { tagName: 'h1', attribs }
-  //       return { tagName: 'h3', attribs: { ...attribs, 'data-level': '1' } }
-  //     },
-  //     h2: (_, attribs) => {
-  //       if (attribs['data-level']) return { tagName: 'h2', attribs }
-  //       return { tagName: 'h4', attribs: { ...attribs, 'data-level': '2' } }
-  //     },
-  //     h3: (_, attribs) => {
-  //       if (attribs['data-level']) return { tagName: 'h3', attribs }
-  //       return { tagName: 'h5', attribs: { ...attribs, 'data-level': '3' } }
-  //     },
-  //     h4: (_, attribs) => {
-  //       if (attribs['data-level']) return { tagName: 'h4', attribs }
-  //       return { tagName: 'h6', attribs: { ...attribs, 'data-level': '4' } }
-  //     },
-  //     h5: (_, attribs) => {
-  //       if (attribs['data-level']) return { tagName: 'h5', attribs }
-  //       return { tagName: 'h6', attribs: { ...attribs, 'data-level': '5' } }
-  //     },
-  //     h6: (_, attribs) => {
-  //       if (attribs['data-level']) return { tagName: 'h6', attribs }
-  //       return { tagName: 'h6', attribs: { ...attribs, 'data-level': '6' } }
-  //     },
-  //     img: (tagName, attribs) => {
-  //       if (attribs.src) {
-  //         attribs.src = resolveImageUrl(attribs.src, packageName, repoInfo)
-  //       }
-  //       return { tagName, attribs }
-  //     },
-  //     source: (tagName, attribs) => {
-  //       if (attribs.src) {
-  //         attribs.src = resolveImageUrl(attribs.src, packageName, repoInfo)
-  //       }
-  //       if (attribs.srcset) {
-  //         attribs.srcset = attribs.srcset
-  //           .split(',')
-  //           .map(entry => {
-  //             const parts = entry.trim().split(/\s+/)
-  //             const url = parts[0]
-  //             if (!url) return entry.trim()
-  //             const descriptor = parts[1]
-  //             const resolvedUrl = resolveImageUrl(url, packageName, repoInfo)
-  //             return descriptor ? `${resolvedUrl} ${descriptor}` : resolvedUrl
-  //           })
-  //           .join(', ')
-  //       }
-  //       return { tagName, attribs }
-  //     },
-  //     // Markdown links are fully processed in renderer.link (single-pass).
-  //     // However, inline HTML <a> tags inside paragraphs are NOT seen by
-  //     // renderer.html (marked parses them as paragraph tokens, not html tokens).
-  //     // So we still need to collect playground links here for those cases.
-  //     // The seenUrls set ensures no duplicates across both paths.
-  //     a: (tagName, attribs) => {
-  //       if (!attribs.href) {
-  //         return { tagName, attribs }
-  //       }
-
-  //       const resolvedHref = resolveUrl(attribs.href, packageName, repoInfo)
-
-  //       // Collect playground links from inline HTML <a> tags that weren't
-  //       // caught by renderer.link or renderer.html
-  //       const provider = matchPlaygroundProvider(resolvedHref)
-  //       if (provider && !seenUrls.has(resolvedHref)) {
-  //         seenUrls.add(resolvedHref)
-  //         collectedLinks.push({
-  //           url: resolvedHref,
-  //           provider: provider.id,
-  //           providerName: provider.name,
-  //           // sanitize-html transformTags doesn't provide element text content,
-  //           // so we fall back to the provider name for the label
-  //           label: provider.name,
-  //         })
-  //       }
-
-  //       // Add security attributes for external links (idempotent)
-  //       if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
-  //         attribs.rel = 'nofollow noreferrer noopener'
-  //         attribs.target = '_blank'
-  //       }
-  //       attribs.href = resolvedHref
-  //       return { tagName, attribs }
-  //     },
-  //     div: prefixId,
-  //     p: prefixId,
-  //     span: prefixId,
-  //     section: prefixId,
-  //     article: prefixId,
-  //   },
-  // })
 
   const sanitized = sanitizeRawHTML(rawHtml, {
     processImageUrl,

@@ -151,7 +151,7 @@ export const createImage = function (processImageUrl: ProcessImageUrlFn): Render
  * CommonMark requires a space after # for ATX headings, but many READMEs in the npm registry omit
  * this space. This extension allows marked to parse these headings the same way npm does.
  */
-export const MarkedHeadingExtension: TokenizerObject['heading'] = function (src: string) {
+export const markedHeadingExtension: TokenizerObject['heading'] = function (src: string) {
   // Only match headings where `#` is immediately followed by non-whitespace, non-`#` content.
   // Normal headings (with space) return false to fall through to marked's default tokenizer.
   const match = /^ {0,3}(#{1,6})([^\s#][^\n]*)(?:\n+|$)/.exec(src)
@@ -327,6 +327,7 @@ export function renderToRawHtml({
   renderer: Renderer
   markdownBody: string
   frontmatterHtml?: string
+  lastSemanticLevel?: number
 }) {
   // Strip trailing whitespace (tabs/spaces) from code block closing fences.
   // While marky-markdown handles these gracefully, marked fails to recognize
@@ -412,10 +413,12 @@ export function sanitizeRawHTML(
     processImageUrl,
     processLink,
     toUserContentId,
+    lastSemanticLevel = 2,
   }: {
     processImageUrl: ProcessImageUrlFn
     processLink: ProcessLinkFn
     toUserContentId: ToUserContentIdFn
+    lastSemanticLevel?: number
   },
 ) {
   // Helper to prefix id attributes with 'user-content-'
@@ -427,6 +430,11 @@ export function sanitizeRawHTML(
     }
     return { tagName, attribs }
   }
+
+  const h1 = `h${lastSemanticLevel + 1}`,
+    h2 = `h${lastSemanticLevel + 2}`,
+    h3 = `h${lastSemanticLevel + 3}`,
+    h4 = `h${lastSemanticLevel + 4}`
 
   return sanitizeHtml(rawHtml, {
     allowedTags: ALLOWED_TAGS,
@@ -446,19 +454,19 @@ export function sanitizeRawHTML(
       // we still apply a safe fallback shift.
       h1: (_, attribs) => {
         if (attribs['data-level']) return { tagName: 'h1', attribs }
-        return { tagName: 'h3', attribs: { ...attribs, 'data-level': '1' } }
+        return { tagName: h1, attribs: { ...attribs, 'data-level': '1' } }
       },
       h2: (_, attribs) => {
         if (attribs['data-level']) return { tagName: 'h2', attribs }
-        return { tagName: 'h4', attribs: { ...attribs, 'data-level': '2' } }
+        return { tagName: h2, attribs: { ...attribs, 'data-level': '2' } }
       },
       h3: (_, attribs) => {
         if (attribs['data-level']) return { tagName: 'h3', attribs }
-        return { tagName: 'h5', attribs: { ...attribs, 'data-level': '3' } }
+        return { tagName: h3, attribs: { ...attribs, 'data-level': '3' } }
       },
       h4: (_, attribs) => {
         if (attribs['data-level']) return { tagName: 'h4', attribs }
-        return { tagName: 'h6', attribs: { ...attribs, 'data-level': '4' } }
+        return { tagName: h4, attribs: { ...attribs, 'data-level': '4' } }
       },
       h5: (_, attribs) => {
         if (attribs['data-level']) return { tagName: 'h5', attribs }
