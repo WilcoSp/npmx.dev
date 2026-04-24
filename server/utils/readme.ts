@@ -11,6 +11,7 @@ import {
   MarkedHeadingExtension,
   renderToRawHtml,
   createImage,
+  sanitizeRawHTML,
 } from './mdKit'
 import matter from 'gray-matter'
 import { marked } from 'marked'

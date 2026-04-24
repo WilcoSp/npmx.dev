@@ -111,7 +111,7 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: To
       return url
     }
     // Prefix anchor links to match heading IDs (avoids collision with page IDs)
-    return toUserContentId(slugify(url.slice(1)))
+    return `#${toUserContentId(slugify(url.slice(1)))}`
   }
   if (hasProtocol(url, { acceptRelative: true })) {
     try {
