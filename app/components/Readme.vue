@@ -445,6 +445,11 @@ function handleClick(event: MouseEvent) {
   z-index: 1;
 }
 
+/* With defined width, height will be automatically calculated using the aspect ratio */
+.readme :deep(img[width]) {
+  height: auto;
+}
+
 .readme :deep(video) {
   height: revert-layer;
   display: revert-layer;

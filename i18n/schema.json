@@ -66,6 +66,15 @@
         },
         "brand": {
           "type": "string"
+        },
+        "resources": {
+          "type": "string"
+        },
+        "features": {
+          "type": "string"
+        },
+        "other": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -1136,6 +1145,27 @@
           "additionalProperties": false
         },
         "size_increase": {
+          "type": "object",
+          "properties": {
+            "title_size": {
+              "type": "string"
+            },
+            "title_deps": {
+              "type": "string"
+            },
+            "title_both": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string"
+            },
+            "deps": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "size_decrease": {
           "type": "object",
           "properties": {
             "title_size": {
