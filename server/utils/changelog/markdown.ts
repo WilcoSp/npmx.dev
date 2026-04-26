@@ -200,7 +200,11 @@ export function sanitizeRawHTML(
           return { tagName, attribs }
         }
 
-        const resolvedHref = resolveUrl(attribs.href, mdRepoInfo, idPrefix)
+        let resolvedHref = resolveUrl(attribs.href, mdRepoInfo, idPrefix)
+
+        if (resolvedHref.startsWith('$')) {
+          resolvedHref = resolvedHref.replace('$', '')
+        }
 
         // Add security attributes for external links
         if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
@@ -247,7 +251,8 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
       if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
         // Redirect npmjs urls to ourself
         if (isNpmJsUrlThatCanBeRedirected(parsed)) {
-          return parsed.pathname + parsed.search + parsed.hash
+          // prefixing with $ to prevent sanitizing pass of making the route git based instead of npmx based
+          return '$' + parsed.pathname + parsed.search + parsed.hash
         }
         return url
       }
