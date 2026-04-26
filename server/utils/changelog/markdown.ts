@@ -178,5 +178,5 @@ function checkResolvedUrl(resolved: string, baseUrl: string) {
   if (resolved.startsWith(baseUrl)) {
     return resolved
   }
-  return joinRelativeURL(baseUrl, parseFilename(resolved)!)
+  return joinRelativeURL(baseUrl, parseFilename(resolved) ?? '')
 }
