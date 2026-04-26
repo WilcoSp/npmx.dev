@@ -20,8 +20,6 @@ import { marked } from 'marked'
 import { hasProtocol, joinRelativeURL, parseFilename } from 'ufo'
 import { convertToEmoji } from '#shared/utils/emoji'
 
-// const EMAIL_REGEX = /^[\w+\-.]+@[\w\-.]+\.[a-z]+$/i
-
 export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
   const renderer = new marked.Renderer({
     gfm: true,
@@ -125,7 +123,7 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: To
       if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
         // Redirect npmjs urls to ourself
         if (isNpmJsUrlThatCanBeRedirected(parsed)) {
-          // adding $ infront to prevent sanitizing pass of making the route git based instead of npmx based
+          // prefixing with $ to prevent sanitizing pass of making the route git based instead of npmx based
           return '$' + parsed.pathname + parsed.search + parsed.hash
         }
         return url
