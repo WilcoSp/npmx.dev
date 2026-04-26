@@ -111,7 +111,7 @@ export interface MarkdownRepoInfo {
 }
 
 function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: ToUserContentIdFn) {
-  if (!url) return url
+  if (!url || url.startsWith('$')) return url
   if (url.startsWith('#')) {
     if (url.startsWith(`#${USER_CONTENT_PREFIX}`)) {
       return url
@@ -125,7 +125,8 @@ function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: To
       if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
         // Redirect npmjs urls to ourself
         if (isNpmJsUrlThatCanBeRedirected(parsed)) {
-          return parsed.pathname + parsed.search + parsed.hash
+          // adding $ infront to prevent sanitizing pass of making the route git based instead of npmx based
+          return '$' + parsed.pathname + parsed.search + parsed.hash
         }
         return url
       }

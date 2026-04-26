@@ -36,7 +36,7 @@ function changelogMdInfoWithPath() {
   }
 }
 
-describe('Markdown File URL Resolution', () => {
+describe('URL Resolution', () => {
   describe('resolves from /markdown.md & releases', () => {
     it('resolves relative .md links to blob URL for rendered viewing', async () => {
       const info = changelogMdinfo()
@@ -212,6 +212,115 @@ describe('Markdown File URL Resolution', () => {
       expect(result.html).toContain(
         'href="https://raw.githubusercontent.com/test-owner/test-repo/HEAD/LICENSE"',
       )
+    })
+  })
+
+  describe('resolves full urls', () => {
+    it('leaves absolute .md URLs unchanged', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[External Guide](https://example.com/guide.md)`
+      const result = renderer(markdown)
+      expect(result.html).toContain('href="https://example.com/guide.md"')
+    })
+
+    it('leaves absolute non-.md URLs unchanged', async () => {
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const markdown = `[Docs](https://docs.example.com/)`
+      const result = renderer(markdown)
+      expect(result.html).toContain('href="https://docs.example.com/"')
+    })
+  })
+
+  describe('anchor links', () => {
+    describe('for changelog.md', () => {
+      it('prefixes anchor links with user-content-', async () => {
+        const info = changelogMdinfo()
+        const renderer = await changelogRenderer(info)
+
+        const markdown = `[Jump to section](#installation)`
+        const result = renderer(markdown)
+
+        expect(result.html).toContain('href="#user-content-installation"')
+      })
+
+      it('normalizes mixed-case heading fragments to lowercase slugs', async () => {
+        const info = changelogMdinfo()
+        const renderer = await changelogRenderer(info)
+        const markdown = `[Associations section](#Associations)`
+        const result = renderer(markdown)
+
+        expect(result.html).toContain('href="#user-content-associations"')
+      })
+    })
+
+    describe('for releases', () => {
+      it('prefixes anchor links with user-content-', async () => {
+        const info = changelogMdinfo()
+        const renderer = await changelogRenderer(info)
+
+        const markdown = `[Jump to section](#installation)`
+        const result = renderer(markdown, '123456789')
+
+        expect(result.html).toContain('href="#user-content-123456789-installation"')
+      })
+
+      it('normalizes mixed-case heading fragments to lowercase slugs', async () => {
+        const info = changelogMdinfo()
+        const renderer = await changelogRenderer(info)
+        const markdown = `[Associations section](#Associations)`
+        const result = renderer(markdown, 123456789)
+
+        expect(result.html).toContain('href="#user-content-123456789-associations"')
+      })
+    })
+  })
+
+  describe('npm.js urls', () => {
+    it('redirects npmjs.com urls to local', async () => {
+      const markdown = `[Some npmjs.com link](https://www.npmjs.com/package/test-pkg)`
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const result = renderer(markdown)
+
+      expect(result.html).toContain('href="/package/test-pkg"')
+    })
+
+    it('redirects npmjs.com urls to local (no www and http)', async () => {
+      const markdown = `[Some npmjs.com link](http://npmjs.com/package/test-pkg)`
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const result = renderer(markdown)
+
+      expect(result.html).toContain('href="/package/test-pkg"')
+    })
+
+    it('does not redirect npmjs.com to local if they are in the list of exceptions', async () => {
+      const markdown = `[Root Contributing](https://www.npmjs.com/products)`
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const result = renderer(markdown)
+
+      expect(result.html).toContain('href="https://www.npmjs.com/products"')
+    })
+
+    it('redirects npmjs.org urls to local', async () => {
+      const markdown = `[Some npmjs.org link](https://www.npmjs.org/package/test-pkg)`
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const result = renderer(markdown)
+
+      expect(result.html).toContain('href="/package/test-pkg"')
+    })
+
+    it('redirects npmjs.org urls to local (no www and http)', async () => {
+      const markdown = `[Some npmjs.org link](http://npmjs.org/package/test-pkg)`
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      const result = renderer(markdown)
+
+      expect(result.html).toContain('href="/package/test-pkg"')
     })
   })
 })

@@ -511,7 +511,12 @@ export function sanitizeRawHTML(
           return { tagName, attribs }
         }
 
-        const { resolvedHref } = processLink(attribs.href, '')
+        let { resolvedHref } = processLink(attribs.href, '')
+
+        // for changelog all routes are orianted around the git provider, prefixing with $ set it to npmx
+        if (resolvedHref.startsWith('$')) {
+          resolvedHref = resolvedHref.replace('$', '')
+        }
 
         // Add security attributes for external links (idempotent)
         if (resolvedHref && hasProtocol(resolvedHref, { acceptRelative: true })) {
