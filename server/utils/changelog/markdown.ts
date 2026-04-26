@@ -237,7 +237,7 @@ interface MarkdownRepoInfo {
 }
 
 function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, idPrefix: string) {
-  if (!url) return url
+  if (!url || url.startsWith('$')) return url
   if (url.startsWith('#')) {
     if (url.startsWith('#user-content')) {
       return url
