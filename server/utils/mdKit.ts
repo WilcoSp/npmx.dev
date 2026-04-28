@@ -182,10 +182,14 @@ export const USER_CONTENT_PREFIX = 'user-content-'
 // README h1 always becomes h3
 // For deeper levels, ensure sequential order
 // Don't allow jumping more than 1 level deeper than previous
-export function calculateSemanticDepth(depth: number, lastSemanticLevel: number) {
-  if (depth === 1) return 3
+export function calculateSemanticDepth(
+  depth: number,
+  lastSemanticLevel: number,
+  minSemanticLevel: number,
+) {
+  if (depth === 1) return minSemanticLevel + 1
   const maxAllowed = Math.min(lastSemanticLevel + 1, 6)
-  return Math.min(depth + 2, maxAllowed)
+  return Math.min(depth + minSemanticLevel, maxAllowed)
 }
 
 export function getHeadingPlainText(text: string): string {
@@ -213,6 +217,7 @@ export function createHeading(options: {
   toUserContentId: ToUserContentIdFn
 }) {
   let { lastSemanticLevel = 2, toUserContentId } = options
+  const minSemanticLevel = lastSemanticLevel
   const toc: TocItem[] = []
   const usedSlugs = new Map<string, number>()
 
@@ -233,7 +238,7 @@ export function createHeading(options: {
     slugSource: string,
     preservedAttrs = '',
   ) {
-    const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel)
+    const semanticLevel = calculateSemanticDepth(depth, lastSemanticLevel, minSemanticLevel)
     lastSemanticLevel = semanticLevel
 
     let slug = slugify(slugSource)
@@ -351,6 +356,7 @@ export const ALLOWED_ATTR: Record<string, string[]> = {
   'button': ['class', 'title', 'type', 'aria-label', 'data-copy'],
   'th': ['colspan', 'rowspan', 'align', 'valign', 'width'],
   'td': ['colspan', 'rowspan', 'align', 'valign', 'width'],
+  'h2': ['data-level', 'align'],
   'h3': ['data-level', 'align'],
   'h4': ['data-level', 'align'],
   'h5': ['data-level', 'align'],

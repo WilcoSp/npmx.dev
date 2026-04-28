@@ -324,3 +324,185 @@ describe('URL Resolution', () => {
     })
   })
 })
+
+describe('Heading & toc resolution', () => {
+  describe('for markdown.md', () => {
+    it('should resolve heading starting from h2 & return to h3 at depth 2 correctly', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `# Vue
+##v3
+###v3.5
+#### v3.5.33
+##### Features
+###### Notes
+##v2
+###v2.7
+#### v2.7.15
+##### Bug fixes
+###### Notes`
+      const result = renderer(markdown)
+
+      expect(result.html)
+        .toBe(`<h2 id="user-content-vue" data-level="1"><a href="#user-content-vue">Vue</a></h2>
+<h3 id="user-content-v3" data-level="2"><a href="#user-content-v3">v3</a></h3>
+<h4 id="user-content-v35" data-level="3"><a href="#user-content-v35">v3.5</a></h4>
+<h5 id="user-content-v3533" data-level="4"><a href="#user-content-v3533">v3.5.33</a></h5>
+<h6 id="user-content-features" data-level="5"><a href="#user-content-features">Features</a></h6>
+<h6 id="user-content-notes" data-level="6"><a href="#user-content-notes">Notes</a></h6>
+<h3 id="user-content-v2" data-level="2"><a href="#user-content-v2">v2</a></h3>
+<h4 id="user-content-v27" data-level="3"><a href="#user-content-v27">v2.7</a></h4>
+<h5 id="user-content-v2715" data-level="4"><a href="#user-content-v2715">v2.7.15</a></h5>
+<h6 id="user-content-bug-fixes" data-level="5"><a href="#user-content-bug-fixes">Bug fixes</a></h6>
+<h6 id="user-content-notes-1" data-level="6"><a href="#user-content-notes-1">Notes</a></h6>
+`)
+      expect(result.toc).toEqual([
+        {
+          depth: 1,
+          id: 'user-content-vue',
+          text: 'Vue',
+        },
+        {
+          depth: 2,
+          id: 'user-content-v3',
+          text: 'v3',
+        },
+        {
+          depth: 3,
+          id: 'user-content-v35',
+          text: 'v3.5',
+        },
+        {
+          depth: 4,
+          id: 'user-content-v3533',
+          text: 'v3.5.33',
+        },
+        {
+          depth: 5,
+          id: 'user-content-features',
+          text: 'Features',
+        },
+        {
+          depth: 6,
+          id: 'user-content-notes',
+          text: 'Notes',
+        },
+        {
+          depth: 2,
+          id: 'user-content-v2',
+          text: 'v2',
+        },
+        {
+          depth: 3,
+          id: 'user-content-v27',
+          text: 'v2.7',
+        },
+        {
+          depth: 4,
+          id: 'user-content-v2715',
+          text: 'v2.7.15',
+        },
+        {
+          depth: 5,
+          id: 'user-content-bug-fixes',
+          text: 'Bug fixes',
+        },
+        {
+          depth: 6,
+          id: 'user-content-notes-1',
+          text: 'Notes',
+        },
+      ])
+    })
+  })
+
+  describe('for releases', () => {
+    it('should resolve heading starting from h3 & return to h4 at depth 2 correctly', async () => {
+      const info = changelogMdInfoWithPath()
+      const renderer = await changelogRenderer(info)
+      const markdown = `# Vue
+##v3
+###v3.5
+#### v3.5.33
+##### Features
+###### Notes
+##v2
+###v2.7
+#### v2.7.15
+##### Bug fixes
+###### Notes`
+      const result = renderer(markdown, 123456789)
+
+      expect(result.html)
+        .toBe(`<h3 id="user-content-123456789-vue" data-level="1"><a href="#user-content-123456789-vue">Vue</a></h3>
+<h4 id="user-content-123456789-v3" data-level="2"><a href="#user-content-123456789-v3">v3</a></h4>
+<h5 id="user-content-123456789-v35" data-level="3"><a href="#user-content-123456789-v35">v3.5</a></h5>
+<h6 id="user-content-123456789-v3533" data-level="4"><a href="#user-content-123456789-v3533">v3.5.33</a></h6>
+<h6 id="user-content-123456789-features" data-level="5"><a href="#user-content-123456789-features">Features</a></h6>
+<h6 id="user-content-123456789-notes" data-level="6"><a href="#user-content-123456789-notes">Notes</a></h6>
+<h4 id="user-content-123456789-v2" data-level="2"><a href="#user-content-123456789-v2">v2</a></h4>
+<h5 id="user-content-123456789-v27" data-level="3"><a href="#user-content-123456789-v27">v2.7</a></h5>
+<h6 id="user-content-123456789-v2715" data-level="4"><a href="#user-content-123456789-v2715">v2.7.15</a></h6>
+<h6 id="user-content-123456789-bug-fixes" data-level="5"><a href="#user-content-123456789-bug-fixes">Bug fixes</a></h6>
+<h6 id="user-content-123456789-notes-1" data-level="6"><a href="#user-content-123456789-notes-1">Notes</a></h6>
+`)
+      expect(result.toc).toEqual([
+        {
+          depth: 1,
+          id: 'user-content-123456789-vue',
+          text: 'Vue',
+        },
+        {
+          depth: 2,
+          id: 'user-content-123456789-v3',
+          text: 'v3',
+        },
+        {
+          depth: 3,
+          id: 'user-content-123456789-v35',
+          text: 'v3.5',
+        },
+        {
+          depth: 4,
+          id: 'user-content-123456789-v3533',
+          text: 'v3.5.33',
+        },
+        {
+          depth: 5,
+          id: 'user-content-123456789-features',
+          text: 'Features',
+        },
+        {
+          depth: 6,
+          id: 'user-content-123456789-notes',
+          text: 'Notes',
+        },
+        {
+          depth: 2,
+          id: 'user-content-123456789-v2',
+          text: 'v2',
+        },
+        {
+          depth: 3,
+          id: 'user-content-123456789-v27',
+          text: 'v2.7',
+        },
+        {
+          depth: 4,
+          id: 'user-content-123456789-v2715',
+          text: 'v2.7.15',
+        },
+        {
+          depth: 5,
+          id: 'user-content-123456789-bug-fixes',
+          text: 'Bug fixes',
+        },
+        {
+          depth: 6,
+          id: 'user-content-123456789-notes-1',
+          text: 'Notes',
+        },
+      ])
+    })
+  })
+})
