@@ -326,7 +326,7 @@ describe('URL Resolution', () => {
 })
 
 describe('Heading & toc resolution', () => {
-  describe('for markdown.md', () => {
+  describe('for markdown.md headings', () => {
     it('should resolve heading starting from h2 & return to h3 at depth 2 correctly', async () => {
       const info = changelogMdInfoWithPath()
       const renderer = await changelogRenderer(info)
@@ -416,7 +416,7 @@ describe('Heading & toc resolution', () => {
     })
   })
 
-  describe('for releases', () => {
+  describe('for releases headings', () => {
     it('should resolve heading starting from h3 & return to h4 at depth 2 correctly', async () => {
       const info = changelogMdInfoWithPath()
       const renderer = await changelogRenderer(info)
@@ -504,5 +504,16 @@ describe('Heading & toc resolution', () => {
         },
       ])
     })
+  })
+
+  it("shouldn't resolve package@version to an email", async () => {
+    const info = changelogMdInfoWithPath()
+    const renderer = await changelogRenderer(info)
+    const markdown = '## test-pkg@1.0.0'
+    const result = renderer(markdown)
+
+    expect(result.html).toBe(
+      '<h2 id="user-content-test-pkg100" data-level="2"><a href="#user-content-test-pkg100">test-pkg@1.0.0</a></h2>\n',
+    )
   })
 })
