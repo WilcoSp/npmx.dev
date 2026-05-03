@@ -340,8 +340,8 @@ export function computeLineChartAnalysis(values: Array<number | null>): LineChar
 
     /**
      * Coefficient of variation : relative volatility
-     * - expressed in %
-     * - calculation: standard devialtion / mean
+     * - expressed as a decimal from 0 to 1
+     * - calculation: standard deviation / mean
      * |---------------|----------------------------------------------------------|
      * | VALUE         | INTERPRETATION                                           |
      * |---------------|----------------------------------------------------------|
