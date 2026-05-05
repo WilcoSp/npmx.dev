@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Theme as VueDataUiTheme, VueUiXyConfig, VueUiXyDatasetItem } from 'vue-data-ui'
-import { VueUiXy } from 'vue-data-ui/vue-ui-xy'
+import type { Theme as VueDataUiTheme } from 'vue-data-ui'
+import { VueUiXy, type VueUiXyConfig, type VueUiXyDatasetItem } from 'vue-data-ui/vue-ui-xy'
 import { useDebounceFn, useElementSize, useTimeoutFn } from '@vueuse/core'
 import { useCssVariables } from '~/composables/useColors'
 import { OKLCH_NEUTRAL_FALLBACK, transparentizeOklch, lightenOklch } from '~/utils/colors'
@@ -1077,7 +1077,8 @@ const normalisedDataset = computed(() => {
   const lastDateMs = chartData.value.dates.at(-1) ?? 0
   const isAbsoluteMetric = selectedMetric.value === 'contributors'
 
-  return chartData.value.dataset?.map(d => {
+  // oxlint-disable-next-line oxc-no-map-spread
+  return (chartData.value.dataset || []).map(d => {
     const series = applyDataPipeline(
       d.series.map(v => v ?? 0),
       {
@@ -1190,7 +1191,7 @@ function drawEstimationLine(svg: Record<string, any>) {
 
     /**
      * The following svg elements are injected in the #svg slot of VueUiXy:
-     * - a line overlay covering the plain path bewteen the last datapoint and its ancestor
+     * - a line overlay covering the plain path between the last datapoint and its ancestor
      * - a dashed line connecting the last datapoint to its ancestor
      * - a circle for the last datapoint
      */
@@ -1280,9 +1281,9 @@ function drawLastDatapointLabel(svg: Record<string, any>) {
 
 /**
  * Build and return a legend to be injected during the SVG export only, since the custom legend is
- * displayed as an independant div, content has to be injected within the chart's viewBox.
+ * displayed as an independent div, content has to be injected within the chart's viewBox.
  *
- * Legend items are displayed in a column, on the top left of the chart.
+ * Legend items are displayed in a column, at the top left of the chart.
  */
 function drawSvgPrintLegend(svg: Record<string, any>) {
   const data = Array.isArray(svg?.data) ? svg.data : []
@@ -1416,7 +1417,7 @@ const chartConfig = computed<VueUiXyConfig>(() => {
           svg: $t('package.trends.download_file', { fileType: 'SVG' }),
           annotator: $t('package.trends.toggle_annotator'),
           stack: $t('package.trends.toggle_stack_mode'),
-          altCopy: $t('package.trends.copy_alt.button_label'), // Do not make this text dependant on the `copied` variable, since this would re-render the component, which is undesirable if the minimap was used to select a time frame.
+          altCopy: $t('package.trends.copy_alt.button_label'), // Do not make this text dependent on the `copied` variable, since this would re-render the component, which is undesirable if the minimap was used to select a time frame.
           open: $t('package.trends.open_options'),
           close: $t('package.trends.close_options'),
         },
