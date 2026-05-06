@@ -34,8 +34,11 @@ if (import.meta.client) {
       }
       // lc = lower case
       const lcRequestedVersion = goToVersion.toLowerCase()
+      const isMatching = createHeadingVersionMatcher(lcRequestedVersion)
+
       for (const item of toc) {
-        if (item.text.toLowerCase().includes(lcRequestedVersion)) {
+        const lText = item.text.toLowerCase()
+        if (lText.toLowerCase().includes(lcRequestedVersion) && isMatching(lText)) {
           navigateTo(`#${item.id}`)
           return
         }
