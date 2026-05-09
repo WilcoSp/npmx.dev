@@ -52,6 +52,10 @@ export interface AppSettings {
     anomaliesFixed: boolean
     predictionPoints: number
   }
+  timelineChart: {
+    isZeroBased: boolean
+    showZoom: boolean
+  }
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
@@ -79,6 +83,10 @@ const DEFAULT_SETTINGS: AppSettings = {
     smoothingTau: 0,
     anomaliesFixed: true,
     predictionPoints: 4,
+  },
+  timelineChart: {
+    isZeroBased: false,
+    showZoom: false,
   },
 }
 
