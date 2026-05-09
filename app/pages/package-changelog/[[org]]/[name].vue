@@ -25,7 +25,6 @@ if (import.meta.server) {
   assertValidPackageName(packageName.value)
 }
 
-// status: resolvedStatus
 const {
   data: version,
   pending: resolvingPending,
@@ -98,15 +97,7 @@ defineOgImage(
   {
     title: () => `${packageName.value ?? 'Package'} - Changelogs`,
   },
-  [
-    { key: 'og', alt: () => `npm package ${packageName.value} changelogs` },
-    {
-      key: 'whatsapp',
-      width: 800,
-      height: 800,
-      alt: () => `npm package ${packageName.value} changelogs`,
-    },
-  ],
+  { alt: () => `npm package ${packageName.value} changelogs` },
 )
 </script>
 <template>
