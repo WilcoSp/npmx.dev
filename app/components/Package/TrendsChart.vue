@@ -2,7 +2,7 @@
 import type { Theme as VueDataUiTheme } from 'vue-data-ui'
 import { VueUiXy, type VueUiXyConfig, type VueUiXyDatasetItem } from 'vue-data-ui/vue-ui-xy'
 import { useDebounceFn, useElementSize, useTimeoutFn } from '@vueuse/core'
-import { useCssVariables } from '~/composables/useColors'
+import { useColors } from '~/composables/useColors'
 import { OKLCH_NEUTRAL_FALLBACK, transparentizeOklch, lightenOklch } from '~/utils/colors'
 import { getFrameworkColor, isListedFramework } from '~/utils/frameworks'
 import { drawNpmxLogoAndTaglineWatermark } from '~/composables/useChartWatermark'
@@ -92,23 +92,7 @@ onMounted(async () => {
   loadMetric(selectedMetric.value)
 })
 
-const { colors } = useCssVariables(
-  [
-    '--bg',
-    '--fg',
-    '--bg-subtle',
-    '--bg-elevated',
-    '--fg-subtle',
-    '--fg-muted',
-    '--border',
-    '--border-subtle',
-  ],
-  {
-    element: rootEl,
-    watchHtmlAttributes: true,
-    watchResize: false,
-  },
-)
+const { colors } = useColors(rootEl)
 
 watch(
   () => colorMode.value,
@@ -1390,6 +1374,8 @@ watch(
 
 const tooltipPosition = useChartTooltipPosition(chartRef)
 
+const keepZoomState = shallowRef(true)
+
 // VueUiXy chart component configuration
 const chartConfig = computed<VueUiXyConfig>(() => {
   return {
@@ -1589,7 +1575,7 @@ const chartConfig = computed<VueUiXyConfig>(() => {
         maxWidth: isMobile.value ? 350 : 500,
         highlightColor: colors.value.bgElevated,
         useResetSlot: true,
-        keepState: true,
+        keepState: keepZoomState.value,
         minimap: {
           show: true,
           lineColor: '#FAFAFA',
@@ -1640,6 +1626,28 @@ const isSparklineLayout = computed({
   set: (v: boolean) => {
     chartLayout.value = v ? 'split' : 'combined'
   },
+})
+
+const { start: resetZoomState } = useTimeoutFn(
+  () => {
+    keepZoomState.value = true
+  },
+  1000,
+  { immediate: false },
+)
+
+async function resetZoom() {
+  keepZoomState.value = false
+  await nextTick()
+  chartRef.value?.resetZoom?.()
+  resetZoomState()
+}
+
+onMounted(resetZoom)
+
+watch([selectedGranularity, startDate, endDate], async () => {
+  if (!isMounted.value) return
+  await resetZoom()
 })
 </script>
 
