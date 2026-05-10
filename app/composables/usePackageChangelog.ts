@@ -6,7 +6,7 @@ export function usePackageChangelog(
 ) {
   return useLazyFetch<ChangelogInfo | null>(() => {
     const name = toValue(packageName)
-    if (!name) return 'data:text/json,null' // returns null
+    if (!name) return 'data:application/json,null' // returns null
     const ver = toValue(version)
     return `/api/changelog/info/${name}/v/${ver || 'latest'}`
   })
