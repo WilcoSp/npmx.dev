@@ -93,6 +93,20 @@ export function useCommandPalettePackageCommands(
           activeLabel: activeLabel(route.name === 'code', t('command_palette.here')),
           to: codeLink,
         },
+        {
+          id: 'package-timeline',
+          group: 'package',
+          label: t('package.links.timeline'),
+          keywords: [
+            resolvedContext.packageName,
+            t('shortcuts.open_timeline'),
+            t('package.links.timeline'),
+          ],
+          iconClass: 'i-lucide:history',
+          active: route.name === 'timeline',
+          activeLabel: activeLabel(route.name === 'timeline', t('command_palette.here')),
+          to: packageTimelineRoute(resolvedContext.packageName, resolvedContext.resolvedVersion),
+        },
       ]
 
       const uChangelog = changelog.value
