@@ -23,7 +23,7 @@ const matchingDateReleases = computed(() => {
     if (!release.publishedAt) {
       return
     }
-    return requestedDate === toIsoDate(new Date(release.publishedAt))
+    return requestedDate === release.publishedAt.slice(0, 10)
   })
 })
 

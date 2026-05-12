@@ -1,9 +1,5 @@
-import type {
-  ChangelogMarkdownInfo,
-  ChangelogInfo,
-  ChangelogReleaseInfo,
-} from '~~/shared/types/changelog'
-import type { FetchError } from 'ofetch'
+import type { ChangelogMarkdownInfo, ChangelogInfo } from '~~/shared/types/changelog'
+import { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
 import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
@@ -68,50 +64,49 @@ async function checkReleases(
 const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()(.*?)(?=\))/i
 const ROOT_ONLY_REGEX = /^\/[^/]+$/
 
-function checkLatestGithubRelease(
+async function checkLatestGithubRelease(
   ref: RepoRef,
   directory?: string,
 ): Promise<ChangelogInfo | false | Error> {
-  return $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
-    .then(r => {
-      const { release } = v.parse(v.object({ release: GithubReleaseSchama }), r)
+  try {
+    const response = await $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
 
-      const matchedChangelog = release.markdown?.match(MD_REGEX)?.at(0)
+    const { release } = v.parse(v.object({ release: GithubReleaseSchama }), response)
 
-      // if no changelog.md or the url doesn't contain /blob/
-      if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
-        return {
-          provider: ref.provider,
-          type: 'release',
-          repo: `${ref.owner}/${ref.repo}`,
-          link: `https://github.com/${ref.owner}/${ref.repo}/releases`,
-        } satisfies ChangelogReleaseInfo
-      }
+    const matchedChangelog = release.markdown?.match(MD_REGEX)?.at(0)
 
-      const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
-
-      if (directory && !(path.startsWith(directory) || ROOT_ONLY_REGEX.test(path))) {
-        return false as const
-      }
+    // if no changelog.md or the url doesn't contain /blob/
+    if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
       return {
         provider: ref.provider,
-        type: 'md',
-        path,
+        type: 'release',
         repo: `${ref.owner}/${ref.repo}`,
-        link: matchedChangelog,
-      } satisfies ChangelogMarkdownInfo
-    })
-    .catch((e: FetchError) => {
-      if (e.statusCode === 403 || e.statusCode === 429) {
-        // with 403/429 ungh.cc has exhausted it's api keys, returning error to indicate this
-        return createError({
-          statusCode: 502,
-          statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
-        })
+        link: `https://github.com/${ref.owner}/${ref.repo}/releases`,
       }
+    }
 
+    const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
+
+    if (directory && !(path.startsWith(directory) || ROOT_ONLY_REGEX.test(path))) {
       return false as const
-    })
+    }
+    return {
+      provider: ref.provider,
+      type: 'md',
+      path,
+      repo: `${ref.owner}/${ref.repo}`,
+      link: matchedChangelog,
+    }
+  } catch (e) {
+    if (e instanceof FetchError && (e.statusCode === 403 || e.statusCode === 429)) {
+      return createError({
+        statusCode: 502,
+        statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
+      })
+    }
+  }
+
+  return false as const
 }
 
 /// changelog markdown

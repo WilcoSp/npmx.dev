@@ -34,7 +34,7 @@ export default defineCachedEventHandler(
       }
     } catch (error) {
       handleApiError(error, {
-        statusCode: 502,
+        statusCode: 500,
         message: ERROR_CHANGELOG_RELEASES_FAILED,
       })
     }
