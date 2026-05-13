@@ -1,6 +1,6 @@
 import type { ChangelogInfo } from '~~/shared/types/changelog'
 
-const key = 'changelog:info'
+const key = 'changelog:has:info'
 
 export function usePackageChangelog(
   packageName: MaybeRefOrGetter<string>,
