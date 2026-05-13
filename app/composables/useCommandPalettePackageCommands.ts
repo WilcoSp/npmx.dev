@@ -27,10 +27,7 @@ export function useCommandPalettePackageCommands(
       .includes(packageName)
   }
 
-  const { data: changelog } = usePackageChangelog(
-    () => toValue(context)?.packageName,
-    () => toValue(context)?.resolvedVersion,
-  )
+  const hasChangelog = usePackageHasChangelogFromState()
 
   useCommandPaletteContextCommands(
     computed((): CommandPaletteContextCommandInput[] => {
@@ -109,8 +106,7 @@ export function useCommandPalettePackageCommands(
         },
       ]
 
-      const uChangelog = changelog.value
-      if (uChangelog?.type === 'md' || uChangelog?.type === 'release') {
+      if (hasChangelog.value) {
         commands.push({
           id: 'package-changelog',
           group: 'package',
