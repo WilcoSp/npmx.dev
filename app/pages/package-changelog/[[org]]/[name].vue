@@ -130,48 +130,32 @@ defineOgImage(
         </div>
       </div>
       <section v-if="!changelog && !changelogError" class="flex flex-col gap-2 py-3">
-        <SkeletonBlock class="h-8 w-40 rounded" />
-        <ul class="ms-3 list-disc my-4 ps-6 marker:color-[--border-hover]">
-          <li class="mb-1" v-for="_n in 5">
-            <SkeletonBlock class="h-7 w-full max-w-2xl rounded" />
-          </li>
-        </ul>
-
-        <SkeletonBlock class="h-5 w-5/6 max-w-2xl rounded" />
-        <SkeletonBlock class="h-5 w-3/4 max-w-2xl rounded" />
+        <ChangelogSkeleton />
       </section>
 
-      <Suspense v-else-if="changelog">
-        <template #default>
-          <LazyChangelogReleases
-            v-if="changelog?.type === 'release'"
-            :info="changelog"
-            :requested-date="versionDate"
-            :goToVersion="requestedVersion && version"
-            :resolveVersionPending="resolvingPending"
-            #error
-          >
-            <LazyChangelogErrorMsg
-              :pkgName="pkg?.name"
-              :changelog-link="changelog.link"
-              :viewOnGit
-            />
-          </LazyChangelogReleases>
-          <LazyChangelogMarkdown
-            v-else-if="changelog?.type === 'md'"
-            :info="changelog"
-            :tpTarget="tptoc"
-            :goToVersion="requestedVersion && version"
-            :resolveVersionPending="resolvingPending"
-            #error
-          >
-            <LazyChangelogErrorMsg
-              :pkgName="pkg?.name"
-              :changelog-link="changelog.link"
-              :viewOnGit
-            />
-          </LazyChangelogMarkdown>
-        </template>
+      <!-- <Suspense v-else-if="changelog"> 
+        <template #default>-->
+      <LazyChangelogReleases
+        v-if="changelog?.type === 'release'"
+        :info="changelog"
+        :requested-date="versionDate"
+        :goToVersion="requestedVersion && version"
+        :resolveVersionPending="resolvingPending"
+        #error
+      >
+        <LazyChangelogErrorMsg :pkgName="pkg?.name" :changelog-link="changelog.link" :viewOnGit />
+      </LazyChangelogReleases>
+      <LazyChangelogMarkdown
+        v-else-if="changelog?.type === 'md'"
+        :info="changelog"
+        :tpTarget="tptoc"
+        :goToVersion="requestedVersion && version"
+        :resolveVersionPending="resolvingPending"
+        #error
+      >
+        <LazyChangelogErrorMsg :pkgName="pkg?.name" :changelog-link="changelog.link" :viewOnGit />
+      </LazyChangelogMarkdown>
+      <!-- </template>
         <template #fallback>
           <section class="flex flex-col gap-2 py-3">
             <SkeletonBlock class="h-8 w-40 rounded" />
@@ -185,7 +169,7 @@ defineOgImage(
             <SkeletonBlock class="h-5 w-3/4 max-w-2xl rounded" />
           </section>
         </template>
-      </Suspense>
+      </Suspense> -->
       <!-- error handling -->
       <p class="mt-5" v-else-if="changelogError?.statusMessage == ERROR_UNGH_API_KEY_EXHAUSTED">
         {{ $t('changelog.rate_limit_ungh') }}

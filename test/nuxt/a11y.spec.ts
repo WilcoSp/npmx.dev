@@ -162,6 +162,7 @@ import {
   LinkBase,
   CallToAction,
   ChangelogCard,
+  ChangelogSkeleton,
   ChangelogErrorMsg,
   CodeDirectoryListing,
   CodeFileTree,
@@ -2650,6 +2651,12 @@ describe('component accessibility audits', () => {
           tocHeaderClass: 'toc',
         },
       })
+      const results = await runAxe(component)
+      expect(results.violations).toEqual([])
+    })
+
+    it('ChangelogSkeleton', async () => {
+      const component = await mountSuspended(ChangelogSkeleton)
       const results = await runAxe(component)
       expect(results.violations).toEqual([])
     })
