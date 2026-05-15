@@ -87,7 +87,14 @@ async function checkLatestGithubRelease(
 
     const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
 
-    if (directory && !(path.startsWith(directory) || ROOT_ONLY_REGEX.test(path))) {
+    // makes sure that the correct directory is matched
+    if (
+      directory &&
+      !(
+        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+        ROOT_ONLY_REGEX.test(path)
+      )
+    ) {
       return false as const
     }
     return {

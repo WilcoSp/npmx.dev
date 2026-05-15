@@ -200,7 +200,7 @@ export function getHeadingSlugSource(text: string): string {
   return stripHtmlTags(text).trim()
 }
 
-const htmlAnchorRe = /<a(\s[^>]*?)href=(["'])([^"']*)\2([^>]*)>([\s\S]*?)<\/a>/i
+const htmlAnchorRe = /<a(\s[^>]*?)href=(["'])([^"']*)\2([^>]*)>([\s\S]*?)<\/a>/gi
 
 export type ToUserContentIdFn = (id: string) => string
 
@@ -255,8 +255,8 @@ export function createHeading(options: {
 
     // The browser doesn't support anchors within anchors and automatically extracts them from each other,
     // causing a hydration error. To prevent this from happening in such cases, we use the anchor separately
-    if (htmlAnchorRe.test(displayHtml)) {
-      return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}>${displayHtml}<a href="#${id}"></a></h${semanticLevel}>\n`
+    if (displayHtml.match(htmlAnchorRe)?.length) {
+      return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}>${displayHtml}<a href="#${id}" aria-hidden="true" tabindex="-1"></a></h${semanticLevel}>\n`
     }
 
     return `<h${semanticLevel} id="${id}" data-level="${depth}"${preservedAttrs}><a href="#${id}">${displayHtml}</a></h${semanticLevel}>\n`
@@ -350,7 +350,7 @@ export function renderToRawHtml({
 
 export const ALLOWED_ATTR: Record<string, string[]> = {
   '*': ['id'], // Allow id on all tags
-  'a': ['href', 'title', 'target', 'rel'],
+  'a': ['href', 'title', 'target', 'rel', 'tabindex', 'aria-hidden'],
   'img': ['src', 'alt', 'title', 'width', 'height', 'align'],
   'source': ['src', 'srcset', 'type', 'media'],
   'button': ['class', 'title', 'type', 'aria-label', 'data-copy'],
