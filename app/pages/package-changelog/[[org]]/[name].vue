@@ -47,7 +47,14 @@ const latestVersion = computed(() => {
 // getting info
 const { data: changelog, error: changelogError } = usePackageChangelog(packageName, version)
 
-const repoProviderIcon = useProviderIcon(() => changelog.value?.provider)
+const providerIcon = useProviderIcon(() => changelog.value?.provider)
+const viewOnProvider = useViewOnGitProvider(() => changelog.value?.provider)
+
+provide('changelog-provider-linkattr', {
+  providerIcon,
+  viewOnProvider,
+})
+
 const tptoc = useTemplateRef('tptoc')
 
 const versionDate = computed(() => {
@@ -59,8 +66,6 @@ const versionDate = computed(() => {
     return new Date(time).toISOString().split('T')[0]
   }
 })
-
-const viewOnGit = useViewOnGitProvider(() => changelog.value?.provider)
 
 const packageHeaderHeight = usePackageHeaderHeight()
 const stickyStyle = computed(() => {
@@ -120,8 +125,8 @@ defineOgImage(
         <LinkBase
           v-if="changelog?.link"
           :to="changelog?.link"
-          :classicon="repoProviderIcon"
-          :title="viewOnGit"
+          :classicon="providerIcon"
+          :title="viewOnProvider"
         >
           {{ changelog.provider }}
         </LinkBase>
@@ -143,7 +148,11 @@ defineOgImage(
         :resolveVersionPending="resolvingPending"
         #error
       >
-        <LazyChangelogErrorMsg :pkgName="pkg?.name" :changelog-link="changelog.link" :viewOnGit />
+        <LazyChangelogErrorMsg
+          :pkgName="pkg?.name"
+          :changelog-link="changelog.link"
+          :viewOnGit="viewOnProvider"
+        />
       </LazyChangelogReleases>
       <LazyChangelogMarkdown
         v-else-if="changelog?.type === 'md'"
@@ -153,7 +162,11 @@ defineOgImage(
         :resolveVersionPending="resolvingPending"
         #error
       >
-        <LazyChangelogErrorMsg :pkgName="pkg?.name" :changelog-link="changelog.link" :viewOnGit />
+        <LazyChangelogErrorMsg
+          :pkgName="pkg?.name"
+          :changelog-link="changelog.link"
+          :viewOnGit="viewOnProvider"
+        />
       </LazyChangelogMarkdown>
       <!-- </template>
         <template #fallback>
