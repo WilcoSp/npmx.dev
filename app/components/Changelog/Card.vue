@@ -22,9 +22,12 @@ function navigateToTitle() {
 }
 
 const { providerIcon, viewOnProvider } = inject<{
-  providerIcon: ComputedRef<IconClass>
-  viewOnProvider: ComputedRef<string>
-}>('changelog-provider-linkattr')!
+  providerIcon: MaybeRef<IconClass>
+  viewOnProvider: MaybeRef<string>
+}>('changelog-provider-linkattr', {
+  providerIcon: 'i-lucide:code',
+  viewOnProvider: computed(() => $t('common.view_on.git_repo')),
+})
 </script>
 <template>
   <section
