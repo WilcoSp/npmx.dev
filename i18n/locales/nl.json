@@ -1527,7 +1527,8 @@
         "p1": "Naast sessiecookies gebruiken we de {bold} van uw browser om uw weergavevoorkeuren op te slaan. Hierdoor kunnen we het thema (licht/donker) en enkele andere gekozen {settings} onthouden, zodat deze bij elk bezoek direct goed staan.",
         "bold": "lokale opslag",
         "p2": "Deze informatie is puur functional, wordt alleen op uw eigen apparaat opgeslagen en {bold2}. We gebruiken dit uitsluitend om uw ervaring op onze website te verbeteren.",
-        "bold2": "bevat geen persoonlijke gegevens en wordt niet gebruikt om u te volgen"
+        "bold2": "bevat geen persoonlijke gegevens en wordt niet gebruikt om u te volgen",
+        "settings": "instellingen"
       },
       "management": {
         "title": "Cookies beheren",
