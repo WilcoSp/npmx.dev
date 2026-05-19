@@ -384,14 +384,14 @@
     "size_increase": {
       "title_size": "Aanzienlijke toenamen in grootte sinds v{version}",
       "title_deps": "Aanzienlijke toename van het aantal dependencies sinds versie {version}",
-      "title_both": "Aanzienlijke toename in omvang en depen sinds v{version}",
+      "title_both": "Aanzienlijke toename in omvang en dependencies sinds v{version}",
       "size": "De installatiegrootte is toegenomen met {percent} ({size} groter)",
       "deps": "{count} meer dependencies"
     },
     "size_decrease": {
       "title_size": "Pakketgrootte is afgenomen sinds v{version}!",
       "title_deps": "Aantal dependencies is afgenomen sinds v{version}!",
-      "title_both": "De pakketgrootte en het aantal dependecies zijn sindsdien afgenomen v{version}!",
+      "title_both": "De pakketgrootte en het aantal dependencies zijn sindsdien afgenomen v{version}!",
       "size": "De installatiegrootte is met {percent} verminderd ({size} kleiner)",
       "deps": "{count} minder dependencies"
     },
