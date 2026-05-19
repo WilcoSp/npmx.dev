@@ -1634,36 +1634,36 @@
     }
   },
   "vacations": {
-    "title": "EN TEXT TO REPLACE: on vacation",
-    "meta_description": "EN TEXT TO REPLACE: The npmx team was recharging. Discord reopened after a week.",
-    "heading": "EN TEXT TO REPLACE: recharging",
-    "subtitle": "EN TEXT TO REPLACE: we were building npmx at a pace that was costing {some} of us sleep. we didn't want that to be the norm! so we took a week off. together.",
-    "illustration_alt": "EN TEXT TO REPLACE: a single row of cosy icons",
-    "poke_log": "EN TEXT TO REPLACE: Poke the campfire",
+    "title": "op vakantie",
+    "meta_description": "Het npmx-team was aan het opladen. Discord is na een week weer geopend.",
+    "heading": "even opladen",
+    "subtitle": "we bouwden aan npmx in een tempo dat {some} van ons hun nachtrust kostte. we wilden niet dat het de norm werd! dus namen we een weekje vrij. samen.",
+    "illustration_alt": "een enkele rij met gezellige icoontjes",
+    "poke_log": "Pook het kampvuur op",
     "what": {
-      "title": "EN TEXT TO REPLACE: what happened",
-      "p1": "EN TEXT TO REPLACE: discord was closed {dates}.",
-      "dates": "EN TEXT TO REPLACE: February 14 – 21",
-      "p2": "EN TEXT TO REPLACE: all invite links were gone and channels were locked – except {garden}, which stayed open for folks who wanted to keep hanging out.",
-      "garden": "EN TEXT TO REPLACE: #garden"
+      "title": "wat er is gebeurd",
+      "p1": "discord was gesloten van {dates}.",
+      "dates": "14 – 21 februari",
+      "p2": "alle uitnodigingslinks waren weg en de kanalen waren vergrendeld – behalve {garden}, dat open bleef voor mensen die gezellig wilden blijven hangen.",
+      "garden": "#garden"
     },
     "meantime": {
-      "title": "EN TEXT TO REPLACE: in the meantime",
-      "p1": "EN TEXT TO REPLACE: {site} and {repo} stayed open – people still dug in, filed some issues, opened a few PRs, but mainly everyone spent time somewhere near a cosy fireplace.",
-      "repo_link": "EN TEXT TO REPLACE: the repo"
+      "title": "in de tussentijd",
+      "p1": "{site} en {repo} bleven open – er werd nog steeds hard gewerkt, issues aangemaakt en een paar PR's geopend, dat wel, maar de meesten brachten hun tijd door in de buurt van een gezellige open haard.",
+      "repo_link": "de repository"
     },
     "return": {
-      "title": "EN TEXT TO REPLACE: we came back!",
-      "p1": "EN TEXT TO REPLACE: we came back recharged and ready for the final push to March 3rd. {social} for updates.",
-      "social_link": "EN TEXT TO REPLACE: follow us on Bluesky"
+      "title": "we zijn weer terug!",
+      "p1": "we zijn weer terug, helemaal opgeladen en klaar voor de eindsprint naar 3 maart. {social} voor updates.",
+      "social_link": "volg ons op Bluesky"
     },
     "stats": {
-      "contributors": "EN TEXT TO REPLACE: Contributors",
-      "commits": "EN TEXT TO REPLACE: Commits",
-      "pr": "EN TEXT TO REPLACE: PRs Merged",
+      "contributors": "Bijdragers",
+      "commits": "Commits",
+      "pr": "Samengevoegde PR's",
       "subtitle": {
-        "some": "EN TEXT TO REPLACE: some",
-        "all": "EN TEXT TO REPLACE: all"
+        "some": "sommigen",
+        "all": "iedereen"
       }
     }
   },
