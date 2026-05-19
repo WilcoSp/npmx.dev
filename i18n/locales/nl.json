@@ -20,7 +20,10 @@
     "chat": "chat",
     "builders_chat": "bouwers",
     "keyboard_shortcuts": "toetsenbordnavigatie",
-    "brand": "merk"
+    "brand": "merk",
+    "resources": "Informatie",
+    "features": "Functies",
+    "other": "Overig"
   },
   "shortcuts": {
     "section": {
@@ -42,7 +45,8 @@
     "open_docs": "Open documentatie",
     "disable_shortcuts": "U kunt toetsenbordnavigatie uitschakelen in {instellingen}.",
     "open_main": "Open pakket overzicht",
-    "open_diff": "Open versie verschillen"
+    "open_diff": "Open versie verschillen",
+    "open_timeline": "Open tijdlijn"
   },
   "search": {
     "label": "Zoek npm pakketten",
@@ -316,6 +320,7 @@
     "warnings": "Waarschuwingen:",
     "go_back_home": "Ga terug naar startpagina",
     "per_week": "/ week",
+    "per_week_short": "/wk",
     "vanity_downloads_hint": "Totaaloverzicht: geen pakketten weergegeven | Totaaloverzicht: voor het weergegeven pakket | Totaaloverzicht: som van {count} weergegeven pakketten",
     "sort": {
       "name": "naam",
@@ -383,9 +388,18 @@
       "size": "De installatiegrootte is toegenomen met {percent} ({size} groter)",
       "deps": "{count} meer dependencies"
     },
+    "size_decrease": {
+      "title_size": "Pakketgrootte is afgenomen sinds v{version}!",
+      "title_deps": "Aantal dependencies is afgenomen sinds v{version}!",
+      "title_both": "De pakketgrootte en het aantal dependecies zijn sindsdien afgenomen v{version}!",
+      "size": "De installatiegrootte is met {percent} verminderd ({size} kleiner)",
+      "deps": "{count} minder dependencies"
+    },
     "replacement": {
       "title": "U heeft waarschijnlijk dit niet nodig",
+      "example": "Voorbeeld:",
       "native": "Dit kan vervangen worden door {replacement}, Beschikbaar sinds node {nodeVersion}.",
+      "native_no_version": "Dit pakket kan vervangen worden door {replacement}.",
       "simple": "De {community} heeft dit pakket als overbodig gemarkeerd, met het advies: {replacement}.",
       "documented": "De {community} heeft aangegeven dat er voor dit pakket beter presterende alternatieven zijn.",
       "none": "Dit pakket is gemarkeerd als overbodig en de functionaliteit ervan is waarschijnlijk standaard beschikbaar in alle omgevingen.",
@@ -436,13 +450,16 @@
       "docs": "docs",
       "fund": "Steunen",
       "compare": "vergelijk",
+      "timeline": "tijdlijn",
       "compare_this_package": "Vergelijk dit pakket",
-      "changelog": "wijzigingenoverzicht",
-      "timeline": "tijdlijn"
+      "changelog": "wijzigingenoverzicht"
     },
     "likes": {
       "like": "Dit pakket leuk vinden",
-      "unlike": "Dit pakket niet meer leuk vinden"
+      "unlike": "Dit pakket niet meer leuk vinden",
+      "top_rank_tooltip": "Dit is een van de 10 populairste pakketten op npmx! (#{rank})",
+      "top_rank_label": "#{rank}",
+      "top_rank_link_label": "Bekijk klassement van vind-leuks. Dit pakket staat op plaats #{rank}."
     },
     "docs": {
       "contents": "Inhoud",
@@ -554,6 +571,9 @@
       "filter_help": "Semver bereikfilter hulp",
       "filter_tooltip": "Filter versie bij {link}. bijvoorbeeld, ^3.0.0 laat zien 3.x versies.",
       "filter_tooltip_link": "semver bereik",
+      "license_change_help": "Details over licentiewijziging",
+      "license_change_warning": "Licentie is gewijzigd sinds vorige versie.",
+      "license_change_record": "De licentie van dit pakket is gewijzigd van \"{from}\" naar \"{to}\".",
       "no_matches": "Geen versies in dit bereik",
       "copy_alt": {
         "per_version_analysis": "{version} versie was gedownload {downloads} keren",
@@ -562,6 +582,35 @@
       "page_title": "Versie geschiedenis",
       "current_tags": "Huidige tags",
       "no_match_filter": "Geen versies die voldoen aan {filter}"
+    },
+    "timeline": {
+      "load_more": "Laad meer",
+      "load_error": "De tijdlijn kan niet worden geladen. Probeer het later nog eens.",
+      "size_increase": "De installatiegrootte is toegenomen met {percent}% ({size})",
+      "size_decrease": "De installatiegrootte is afgenomen met {percent}% ({size})",
+      "dep_increase": "{count} dependencies toegevoegd",
+      "dep_decrease": "{count} dependencies verwijderd",
+      "license_change": "Licentie gewijzigd van {from} naar {to}",
+      "esm_added": "Moduletype is gewijzigd naar ESM",
+      "esm_removed": "Moduletype is gewijzigd van ESM naar CJS",
+      "types_added": "TypeScript types toegevoegd",
+      "types_removed": "TypeScript types verwijderd",
+      "trusted_publisher_added": "Vertrouwd publiceren geactiveerd",
+      "trusted_publisher_removed": "Vertrouwd publiceren gedeactiveerd",
+      "provenance_added": "Herkomst verificatie geactiveerd",
+      "provenance_removed": "Herkomst verificatie gedeactiveerd",
+      "chart": {
+        "tab_aria_label": "Selecteer statistiek",
+        "base_scale": "y-as op nul beginnen",
+        "zoom": "zoom",
+        "reset_minimap": "minimap resetten",
+        "ordered_versions": "Alleen stabiele versies",
+        "copy_alt": {
+          "key_changes": "Belangrijkste wijzigingen: {version_events}.",
+          "version_events": "versie {version}: {events}",
+          "general_description": "Lijngrafiek die de {metric} toont van het pakket {package}, van versie {first} tot {last}. De {metric} in versie {first} is {first_value}, in versie {last} is dat {last_value} (in totaal {overall_progress_percentage}%). {key_changes} {watermark}."
+        }
+      }
     },
     "dependencies": {
       "title": "Dependency ({count}) | Dependencies ({count})",
@@ -763,6 +812,16 @@
     "download": {
       "button": "Download",
       "tarball": "Download Tarball als .tar.gz"
+    }
+  },
+  "leaderboard": {
+    "likes": {
+      "title": "Vind leuk klassement",
+      "description": "De 10 pakketten met de meeste vind-leuks op npmx van dit moment.",
+      "rank": "Plaats",
+      "likes": "Vind leuk",
+      "unavailable_title": "Nog geen vind-leuks klassement",
+      "unavailable_description": "We hebben op dit moment nog geen klassement van vind-leuks om te tonen."
     }
   },
   "connector": {
@@ -1243,7 +1302,15 @@
       "add_hint": "Voeg tenminste 2 pakketten toe om te vergelijken"
     },
     "scatter_chart": {
-      "copy_alt": {}
+      "title": "Vergelijk {x} met {y}",
+      "freshness_score": "recentheid score",
+      "copy_alt": {
+        "analysis": "{package} : {x_name} ({x_value}) en {y_name} ({y_value})",
+        "description": "Spreidingsdiagram met een weergave van {x_name} tegenover {y_name} voor de {packages} pakketten. {analysis}. {watermark}"
+      },
+      "filename": "{x}-vs-{y}-spreidingsdiagram",
+      "x_axis": "X-AS ↦",
+      "y_axis": "Y-AS ↥"
     },
     "no_dependency": {
       "label": "(Geen dependency)",
@@ -1435,19 +1502,84 @@
     }
   },
   "privacy_policy": {
-    "title": "privacy beleid",
+    "title": "privacybeleid",
+    "last_updated": "EN TEXT TO REPLACE: Last updated: {date}",
+    "welcome": "EN TEXT TO REPLACE: Welcome to {app}. We are committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights regarding your information.",
     "cookies": {
-      "what_are": {},
-      "types": {},
-      "local_storage": {},
-      "management": {}
+      "what_are": {
+        "title": "EN TEXT TO REPLACE: What are cookies?",
+        "p1": "EN TEXT TO REPLACE: Cookies are small text files stored on your device when you visit a website. Their purpose is to enhance your browsing experience by remembering certain preferences and settings."
+      },
+      "types": {
+        "title": "EN TEXT TO REPLACE: What cookies do we use?",
+        "p1": "EN TEXT TO REPLACE: We only use {bold} for purposes strictly necessary for the site's functionality. We do not use third-party or advertising cookies.",
+        "bold": "EN TEXT TO REPLACE: essential technical cookies",
+        "li1": "EN TEXT TO REPLACE: {li11}{separator} {li12}",
+        "li2": "EN TEXT TO REPLACE: {li21}{separator} {li22}",
+        "separator": "EN TEXT TO REPLACE: :",
+        "cookie_vdpl": "EN TEXT TO REPLACE: __vdpl",
+        "cookie_vdpl_desc": "EN TEXT TO REPLACE: This cookie is used by our hosting provider (Vercel) for skew protection. It ensures you fetch assets from the correct deployment version if a new update is released while you are browsing. It does not track you.",
+        "cookie_h3": "EN TEXT TO REPLACE: h3",
+        "cookie_h3_desc": "EN TEXT TO REPLACE: This is our secure session cookie. It stores the OAuth access token when you connect your Atmosphere account. It is essential for maintaining your authenticated session."
+      },
+      "local_storage": {
+        "title": "EN TEXT TO REPLACE: Local storage",
+        "p1": "EN TEXT TO REPLACE: In addition to session cookies, we use your browser's {bold} to save your display preferences. This allows us to remember the theme (light/dark) and some other {settings} you have selected, so you don't have to reconfigure them on each visit.",
+        "bold": "EN TEXT TO REPLACE: Local Storage",
+        "p2": "EN TEXT TO REPLACE: This information is purely functional, stored only on your device, and {bold2}. We use it exclusively to improve your experience on our website.",
+        "bold2": "EN TEXT TO REPLACE: contains no personal data nor is it used to track you",
+        "settings": "EN TEXT TO REPLACE: settings"
+      },
+      "management": {
+        "title": "EN TEXT TO REPLACE: Managing cookies",
+        "p1": "EN TEXT TO REPLACE: You can configure your browser to accept, reject, or delete cookies according to your preferences. However, please note that {bold}.",
+        "bold": "EN TEXT TO REPLACE: rejecting essential cookies may prevent full access to the application",
+        "p2": "EN TEXT TO REPLACE: Below are links with instructions for cookie management in the most commonly used browsers:",
+        "chrome": "EN TEXT TO REPLACE: Google Chrome (opens in a new window)",
+        "firefox": "EN TEXT TO REPLACE: Mozilla Firefox (opens in a new window)",
+        "edge": "EN TEXT TO REPLACE: Microsoft Edge (opens in a new window)"
+      }
     },
-    "analytics": {},
-    "authenticated": {},
-    "data_retention": {},
-    "your_rights": {},
-    "contact": {},
-    "changes": {}
+    "analytics": {
+      "title": "EN TEXT TO REPLACE: Analytics",
+      "p1": "EN TEXT TO REPLACE: We use {bold} to understand how visitors use our website. This helps us improve the user experience and identify issues.",
+      "bold": "EN TEXT TO REPLACE: Vercel Web Analytics",
+      "p2": "EN TEXT TO REPLACE: Vercel Analytics is designed with privacy in mind:",
+      "li1": "EN TEXT TO REPLACE: It does not use cookies",
+      "li2": "EN TEXT TO REPLACE: It does not collect personal identifiers",
+      "li3": "EN TEXT TO REPLACE: It does not track users across websites",
+      "li4": "EN TEXT TO REPLACE: All data is aggregated and anonymised",
+      "p3": "EN TEXT TO REPLACE: The only information collected includes: page URLs, referrer, country/region, device type, browser, and operating system. This data cannot be used to identify individual users."
+    },
+    "authenticated": {
+      "title": "EN TEXT TO REPLACE: Authenticated users",
+      "p1": "EN TEXT TO REPLACE: When you connect your {bold} account to npmx, we store your OAuth access token in a secure, HTTP-only session cookie. This token is used solely to authenticate requests on your behalf.",
+      "bold": "EN TEXT TO REPLACE: Atmosphere",
+      "p2": "EN TEXT TO REPLACE: We do not store your credentials, and we do not access any data beyond what is necessary to provide the features you use. You can disconnect your account at any time from the {settings} page.",
+      "settings": "EN TEXT TO REPLACE: settings"
+    },
+    "data_retention": {
+      "title": "EN TEXT TO REPLACE: Data retention",
+      "p1": "EN TEXT TO REPLACE: Session cookies are automatically deleted when you close your browser or after a period of inactivity. Local storage preferences remain on your device until you clear your browser data. Analytics data is retained in aggregate form and cannot be linked to individual users."
+    },
+    "your_rights": {
+      "title": "EN TEXT TO REPLACE: Your rights",
+      "p1": "EN TEXT TO REPLACE: You have the right to:",
+      "li1": "EN TEXT TO REPLACE: Access information about what data we collect",
+      "li2": "EN TEXT TO REPLACE: Clear your local storage and cookies at any time",
+      "li3": "EN TEXT TO REPLACE: Disconnect your authenticated session",
+      "li4": "EN TEXT TO REPLACE: Request information about our data practices",
+      "p2": "EN TEXT TO REPLACE: Since we do not collect personal data, there is typically no personal information to delete or export."
+    },
+    "contact": {
+      "title": "EN TEXT TO REPLACE: Contact us",
+      "p1": "EN TEXT TO REPLACE: For any questions or concerns about this privacy policy, you can contact us by opening an issue on our {link}.",
+      "link": "EN TEXT TO REPLACE: GitHub repository"
+    },
+    "changes": {
+      "title": "EN TEXT TO REPLACE: Changes to this policy",
+      "p1": "EN TEXT TO REPLACE: We may update this privacy policy from time to time. Any changes will be published on this page with an updated revision date."
+    }
   },
   "a11y": {
     "title": "toegankelijkheid",
@@ -1503,11 +1635,37 @@
     }
   },
   "vacations": {
-    "what": {},
-    "meantime": {},
-    "return": {},
+    "title": "EN TEXT TO REPLACE: on vacation",
+    "meta_description": "EN TEXT TO REPLACE: The npmx team was recharging. Discord reopened after a week.",
+    "heading": "EN TEXT TO REPLACE: recharging",
+    "subtitle": "EN TEXT TO REPLACE: we were building npmx at a pace that was costing {some} of us sleep. we didn't want that to be the norm! so we took a week off. together.",
+    "illustration_alt": "EN TEXT TO REPLACE: a single row of cosy icons",
+    "poke_log": "EN TEXT TO REPLACE: Poke the campfire",
+    "what": {
+      "title": "EN TEXT TO REPLACE: what happened",
+      "p1": "EN TEXT TO REPLACE: discord was closed {dates}.",
+      "dates": "EN TEXT TO REPLACE: February 14 – 21",
+      "p2": "EN TEXT TO REPLACE: all invite links were gone and channels were locked – except {garden}, which stayed open for folks who wanted to keep hanging out.",
+      "garden": "EN TEXT TO REPLACE: #garden"
+    },
+    "meantime": {
+      "title": "EN TEXT TO REPLACE: in the meantime",
+      "p1": "EN TEXT TO REPLACE: {site} and {repo} stayed open – people still dug in, filed some issues, opened a few PRs, but mainly everyone spent time somewhere near a cosy fireplace.",
+      "repo_link": "EN TEXT TO REPLACE: the repo"
+    },
+    "return": {
+      "title": "EN TEXT TO REPLACE: we came back!",
+      "p1": "EN TEXT TO REPLACE: we came back recharged and ready for the final push to March 3rd. {social} for updates.",
+      "social_link": "EN TEXT TO REPLACE: follow us on Bluesky"
+    },
     "stats": {
-      "subtitle": {}
+      "contributors": "EN TEXT TO REPLACE: Contributors",
+      "commits": "EN TEXT TO REPLACE: Commits",
+      "pr": "EN TEXT TO REPLACE: PRs Merged",
+      "subtitle": {
+        "some": "EN TEXT TO REPLACE: some",
+        "all": "EN TEXT TO REPLACE: all"
+      }
     }
   },
   "action_bar": {
