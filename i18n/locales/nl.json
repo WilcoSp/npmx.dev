@@ -1503,82 +1503,81 @@
   },
   "privacy_policy": {
     "title": "privacybeleid",
-    "last_updated": "EN TEXT TO REPLACE: Last updated: {date}",
-    "welcome": "EN TEXT TO REPLACE: Welcome to {app}. We are committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights regarding your information.",
+    "last_updated": "Laatst bijgewerkt: {date}",
+    "welcome": "Welkom bij {app}. Wij hechten veel waarde aan de bescherming van uw privacy. In dit beleid wordt uitgelegd welke gegevens wij verzamelen, hoe wij deze gebruiken en welke rechten u heeft met betrekking tot uw gegevens.",
     "cookies": {
       "what_are": {
-        "title": "EN TEXT TO REPLACE: What are cookies?",
-        "p1": "EN TEXT TO REPLACE: Cookies are small text files stored on your device when you visit a website. Their purpose is to enhance your browsing experience by remembering certain preferences and settings."
+        "title": "Wat zijn cookies?",
+        "p1": "Cookies zijn kleine tekstbestanden die op uw apparaat worden opgeslagen wanneer u een website bezoekt. Ze zijn bedoeld om uw surfervaring te verbeteren door bepaalde voorkeuren en instellingen te onthouden."
       },
       "types": {
-        "title": "EN TEXT TO REPLACE: What cookies do we use?",
-        "p1": "EN TEXT TO REPLACE: We only use {bold} for purposes strictly necessary for the site's functionality. We do not use third-party or advertising cookies.",
-        "bold": "EN TEXT TO REPLACE: essential technical cookies",
-        "li1": "EN TEXT TO REPLACE: {li11}{separator} {li12}",
-        "li2": "EN TEXT TO REPLACE: {li21}{separator} {li22}",
-        "separator": "EN TEXT TO REPLACE: :",
-        "cookie_vdpl": "EN TEXT TO REPLACE: __vdpl",
-        "cookie_vdpl_desc": "EN TEXT TO REPLACE: This cookie is used by our hosting provider (Vercel) for skew protection. It ensures you fetch assets from the correct deployment version if a new update is released while you are browsing. It does not track you.",
-        "cookie_h3": "EN TEXT TO REPLACE: h3",
-        "cookie_h3_desc": "EN TEXT TO REPLACE: This is our secure session cookie. It stores the OAuth access token when you connect your Atmosphere account. It is essential for maintaining your authenticated session."
+        "title": "Welke cookies gebruiken wij?",
+        "p1": "We gebruiken uitsluitend {bold} voor doeleinden die strikt noodzakelijk zijn voor de werking van de website. We maken geen gebruik van cookies van derden of advertentiecookies.",
+        "bold": "essentiële technische cookies",
+        "li1": "{li11}{separator} {li12}",
+        "li2": "{li21}{separator} {li22}",
+        "separator": ":",
+        "cookie_vdpl": "__vdpl",
+        "cookie_vdpl_desc": "Dit cookie wordt door onze hostingprovider (Vercel) gebruikt voor 'skew protection' (versiebeveiliging). Het zorgt ervoor dat je de juiste bestanden van de website laadt als er een nieuwe update wordt uitgebracht terwijl je de site bezoekt. Het volgt je niet.",
+        "cookie_h3": "h3",
+        "cookie_h3_desc": "Dit is ons beveiligde sessiecookie. Het slaat het OAuth-toegangstoken op wanneer je verbinding maakt met je Atmosphere-account. Dit cookie is essentieel om je ingelogde sessie te behouden."
       },
       "local_storage": {
-        "title": "EN TEXT TO REPLACE: Local storage",
-        "p1": "EN TEXT TO REPLACE: In addition to session cookies, we use your browser's {bold} to save your display preferences. This allows us to remember the theme (light/dark) and some other {settings} you have selected, so you don't have to reconfigure them on each visit.",
-        "bold": "EN TEXT TO REPLACE: Local Storage",
-        "p2": "EN TEXT TO REPLACE: This information is purely functional, stored only on your device, and {bold2}. We use it exclusively to improve your experience on our website.",
-        "bold2": "EN TEXT TO REPLACE: contains no personal data nor is it used to track you",
-        "settings": "EN TEXT TO REPLACE: settings"
+        "title": "Lokale opslag",
+        "p1": "Naast sessiecookies gebruiken we de {bold} van uw browser om uw weergavevoorkeuren op te slaan. Hierdoor kunnen we het thema (licht/donker) en enkele andere gekozen {settings} onthouden, zodat deze bij elk bezoek direct goed staan.",
+        "bold": "lokale opslag",
+        "p2": "Deze informatie is puur functional, wordt alleen op uw eigen apparaat opgeslagen en {bold2}. We gebruiken dit uitsluitend om uw ervaring op onze website te verbeteren.",
+        "bold2": "bevat geen persoonlijke gegevens en wordt niet gebruikt om u te volgen"
       },
       "management": {
-        "title": "EN TEXT TO REPLACE: Managing cookies",
-        "p1": "EN TEXT TO REPLACE: You can configure your browser to accept, reject, or delete cookies according to your preferences. However, please note that {bold}.",
-        "bold": "EN TEXT TO REPLACE: rejecting essential cookies may prevent full access to the application",
-        "p2": "EN TEXT TO REPLACE: Below are links with instructions for cookie management in the most commonly used browsers:",
-        "chrome": "EN TEXT TO REPLACE: Google Chrome (opens in a new window)",
-        "firefox": "EN TEXT TO REPLACE: Mozilla Firefox (opens in a new window)",
-        "edge": "EN TEXT TO REPLACE: Microsoft Edge (opens in a new window)"
+        "title": "Cookies beheren",
+        "p1": "U kunt uw browser zo instellen dat cookies naar uw voorkeur worden geaccepteerd, geweigerd of verwijderd. Houd er echter rekening mee dat {bold}.",
+        "bold": "het weigeren van essentiële cookies ertoe kan leiden dat u geen volledige toegang tot de applicatie heeft",
+        "p2": "Hieronder vindt u links met instructies voor het beheren van cookies in de meest gebruikte browsers:",
+        "chrome": "Google Chrome (opent in een nieuw venster)",
+        "firefox": "Mozilla Firefox (opent in een nieuw venster)",
+        "edge": "Microsoft Edge (opent in een nieuw venster)"
       }
     },
     "analytics": {
-      "title": "EN TEXT TO REPLACE: Analytics",
-      "p1": "EN TEXT TO REPLACE: We use {bold} to understand how visitors use our website. This helps us improve the user experience and identify issues.",
-      "bold": "EN TEXT TO REPLACE: Vercel Web Analytics",
-      "p2": "EN TEXT TO REPLACE: Vercel Analytics is designed with privacy in mind:",
-      "li1": "EN TEXT TO REPLACE: It does not use cookies",
-      "li2": "EN TEXT TO REPLACE: It does not collect personal identifiers",
-      "li3": "EN TEXT TO REPLACE: It does not track users across websites",
-      "li4": "EN TEXT TO REPLACE: All data is aggregated and anonymised",
-      "p3": "EN TEXT TO REPLACE: The only information collected includes: page URLs, referrer, country/region, device type, browser, and operating system. This data cannot be used to identify individual users."
+      "title": "Analyses",
+      "p1": "We gebruiken {bold} om te begrijpen hoe bezoekers onze website gebruiken. Dit helpt ons om de gebruikerservaring te verbeteren en problemen op te sporen.",
+      "bold": "Vercel Web Analytics",
+      "p2": "Vercel Analytics is ontworpen met het oog op privacy:",
+      "li1": "Het maakt geen gebruik van cookies",
+      "li2": "Het verzamelt geen persoonlijke identificatiegegevens",
+      "li3": "Het volgt gebruikers niet over verschillende websites",
+      "li4": "Alle gegevens worden samengevoegd en geanonimiseerd",
+      "p3": "De enige informatie die wordt verzameld omvat: pagina-URL's, de herkomstpagina (referrer), land/regio, apparaattype, browser en het besturingssysteem. Deze gegevens kunnen niet worden gebruikt om individuele gebruikers te identificeren."
     },
     "authenticated": {
-      "title": "EN TEXT TO REPLACE: Authenticated users",
-      "p1": "EN TEXT TO REPLACE: When you connect your {bold} account to npmx, we store your OAuth access token in a secure, HTTP-only session cookie. This token is used solely to authenticate requests on your behalf.",
-      "bold": "EN TEXT TO REPLACE: Atmosphere",
-      "p2": "EN TEXT TO REPLACE: We do not store your credentials, and we do not access any data beyond what is necessary to provide the features you use. You can disconnect your account at any time from the {settings} page.",
-      "settings": "EN TEXT TO REPLACE: settings"
+      "title": "Ingelogde gebruikers",
+      "p1": "Wanneer u uw {bold}-account koppelt aan npmx, slaan we uw OAuth-toegangstoken op in een beveiligde, HTTP-only sessiecookie. Dit token wordt uitsluitend gebruikt om namens u verzoeken te verifiëren.",
+      "bold": "Atmosphere",
+      "p2": "We slaan uw inloggegevens niet op en we bekijken geen andere gegevens dan die strikt noodzakelijk zijn om de functies te bieden die u gebruikt. U kunt uw account op elk gewenst moment ontkoppelen via de pagina {settings}.",
+      "settings": "instellingen"
     },
     "data_retention": {
-      "title": "EN TEXT TO REPLACE: Data retention",
-      "p1": "EN TEXT TO REPLACE: Session cookies are automatically deleted when you close your browser or after a period of inactivity. Local storage preferences remain on your device until you clear your browser data. Analytics data is retained in aggregate form and cannot be linked to individual users."
+      "title": "Gegevensbewaring",
+      "p1": "Sessiecookies worden automatisch verwijderd wanneer u uw browser sluit of na een periode van inactiviteit. Voorkeuren in de lokale opslag blijven op uw apparaat staan totdat u uw browsergegevens wist. Analysegegevens worden in samengevoegde vorm bewaard en kunnen niet aan individuele gebruikers worden gekoppeld."
     },
     "your_rights": {
-      "title": "EN TEXT TO REPLACE: Your rights",
-      "p1": "EN TEXT TO REPLACE: You have the right to:",
-      "li1": "EN TEXT TO REPLACE: Access information about what data we collect",
-      "li2": "EN TEXT TO REPLACE: Clear your local storage and cookies at any time",
-      "li3": "EN TEXT TO REPLACE: Disconnect your authenticated session",
-      "li4": "EN TEXT TO REPLACE: Request information about our data practices",
-      "p2": "EN TEXT TO REPLACE: Since we do not collect personal data, there is typically no personal information to delete or export."
+      "title": "Uw rechten",
+      "p1": "U heeft het recht om:",
+      "li1": "Informatie in te zien over welke gegevens wij verzamelen",
+      "li2": "Uw lokale opslag en cookies op elk gewenst moment te wissen",
+      "li3": "Uw ingelogde sessie te beëindigen",
+      "li4": "Informatie op te vragen over onze gegevensverwerking",
+      "p2": "Aangezien wij geen persoonsgegevens verzamelen, zijn er doorgaans geen persoonlijke gegevens om te verwijderen of te exporteren."
     },
     "contact": {
-      "title": "EN TEXT TO REPLACE: Contact us",
-      "p1": "EN TEXT TO REPLACE: For any questions or concerns about this privacy policy, you can contact us by opening an issue on our {link}.",
-      "link": "EN TEXT TO REPLACE: GitHub repository"
+      "title": "Contact met ons opnemen",
+      "p1": "Voor vragen of opmerkingen over dit privacybeleid kunt u contact met ons opnemen door een 'issue' te openen in onze {link}.",
+      "link": "GitHub-repository"
     },
     "changes": {
-      "title": "EN TEXT TO REPLACE: Changes to this policy",
-      "p1": "EN TEXT TO REPLACE: We may update this privacy policy from time to time. Any changes will be published on this page with an updated revision date."
+      "title": "Wijzigingen in dit beleid",
+      "p1": "Wij kunnen dit privacybeleid van tijd tot tijd bijwerken. Eventuele wijzigingen worden op deze pagina gepubliceerd met een bijgewerkte herzieningsdatum."
     }
   },
   "a11y": {
