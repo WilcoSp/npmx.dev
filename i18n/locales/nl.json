@@ -716,7 +716,7 @@
     },
     "downloads": {
       "title": "Wekelijkse Downloads",
-      "version_distribution_title": "Weekelijkse downloads voor versie {version}",
+      "version_distribution_title": "Wekelijkse downloads voor versie {version}",
       "community_distribution": "Bekijk adoptiegraad",
       "subtitle": "Over alle versies",
       "sparkline_nav_hint": "Gebruik ← →"
@@ -1059,7 +1059,7 @@
     "scope_keywords_description": "Alleen zoeken op trefwoorden",
     "scope_all": "Alle",
     "scope_all_description": "Zoek alle velden, ondersteund naam: beschrijving: tf: beheerders",
-    "weekly_downloads": "Weekelijkse downloads",
+    "weekly_downloads": "Wekelijkse downloads",
     "updated_within": "Bijgewerkt binnen",
     "security": "Beveiliging",
     "keywords": "Trefwoorden",
