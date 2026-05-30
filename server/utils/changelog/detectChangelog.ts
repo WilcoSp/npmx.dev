@@ -178,7 +178,7 @@ function getBaseFileUrl(ref: RepoRef): RepoFileUrl | null {
   switch (ref.provider) {
     case 'github':
       return {
-        raw: `https://ungh.cc/repos/${ref.owner}/${ref.repo}/files/HEAD`,
+        raw: `https://raw.githubusercontent.com/${ref.owner}/${ref.repo}/HEAD`,
         blob: `https://github.com/${ref.owner}/${ref.repo}/blob/HEAD`,
       }
   }

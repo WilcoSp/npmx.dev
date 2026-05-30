@@ -51,7 +51,7 @@ export default defineCachedEventHandler(
 )
 
 async function getGithubMarkDown(owner: string, repo: string, path: string) {
-  const data = await $fetch(`https://ungh.cc/repos/${owner}/${repo}/files/HEAD/${path}`)
+  const data = await $fetch(`https://raw.githubusercontent.com/${owner}/${repo}/HEAD/${path}`)
 
   const markdown = v.parse(v.string(), data)
 

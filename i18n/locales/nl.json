@@ -716,6 +716,7 @@
     },
     "downloads": {
       "title": "Wekelijkse Downloads",
+      "version_distribution_title": "Weekelijkse downloads voor versie {version}",
       "community_distribution": "Bekijk adoptiegraad",
       "subtitle": "Over alle versies",
       "sparkline_nav_hint": "Gebruik ← →"
