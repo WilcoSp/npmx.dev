@@ -36,7 +36,7 @@ export default defineConfig({
       include: [
         /\.(vue|mdx|html)($|\?)/,
         // git provider icons composable
-        './src/composables/useProviderIcon.ts',
+        '**/composables/useProviderIcon.ts',
       ],
     },
   },
