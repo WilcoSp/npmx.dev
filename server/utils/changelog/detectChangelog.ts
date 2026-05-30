@@ -3,7 +3,7 @@ import { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
 import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
-import { GithubReleaseSchama } from '~~/shared/schemas/changelog/release'
+import { GithubReleaseSchama, forgejoReleaseSchama } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
 import * as v from 'valibot'
 
@@ -50,9 +50,15 @@ async function checkReleases(
   ref: RepoRef,
   directory?: string,
 ): Promise<ChangelogInfo | false | Error> {
+  console.log('host', ref.host)
+
   switch (ref.provider) {
     case 'github': {
       return checkLatestGithubRelease(ref, directory)
+    }
+    case 'codeberg':
+    case 'forgejo': {
+      return checkLatestForgejoRelease(ref, directory)
     }
   }
 
@@ -163,6 +169,7 @@ async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
         path: resolveURL(dir ?? '', fileName),
         repo: `${ref.owner}/${ref.repo}`,
         link: resolveURL(baseUrl.blob, dir ?? '', fileName),
+        host: ref.host,
       } satisfies ChangelogMarkdownInfo
     }
   }
@@ -181,6 +188,70 @@ function getBaseFileUrl(ref: RepoRef): RepoFileUrl | null {
         raw: `https://raw.githubusercontent.com/${ref.owner}/${ref.repo}/HEAD`,
         blob: `https://github.com/${ref.owner}/${ref.repo}/blob/HEAD`,
       }
+    case 'codeberg':
+    case 'forgejo': {
+      const host = ref.host ?? 'codeberg.org'
+      return {
+        blob: `https://${host}/${ref.owner}/${ref.repo}/src/branch/HEAD`,
+        raw: `https://${host}/${ref.owner}/${ref.repo}/raw/branch/HEAD`,
+      }
+    }
   }
   return null
+}
+
+// codeberg / forgejo
+
+async function checkLatestForgejoRelease(
+  ref: RepoRef,
+  directory?: string,
+): Promise<ChangelogInfo | false> {
+  console.log('hallo')
+  try {
+    const host = ref.host ?? 'codeberg.org'
+    const response = await $fetch(
+      `https://${host}/api/v1/repos/${ref.owner}/${ref.repo}/releases/latest`,
+      {
+        headers: {
+          'User-Agent': 'npmx.dev',
+          'accept': 'application/json',
+        },
+      },
+    )
+
+    const release = v.parse(forgejoReleaseSchama, response)
+
+    const matchedChangelog = release.body?.match(MD_REGEX)?.at(0)
+
+    // /src/branch/ can be similar to /blob/
+    if (!matchedChangelog || !matchedChangelog.includes('/src/branch/')) {
+      return {
+        type: 'release',
+        link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
+        provider: ref.provider,
+        repo: `${ref.owner}/${ref.repo}`,
+        host: ref.host,
+      }
+    }
+
+    const path = matchedChangelog.replace(/^.*\/src\/branch\/[^/]+\//i, '')
+    if (
+      directory &&
+      !(
+        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+        ROOT_ONLY_REGEX.test(path)
+      )
+    ) {
+      return false as const
+    }
+    return {
+      provider: ref.provider,
+      type: 'md',
+      path,
+      repo: `${ref.owner}/${ref.repo}`,
+      link: matchedChangelog,
+      host: ref.host,
+    }
+  } catch {}
+  return false
 }
