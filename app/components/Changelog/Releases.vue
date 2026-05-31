@@ -12,7 +12,11 @@ const {
   data: releases,
   error,
   pending,
-} = useLazyFetch<ReleaseData[]>(() => `/api/changelog/releases/${info.provider}/${info.repo}`)
+} = useLazyFetch<ReleaseData[]>(() => `/api/changelog/releases/${info.provider}/${info.repo}`, {
+  query: {
+    host: computed(() => info.host),
+  },
+})
 
 const route = useRoute()
 

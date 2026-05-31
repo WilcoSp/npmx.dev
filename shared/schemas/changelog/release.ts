@@ -18,7 +18,7 @@ export const GithubReleaseCollectionSchama = v.object({
 // export type GithubRelease = v.InferOutput<typeof GithubReleaseSchama>
 // export type GithubReleaseCollection = v.InferOutput<typeof GithubReleaseCollectionSchama>
 
-export const forgejoReleaseSchama = v.object({
+export const ForgejoReleaseSchama = v.object({
   id: v.number(),
   tag_name: v.string(),
   name: v.string(),
@@ -28,3 +28,5 @@ export const forgejoReleaseSchama = v.object({
   prerelease: v.boolean(),
   published_at: v.pipe(v.string(), v.isoTimestamp()),
 })
+
+export const ForgejoReleaseCollectionSchema = v.array(ForgejoReleaseSchama)

@@ -10,6 +10,11 @@ const route = useRoute()
 
 const { data, error, pending } = useLazyFetch(
   () => `/api/changelog/md/${info.provider}/${info.repo}/${info.path}`,
+  {
+    query: {
+      host: computed(() => info.host),
+    },
+  },
 )
 
 if (import.meta.client) {

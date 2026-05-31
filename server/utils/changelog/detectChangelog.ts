@@ -3,7 +3,7 @@ import { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
 import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
-import { GithubReleaseSchama, forgejoReleaseSchama } from '~~/shared/schemas/changelog/release'
+import { GithubReleaseSchama, ForgejoReleaseSchama } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
 import * as v from 'valibot'
 
@@ -219,7 +219,7 @@ async function checkLatestForgejoRelease(
       },
     )
 
-    const release = v.parse(forgejoReleaseSchama, response)
+    const release = v.parse(ForgejoReleaseSchama, response)
 
     const matchedChangelog = release.body?.match(MD_REGEX)?.at(0)
 
