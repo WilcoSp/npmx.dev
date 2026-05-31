@@ -532,6 +532,7 @@
       "weekly_downloads": "Wekelijkse downloads",
       "keywords": "Trefwoorden",
       "license": "Licentie",
+      "version": "Versie",
       "select": "Selecteer pakket",
       "select_maximum": "Er kunnen maximaal {count} pakketten worden geselecteerd"
     },
@@ -1185,8 +1186,11 @@
     },
     "team": {
       "title": "Team",
+      "core": "Kern",
+      "maintainers": "Beheerders",
+      "role_core": "kernlid",
       "role_steward": "Coördinator",
-      "role_maintainer": "Onderhouder",
+      "role_maintainer": "Beheerder",
       "sponsor": "sponsor",
       "sponsor_aria": "Sponsor {name} op GitHub"
     },
