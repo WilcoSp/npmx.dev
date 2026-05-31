@@ -386,14 +386,14 @@
       "title_deps": "Aanzienlijke toename van het aantal dependencies sinds versie {version}",
       "title_both": "Aanzienlijke toename in omvang en dependencies sinds v{version}",
       "size": "De installatiegrootte is toegenomen met {percent} ({size} groter)",
-      "deps": "{count} meer dependencies"
+      "deps": "{count} meer dependency | {count} meer dependencies"
     },
     "size_decrease": {
       "title_size": "Pakketgrootte is afgenomen sinds v{version}!",
       "title_deps": "Aantal dependencies is afgenomen sinds v{version}!",
       "title_both": "De pakketgrootte en het aantal dependencies zijn sindsdien afgenomen v{version}!",
       "size": "De installatiegrootte is met {percent} verminderd ({size} kleiner)",
-      "deps": "{count} minder dependencies"
+      "deps": "{count} minder dependency | {count} minder dependencies"
     },
     "replacement": {
       "title": "U heeft waarschijnlijk dit niet nodig",
@@ -588,8 +588,8 @@
       "load_error": "De tijdlijn kan niet worden geladen. Probeer het later nog eens.",
       "size_increase": "De installatiegrootte is toegenomen met {percent}% ({size})",
       "size_decrease": "De installatiegrootte is afgenomen met {percent}% ({size})",
-      "dep_increase": "{count} dependencies toegevoegd",
-      "dep_decrease": "{count} dependencies verwijderd",
+      "dep_increase": "{count} dependency toegevoegd | {count} dependencies toegevoegd",
+      "dep_decrease": "{count} dependency verwijderd | {count} dependencies verwijderd",
       "license_change": "Licentie gewijzigd van {from} naar {to}",
       "esm_added": "Moduletype is gewijzigd naar ESM",
       "esm_removed": "Moduletype is gewijzigd van ESM naar CJS",
