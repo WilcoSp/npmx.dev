@@ -112,7 +112,7 @@ async function checkLatestGithubRelease(
       null,
     ]
   } catch (e) {
-    if (!Error.isError(e)) {
+    if (!(e instanceof Error)) {
       // shouldn't be reachable, but is here for type safety
       return [false, null]
     }
