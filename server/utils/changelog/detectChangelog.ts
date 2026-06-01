@@ -7,6 +7,8 @@ import { GithubReleaseSchama } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
 import * as v from 'valibot'
 
+type SafeResult<R, E = Error> = [R, null] | [null, E]
+
 /**
  * Detect whether changelogs/releases are available for this package
  *
@@ -22,8 +24,8 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return false
   }
 
-  const releases = await checkReleases(repoRef, pkg.repository.directory)
-  if (releases && !isError(releases)) {
+  const [releases, releasesError] = await checkReleases(repoRef, pkg.repository.directory)
+  if (releases) {
     return releases
   }
 
@@ -32,8 +34,8 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return changelog
   }
 
-  if (isError(releases)) {
-    throw releases
+  if (releasesError) {
+    throw releasesError
   }
 
   throw createError({
@@ -49,14 +51,13 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
 async function checkReleases(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false | Error> {
+): Promise<SafeResult<ChangelogInfo | false>> {
   switch (ref.provider) {
     case 'github': {
       return checkLatestGithubRelease(ref, directory)
     }
   }
-
-  return false
+  return [false, null]
 }
 
 /// releases
@@ -67,7 +68,7 @@ const ROOT_ONLY_REGEX = /^\/[^/]+$/
 async function checkLatestGithubRelease(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false | Error> {
+): Promise<SafeResult<ChangelogInfo | false>> {
   try {
     const response = await $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
 
@@ -77,12 +78,15 @@ async function checkLatestGithubRelease(
 
     // if no changelog.md or the url doesn't contain /blob/
     if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
-      return {
-        provider: ref.provider,
-        type: 'release',
-        repo: `${ref.owner}/${ref.repo}`,
-        link: `https://github.com/${ref.owner}/${ref.repo}/releases`,
-      }
+      return [
+        {
+          provider: ref.provider,
+          type: 'release',
+          repo: `${ref.owner}/${ref.repo}`,
+          link: `https://github.com/${ref.owner}/${ref.repo}/releases`,
+        },
+        null,
+      ]
     }
 
     const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
@@ -95,25 +99,40 @@ async function checkLatestGithubRelease(
         ROOT_ONLY_REGEX.test(path)
       )
     ) {
-      return false as const
+      return [false, null]
     }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
-    }
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
+      },
+      null,
+    ]
   } catch (e) {
-    if (e instanceof FetchError && (e.statusCode === 403 || e.statusCode === 429)) {
-      return createError({
-        statusCode: 502,
-        statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
-      })
+    if (!Error.isError(e)) {
+      // shouldn't be reachable, but is here for type safety
+      return [false, null]
     }
+    if (e instanceof FetchError) {
+      if (e.statusCode == 404) {
+        return [false, null]
+      }
+      if (e.statusCode === 403 || e.statusCode === 429) {
+        return [
+          null,
+          createError({
+            statusCode: 502,
+            statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
+          }),
+        ]
+      }
+    }
+    console.error('[checkLatestGithubRelease] unexpected error: ', e)
+    return [null, e]
   }
-
-  return false as const
 }
 
 /// changelog markdown

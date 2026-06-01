@@ -37,8 +37,8 @@ if (import.meta.client) {
       const isMatching = createHeadingVersionMatcher(lcRequestedVersion)
 
       for (const item of toc) {
-        const lText = item.text.toLowerCase()
-        if (lText.toLowerCase().includes(lcRequestedVersion) && isMatching(lText)) {
+        const text = item.text.toLowerCase()
+        if (text.toLowerCase().includes(lcRequestedVersion) && isMatching(text)) {
           navigateTo(`#${item.id}`)
           return
         }

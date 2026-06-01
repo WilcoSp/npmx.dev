@@ -17,11 +17,11 @@ const PROVIDER_ICONS: Record<ProviderId, IconClass> = {
 
 export function useProviderIcon(
   provider: MaybeRefOrGetter<ProviderId | null | undefined>,
-  noProviderIcon: IconClass = 'i-simple-icons:github',
+  fallbackIcon: IconClass = 'i-simple-icons:github',
 ) {
   return computed((): IconClass => {
     const uProvider = toValue(provider)
-    if (!uProvider) return noProviderIcon
+    if (!uProvider) return fallbackIcon
     return PROVIDER_ICONS[uProvider] ?? 'i-lucide:code'
   })
 }

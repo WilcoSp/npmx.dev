@@ -8,6 +8,7 @@ export const GithubReleaseSchama = v.object({
   prerelease: v.boolean(),
   markdown: v.nullable(v.string()), // can be null if no descroption was made
   publishedAt: v.pipe(v.string(), v.isoTimestamp()),
+  mario: v.string(),
 })
 
 export const GithubReleaseCollectionSchama = v.object({

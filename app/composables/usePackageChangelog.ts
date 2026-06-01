@@ -1,6 +1,6 @@
 import type { ChangelogInfo } from '~~/shared/types/changelog'
 
-const key = 'changelog:has:info'
+const KEY = 'changelog:has:info'
 
 export function usePackageChangelog(
   packageName: MaybeRefOrGetter<string>,
@@ -25,7 +25,7 @@ export function usePackageHasChangelog(
   const { data } = usePackageChangelog(packageName, version)
   const hasChangelog = computed(() => data.value?.type == 'md' || data.value?.type == 'release')
   if (setState) {
-    useState(key, () => hasChangelog)
+    useState(KEY, () => hasChangelog)
   }
   return hasChangelog
 }
@@ -34,5 +34,5 @@ export function usePackageHasChangelog(
  * get whether current package has changelog via `useState` (is needed for command pallette)
  */
 export function usePackageHasChangelogFromState() {
-  return useState<boolean>(key)
+  return useState<boolean>(KEY)
 }
