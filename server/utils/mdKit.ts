@@ -411,6 +411,9 @@ export const ALLOWED_TAGS = [
   'kbd',
   'mark',
   'button',
+  'dl',
+  'dt',
+  'dd',
 ]
 
 export function sanitizeRawHTML(
