@@ -1,4 +1,11 @@
-import { type Tokens, type RendererApi, type Renderer, type TokenizerObject, marked } from 'marked'
+import {
+  type Tokens,
+  type RendererApi,
+  type Renderer,
+  type TokenizerObject,
+  type Marked,
+  marked,
+} from 'marked'
 import { highlightCodeSync } from './shiki'
 import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
 import { escapeHtml } from './docs/text'
@@ -160,6 +167,8 @@ export function createMarkedHeadingExtension(exemptIssuePr?: boolean): Tokenizer
     const match = /^ {0,3}(#{1,6})([^\s#][^\n]*)(?:\n+|$)/.exec(src)
     if (!match) return false
     if (exemptIssuePr && /^#\d+\b/.test(match[0])) return false
+
+    console.log({ match, test: /^#\d+\b/.test(match[0]), exemptIssuePr })
 
     let text = match[2]!.trim()
 
@@ -329,23 +338,26 @@ export function createHtml({
 
 // html rendering
 
-export function renderToRawHtml({
-  renderer,
-  markdownBody,
-  frontmatterHtml = '',
-}: {
-  renderer: Renderer
-  markdownBody: string
-  frontmatterHtml?: string
-  lastSemanticLevel?: number
-}) {
+export function renderToRawHtml(
+  {
+    renderer,
+    markdownBody,
+    frontmatterHtml = '',
+  }: {
+    renderer: Renderer
+    markdownBody: string
+    frontmatterHtml?: string
+    lastSemanticLevel?: number
+  },
+  markedInstance?: Marked,
+) {
   // Strip trailing whitespace (tabs/spaces) from code block closing fences.
   // While marky-markdown handles these gracefully, marked fails to recognize
   // the end of a code block if the closing fences are followed by unexpected whitespaces.
   const normalizedContent = markdownBody.replace(/^( {0,3}(?:`{3,}|~{3,}))\s*$/gm, '$1')
   return (
     frontmatterHtml +
-    (marked.parse(normalizedContent, {
+    ((markedInstance ?? marked).parse(normalizedContent, {
       renderer,
     }) as string)
   )
