@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VueUiXy, type VueUiXyConfig } from 'vue-data-ui/vue-ui-xy'
+import { VueUiXy, type VueUiXyConfig, type VueUiXySvgSlotProps } from 'vue-data-ui/vue-ui-xy'
 import { useDebounceFn, useElementSize, useTimeoutFn } from '@vueuse/core'
 import { useColors } from '~/composables/useColors'
 import { OKLCH_NEUTRAL_FALLBACK, transparentizeOklch } from '~/utils/colors'
@@ -25,6 +25,7 @@ import {
   getTrendsDatetimeFormatterOptions,
 } from '#shared/utils/trends-chart'
 import { downloadFileLink } from '~/utils/download'
+import { createLastDatapointLabelsSvg } from '#shared/utils/download-chart-last-label'
 
 import('vue-data-ui/style.css')
 
@@ -51,8 +52,10 @@ const props = withDefaults(
     /** When true, shows facet selector (e.g. Downloads / Likes). */
     showFacetSelector?: boolean
     permalink?: boolean
+    defaultRange?: 'auto' | '52-weeks'
   }>(),
   {
+    defaultRange: 'auto',
     permalink: false,
   },
 )
@@ -205,19 +208,21 @@ const {
 
 const repoRefsByPackage = shallowRef<Record<string, RepoRef | null>>({})
 const repoRefsRequestToken = shallowRef(0)
+const repoRefsPending = shallowRef(false)
 
 watch(
   () => effectivePackageNames.value,
   async names => {
     if (!import.meta.client) return
-    if (!isMultiPackageMode.value) {
-      repoRefsByPackage.value = {}
-      return
-    }
     const currentToken = ++repoRefsRequestToken.value
-    const refs = await fetchRepoRefsForPackages(names)
-    if (currentToken !== repoRefsRequestToken.value) return
-    repoRefsByPackage.value = refs
+    repoRefsPending.value = true
+    try {
+      const refs = await fetchRepoRefsForPackages(names)
+      if (currentToken !== repoRefsRequestToken.value) return
+      repoRefsByPackage.value = refs
+    } finally {
+      if (currentToken === repoRefsRequestToken.value) repoRefsPending.value = false
+    }
   },
   { immediate: true },
 )
@@ -372,7 +377,7 @@ function addUtcDays(date: Date, days: number): Date {
 function initDateRangeForMultiPackageWeekly52() {
   if (hasUserEditedDates.value) return
   if (!import.meta.client) return
-  if (!isMultiPackageMode.value) return
+  if (!isMultiPackageMode.value && props.defaultRange === 'auto') return
   if (startDate.value && endDate.value) return
 
   const today = new Date()
@@ -385,7 +390,7 @@ function initDateRangeForMultiPackageWeekly52() {
 }
 
 watch(
-  () => (props.packageNames ?? []).length,
+  () => (props.packageNames ?? []).length || props.defaultRange === '52-weeks',
   () => {
     initDateRangeForMultiPackageWeekly52()
   },
@@ -492,14 +497,6 @@ type MetricDef = {
   supportsMulti?: boolean
 }
 
-const hasContributorsFacet = computed(() => {
-  if (isMultiPackageMode.value) {
-    return Object.values(repoRefsByPackage.value).some(ref => ref?.provider === 'github')
-  }
-  const ref = props.repoRef
-  return ref?.provider === 'github' && ref.owner && ref.repo
-})
-
 const METRICS = computed<MetricDef[]>(() => {
   const metrics: MetricDef[] = [
     {
@@ -519,16 +516,13 @@ const METRICS = computed<MetricDef[]>(() => {
       fetch: ({ packageName }, opts) => fetchPackageLikesEvolution(packageName, opts),
       supportsMulti: true,
     },
-  ]
-
-  if (hasContributorsFacet.value) {
-    metrics.push({
+    {
       id: 'contributors',
       label: $t('package.trends.items.contributors'),
       fetch: ({ repoRef }, opts) => fetchRepoContributorsEvolution(repoRef, opts),
       supportsMulti: true,
-    })
-  }
+    },
+  ]
 
   return metrics
 })
@@ -691,6 +685,10 @@ async function loadMetric(metricId: MetricId) {
   const currentToken = ++state.requestToken
   state.pending = true
 
+  if (metricId === 'contributors' && repoRefsPending.value) {
+    return
+  }
+
   const fetchFn = (context: MetricContext) => metric.fetch(context, options.value)
 
   try {
@@ -753,7 +751,10 @@ async function loadMetric(metricId: MetricId) {
       }
     }
 
-    const result = await fetchFn({ packageName: pkg, repoRef: props.repoRef })
+    const result = await fetchFn({
+      packageName: pkg,
+      repoRef: props.repoRef || repoRefsByPackage.value[pkg],
+    })
     if (currentToken !== state.requestToken) return
 
     state.evolution = (result ?? []) as EvolutionData
@@ -812,7 +813,6 @@ watch(
   () => {
     if (!import.meta.client) return
     if (!isMounted.value) return
-    if (!isMultiPackageMode.value) return
     if (selectedMetric.value !== 'contributors') return
     debouncedLoadNow()
   },
@@ -980,41 +980,32 @@ function drawEstimationLine(svg: Record<string, any>) {
  * - renders a text label slightly offset to the right of the point
  * - formats the value using the compact number formatter
  *
+ * In case of label collisions for multiple series:
+ * - labels are evenly distributed vertically
+ * - an elbowed marker connects the last point to its label
+ *
  * Return an empty string when no series data is available.
  *
  * @param svg - SVG context object provided by `VueUiXy` via the `#svg` slot
  * @returns A string containing SVG `<text>` elements, or an empty string when
  * no labels should be rendered.
  */
-function drawLastDatapointLabel(svg: Record<string, any>) {
-  const data = Array.isArray(svg?.data) ? svg.data : []
-  if (!data.length) return ''
-
-  const dataLabels: string[] = []
-
-  for (const serie of data) {
-    const lastPlot = serie.plots.at(-1)
-
-    dataLabels.push(`
-      <text
-        text-anchor="start"
-        dominant-baseline="middle"
-        x="${lastPlot.x + 12}"
-        y="${lastPlot.y}"
-        font-size="24"
-        fill="${colors.value.fg}"
-        stroke="${colors.value.bg}"
-        stroke-width="1"
-        paint-order="stroke fill"
-      >
-        ${compactNumberFormatter.value.format(Number.isFinite(lastPlot.value) ? lastPlot.value : 0)}
-      </text>
-    `)
-  }
-
-  return dataLabels.join('\n')
+function drawLastDatapointLabel(svg: VueUiXySvgSlotProps['svg']) {
+  return createLastDatapointLabelsSvg({
+    series: Array.isArray(svg?.data) ? svg.data : [],
+    drawingArea: svg.drawingArea,
+    svgWidth: svg.width,
+    fontSize: isMultiPackageMode.value ? 20 : 24,
+    labelOffset: isMultiPackageMode.value ? 24 : 16,
+    colors: {
+      foreground: colors.value.fg!,
+      background: colors.value.bg!,
+      fallbackSerieColor: colors.value.fg!,
+    },
+    formatValue: value => compactNumberFormatter.value.format(value),
+    isDarkMode: isDarkMode.value,
+  })
 }
-
 /**
  * Build and return a legend to be injected during the SVG export only, since the custom legend is
  * displayed as an independent div, content has to be injected within the chart's viewBox.
