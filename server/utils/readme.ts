@@ -8,7 +8,7 @@ import {
   createHeading,
   createHtml,
   USER_CONTENT_PREFIX,
-  markedHeadingExtension,
+  createMarkedHeadingExtension,
   renderToRawHtml,
   createImage,
   sanitizeRawHTML,
@@ -153,7 +153,7 @@ function matchPlaygroundProvider(url: string): PlaygroundProvider | null {
 
 marked.use({
   tokenizer: {
-    heading: markedHeadingExtension,
+    heading: createMarkedHeadingExtension(),
   },
 })
 

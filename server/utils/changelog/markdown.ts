@@ -11,7 +11,7 @@ import {
   createLink,
   decodeHashFragment,
   isNpmJsUrlThatCanBeRedirected,
-  markedHeadingExtension,
+  createMarkedHeadingExtension,
   renderToRawHtml,
   sanitizeRawHTML,
 } from '../mdKit'
@@ -27,7 +27,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
   marked.use({
     tokenizer: {
-      heading: markedHeadingExtension,
+      heading: createMarkedHeadingExtension(true),
     },
   })
 
