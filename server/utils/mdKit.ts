@@ -338,19 +338,17 @@ export function createHtml({
 
 // html rendering
 
-export function renderToRawHtml(
-  {
-    renderer,
-    markdownBody,
-    frontmatterHtml = '',
-  }: {
-    renderer: Renderer
-    markdownBody: string
-    frontmatterHtml?: string
-    lastSemanticLevel?: number
-  },
-  markedInstance?: Marked,
-) {
+export function renderToRawHtml({
+  renderer,
+  markdownBody,
+  frontmatterHtml = '',
+  markedInstance,
+}: {
+  renderer: Renderer
+  markdownBody: string
+  frontmatterHtml?: string
+  markedInstance?: Marked
+}) {
   // Strip trailing whitespace (tabs/spaces) from code block closing fences.
   // While marky-markdown handles these gracefully, marked fails to recognize
   // the end of a code block if the closing fences are followed by unexpected whitespaces.

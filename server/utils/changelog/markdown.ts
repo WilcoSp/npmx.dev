@@ -86,7 +86,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
     renderer.image = createImage(processImageUrl)
 
-    const rawHtml = renderToRawHtml({ renderer, markdownBody }, clMarked)
+    const rawHtml = renderToRawHtml({ renderer, markdownBody, markedInstance: clMarked })
 
     return {
       html: sanitizeRawHTML(convertToEmoji(rawHtml), {
