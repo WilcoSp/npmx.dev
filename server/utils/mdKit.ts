@@ -1,4 +1,11 @@
-import { type Tokens, type RendererApi, type Renderer, type TokenizerObject, marked } from 'marked'
+import {
+  type Tokens,
+  type RendererApi,
+  type Renderer,
+  type TokenizerObject,
+  type Marked,
+  marked,
+} from 'marked'
 import { highlightCodeSync } from './shiki'
 import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
 import { escapeHtml } from './docs/text'
@@ -150,30 +157,37 @@ export const createImage = function (processImageUrl: ProcessImageUrlFn): Render
  *
  * CommonMark requires a space after # for ATX headings, but many READMEs in the npm registry omit
  * this space. This extension allows marked to parse these headings the same way npm does.
+ *
+ * @param exemptIssuePr do not turn #{number} into a heading, treat it as an issue/pr instead
  */
-export const markedHeadingExtension: TokenizerObject['heading'] = function (src: string) {
-  // Only match headings where `#` is immediately followed by non-whitespace, non-`#` content.
-  // Normal headings (with space) return false to fall through to marked's default tokenizer.
-  const match = /^ {0,3}(#{1,6})([^\s#][^\n]*)(?:\n+|$)/.exec(src)
-  if (!match) return false
+export function createMarkedHeadingExtension(exemptIssuePr?: boolean): TokenizerObject['heading'] {
+  return function (src: string) {
+    // Only match headings where `#` is immediately followed by non-whitespace, non-`#` content.
+    // Normal headings (with space) return false to fall through to marked's default tokenizer.
+    const match = /^ {0,3}(#{1,6})([^\s#][^\n]*)(?:\n+|$)/.exec(src)
+    if (!match) return false
+    if (exemptIssuePr && /^#\d+\b/.test(match[0])) return false
 
-  let text = match[2]!.trim()
+    console.log({ match, test: /^#\d+\b/.test(match[0]), exemptIssuePr })
 
-  // Strip trailing # characters only if preceded by a space (CommonMark behavior).
-  // e.g., "#heading ##" → "heading", but "#heading#" stays as "heading#"
-  if (text.endsWith('#')) {
-    const stripped = text.replace(/#+$/, '')
-    if (!stripped || stripped.endsWith(' ')) {
-      text = stripped.trim()
+    let text = match[2]!.trim()
+
+    // Strip trailing # characters only if preceded by a space (CommonMark behavior).
+    // e.g., "#heading ##" → "heading", but "#heading#" stays as "heading#"
+    if (text.endsWith('#')) {
+      const stripped = text.replace(/#+$/, '')
+      if (!stripped || stripped.endsWith(' ')) {
+        text = stripped.trim()
+      }
     }
-  }
 
-  return {
-    type: 'heading' as const,
-    raw: match[0]!,
-    depth: match[1]!.length as number,
-    text,
-    tokens: this.lexer.inline(text),
+    return {
+      type: 'heading' as const,
+      raw: match[0]!,
+      depth: match[1]!.length as number,
+      text,
+      tokens: this.lexer.inline(text),
+    }
   }
 }
 
@@ -328,11 +342,12 @@ export function renderToRawHtml({
   renderer,
   markdownBody,
   frontmatterHtml = '',
+  markedInstance,
 }: {
   renderer: Renderer
   markdownBody: string
   frontmatterHtml?: string
-  lastSemanticLevel?: number
+  markedInstance?: Marked
 }) {
   // Strip trailing whitespace (tabs/spaces) from code block closing fences.
   // While marky-markdown handles these gracefully, marked fails to recognize
@@ -340,7 +355,7 @@ export function renderToRawHtml({
   const normalizedContent = markdownBody.replace(/^( {0,3}(?:`{3,}|~{3,}))\s*$/gm, '$1')
   return (
     frontmatterHtml +
-    (marked.parse(normalizedContent, {
+    ((markedInstance ?? marked).parse(normalizedContent, {
       renderer,
     }) as string)
   )
@@ -411,6 +426,9 @@ export const ALLOWED_TAGS = [
   'kbd',
   'mark',
   'button',
+  'dl',
+  'dt',
+  'dd',
 ]
 
 export function sanitizeRawHTML(

@@ -11,24 +11,27 @@ import {
   createLink,
   decodeHashFragment,
   isNpmJsUrlThatCanBeRedirected,
-  markedHeadingExtension,
+  createMarkedHeadingExtension,
   renderToRawHtml,
   sanitizeRawHTML,
 } from '../mdKit'
 import { slugify } from '#shared/utils/html'
-import { marked } from 'marked'
+import { Marked } from 'marked'
 import { hasProtocol, joinRelativeURL, parseFilename } from 'ufo'
 import { convertToEmoji } from '#shared/utils/emoji'
 
-export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
-  const renderer = new marked.Renderer({
-    gfm: true,
-  })
+// cl = ChangeLog
+const clMarked = new Marked()
 
-  marked.use({
-    tokenizer: {
-      heading: markedHeadingExtension,
-    },
+clMarked.use({
+  tokenizer: {
+    heading: createMarkedHeadingExtension(true),
+  },
+})
+
+export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
+  const renderer = new clMarked.Renderer({
+    gfm: true,
   })
 
   // GitHub-style callouts: > [!NOTE], > [!TIP], etc.
@@ -83,7 +86,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 
     renderer.image = createImage(processImageUrl)
 
-    const rawHtml = renderToRawHtml({ renderer, markdownBody })
+    const rawHtml = renderToRawHtml({ renderer, markdownBody, markedInstance: clMarked })
 
     return {
       html: sanitizeRawHTML(convertToEmoji(rawHtml), {

@@ -517,3 +517,26 @@ describe('Heading & toc resolution', () => {
     )
   })
 })
+
+describe('ATX heading #issue/#pr exemption', () => {
+  it("shouldn't turn issues/PRs into headings", async () => {
+    const info = changelogMdinfo()
+    const renderer = await changelogRenderer(info)
+    const markdown = `#2869 hello
+
+#2717 world`
+
+    const result = renderer(markdown)
+    expect(result.html).toBe('<p>#2869 hello</p>\n<p>#2717 world</p>\n')
+  })
+
+  it("shouldn't turn issues/PRs in list into headings", async () => {
+    const info = changelogMdinfo()
+    const renderer = await changelogRenderer(info)
+    const markdown = `- #2869 hello
+- #2717 world`
+
+    const result = renderer(markdown)
+    expect(result.html).toBe('<ul>\n<li>#2869 hello</li>\n<li>#2717 world</li>\n</ul>\n')
+  })
+})
