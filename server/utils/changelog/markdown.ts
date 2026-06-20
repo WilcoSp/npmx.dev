@@ -17,7 +17,7 @@ import {
 } from '../mdKit'
 import { slugify } from '#shared/utils/html'
 import { Marked } from 'marked'
-import { hasProtocol, joinRelativeURL, parseFilename } from 'ufo'
+import { hasProtocol, joinRelativeURL, parseFilename, parseURL } from 'ufo'
 import { convertToEmoji } from '#shared/utils/emoji'
 
 // cl = ChangeLog
@@ -59,7 +59,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
       return `${idPrefix}-${id}`
     }
 
-    const processLink: ProcessLinkFn = (href: string, _label: string) => {
+    const processLink: ProcessLinkFn = (href: string, label: string) => {
       const resolvedHref = resolveUrl(href, mdRepoInfo, toUserContentId)
 
       // Security attributes for external links
@@ -68,7 +68,9 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
           ? ' rel="nofollow noreferrer noopener" target="_blank"'
           : ''
 
-      return { resolvedHref, extraAttrs }
+      const resolvedText = resolveGitLinkText(resolvedHref, label, mdRepoInfo)
+
+      return { resolvedHref, extraAttrs, resolvedText }
     }
 
     renderer.link = createLink(processLink)
@@ -105,10 +107,24 @@ export interface MarkdownRepoInfo {
   rawBaseUrl: string
   /** Blob/rendered file URL base (e.g., https://github.com/owner/repo/blob/HEAD) */
   blobBaseUrl: string
-  /**
-   * path to the markdown file, can't start with /
-   */
+  /** path to the markdown file, can't start with / */
   path?: string
+  /** the base url of repository commit */
+  commitBaseUrl: string
+  /** base url for a repository issue */
+  issueBaseUrl: string
+  /** the text char that indicates an issue */
+  issueChar: string
+  /** base url for a repository pull/merge request */
+  prBaseUrl: string
+  /**
+   * the text char that indicates a pull/merge request
+   *
+   * if it's the same as issueChar, than links will be parsed as issues and repo host is reponsible to redirect to pull/merge request
+   x*/
+  prChar: string
+  /** base url for a repository compare */
+  compareBaseUrl: string
 }
 
 function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: ToUserContentIdFn) {
@@ -180,4 +196,33 @@ function checkResolvedUrl(resolved: string, baseUrl: string) {
     return resolved
   }
   return joinRelativeURL(baseUrl, parseFilename(resolved) ?? '')
+}
+
+function resolveGitLinkText(href: string, label: string, repoInfo: MarkdownRepoInfo) {
+  if (!href || label !== href) {
+    // is autoLink or empty href
+    return
+  }
+
+  const pathSegments = parseURL(href).pathname.split('/').filter(Boolean)
+  const lastSegment = pathSegments.at(-1)
+  if (!lastSegment) {
+    return
+  }
+
+  switch (true) {
+    case href.startsWith(repoInfo.commitBaseUrl): {
+      return lastSegment.slice(0, 6) // only show the first 6 letters/numbers of a commit
+    }
+    case href.startsWith(repoInfo.issueBaseUrl): {
+      return `${repoInfo.issueChar}${lastSegment}`
+    }
+    case href.startsWith(repoInfo.prBaseUrl): {
+      return `${repoInfo.prChar}${lastSegment}`
+    }
+    case href.startsWith(repoInfo.compareBaseUrl): {
+      return lastSegment
+    }
+    // for account we don't resolve, this is something the git providers also don't do
+  }
 }

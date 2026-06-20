@@ -1,5 +1,6 @@
 import type { MarkdownRepoInfo } from '~~/server/utils/changelog/markdown'
 import { describe, expect, it, vi, beforeAll } from 'vitest'
+import { createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
 
 // testing changelog specific needs, others things are tested at ../readme.spec.ts
 
@@ -22,18 +23,11 @@ beforeAll(() => {
 const { changelogRenderer } = await import('#server/utils/changelog/markdown')
 
 function changelogMdinfo(): MarkdownRepoInfo {
-  return {
-    blobBaseUrl: `https://github.com/test-owner/test-repo/blob/HEAD`,
-    rawBaseUrl: `https://raw.githubusercontent.com/test-owner/test-repo/HEAD`,
-  }
+  return createGithubRepoInfo('test-owner', 'test-repo')
 }
 
 function changelogMdInfoWithPath() {
-  return {
-    blobBaseUrl: `https://github.com/test-owner/test-repo/blob/HEAD`,
-    rawBaseUrl: `https://raw.githubusercontent.com/test-owner/test-repo/HEAD`,
-    path: 'packages/test/changelog.md',
-  }
+  return createGithubRepoInfo('test-owner', 'test-repo', 'packages/test/changelog.md')
 }
 
 describe('URL Resolution', () => {

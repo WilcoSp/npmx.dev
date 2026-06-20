@@ -76,7 +76,7 @@ export type ProcessLinkFn = (
   href: string,
   label: string,
   // readme.ts also needs the extraAttrs for more things, so can't be a boolean
-) => { resolvedHref: string; extraAttrs: string }
+) => { resolvedHref: string; extraAttrs: string; resolvedText?: string }
 
 export function decodeHashFragment(value: string): string {
   try {
@@ -105,16 +105,20 @@ export function createLink(processLink: ProcessLinkFn): RendererApi['link'] {
       plainText = tokens[0].text
     }
 
-    const { resolvedHref, extraAttrs } = processLink(href, plainText || eTitle || '')
+    const {
+      resolvedHref,
+      extraAttrs,
+      resolvedText = text,
+    } = processLink(href, plainText || eTitle || '')
 
-    if (!resolvedHref) return text
+    if (!resolvedHref) return resolvedText
 
     // prevents package@1.0.0 being made into an email
     if (href.startsWith('mailto:') && !EMAIL_REGEX.test(plainText)) {
-      return text
+      return resolvedText
     }
 
-    return `<a href="${resolvedHref}"${titleAttr}${extraAttrs}>${text}</a>`
+    return `<a href="${resolvedHref}"${titleAttr}${extraAttrs}>${resolvedText}</a>`
   }
 }
 
@@ -471,6 +475,14 @@ export function sanitizeRawHTML(
         '--shiki-light': [/^#[0-9a-f]{3,8}$/i],
       },
     },
+    // textFilter(text, tagName) {
+    //   if (tagName == 'a') {
+    //     return text
+    //   }
+
+    //   return text.replace(/\B#\d+\b/g, 'banana')
+    // },
+
     transformTags: {
       // Headings are already processed to correct semantic levels by processHeading()
       // during the marked rendering pass. The sanitizer just needs to preserve them.
@@ -506,6 +518,7 @@ export function sanitizeRawHTML(
         }
         return { tagName, attribs }
       },
+
       source: (tagName, attribs) => {
         if (attribs.src) {
           attribs.src = processImageUrl(attribs.src)

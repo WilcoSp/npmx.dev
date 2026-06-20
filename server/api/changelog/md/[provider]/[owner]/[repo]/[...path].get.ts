@@ -1,4 +1,5 @@
 import * as v from 'valibot'
+import { createForgejoRepoInfo, createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
 import {
   ERROR_CHANGELOG_FILE_FAILED,
   ERROR_THROW_INCOMPLETE_PARAM,
@@ -61,13 +62,7 @@ async function getGithubMarkDown(owner: string, repo: string, path: string) {
 
   const markdown = v.parse(v.string(), data)
 
-  return (
-    await changelogRenderer({
-      blobBaseUrl: `https://github.com/${owner}/${repo}/blob/HEAD`,
-      rawBaseUrl: `https://raw.githubusercontent.com/${owner}/${repo}/HEAD`,
-      path,
-    })
-  )(markdown)
+  return (await changelogRenderer(createGithubRepoInfo(owner, repo, path)))(markdown)
 }
 
 async function getForgejoMarkdown(owner: string, repo: string, path: string, host: string) {
@@ -75,11 +70,5 @@ async function getForgejoMarkdown(owner: string, repo: string, path: string, hos
 
   const markdown = v.parse(v.string(), data)
 
-  return (
-    await changelogRenderer({
-      blobBaseUrl: `https://${host}/${owner}/${repo}/src/branch/HEAD`,
-      rawBaseUrl: `https://${host}/${owner}/${repo}/raw/branch/HEAD`,
-      path,
-    })
-  )(markdown)
+  return (await changelogRenderer(createForgejoRepoInfo(host, owner, repo, path)))(markdown)
 }

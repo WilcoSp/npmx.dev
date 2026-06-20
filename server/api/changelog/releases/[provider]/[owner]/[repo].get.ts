@@ -11,6 +11,7 @@ import {
 } from '~~/shared/schemas/changelog/release'
 import { parse } from 'valibot'
 import { changelogRenderer } from '~~/server/utils/changelog/markdown'
+import { createForgejoRepoInfo, createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
 
 export default defineCachedEventHandler(
   async event => {
@@ -72,10 +73,7 @@ async function getReleasesFromGithub(owner: string, repo: string) {
 
   const { releases } = parse(GithubReleaseCollectionSchama, data)
 
-  const render = await changelogRenderer({
-    blobBaseUrl: `https://github.com/${owner}/${repo}/blob/HEAD`,
-    rawBaseUrl: `https://raw.githubusercontent.com/${owner}/${repo}/HEAD`,
-  })
+  const render = await changelogRenderer(createGithubRepoInfo(owner, repo))
 
   return releases.map(r => {
     const { html, toc } = render(r.markdown, r.id)
@@ -97,10 +95,7 @@ async function getReleasesFromForgejo(owner: string, repo: string, host: string)
   const data = await $fetch(`https://${host}/api/v1/repos/${owner}/${repo}/releases?draft=false`)
   const releases = parse(ForgejoReleaseCollectionSchema, data)
 
-  const render = await changelogRenderer({
-    blobBaseUrl: `https://${host}/${owner}/${repo}/src/branch/HEAD`,
-    rawBaseUrl: `https://${host}/${owner}/${repo}/raw/branch/HEAD`,
-  })
+  const render = await changelogRenderer(createForgejoRepoInfo(host, owner, repo))
 
   return releases.map(r => {
     const { html, toc } = render(r.body, r.id)
