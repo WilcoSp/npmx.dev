@@ -1,3 +1,4 @@
+import type { IOptions } from 'sanitize-html'
 import {
   type ProcessImageUrlFn,
   type ProcessLinkFn,
@@ -17,7 +18,7 @@ import {
 } from '../mdKit'
 import { slugify } from '#shared/utils/html'
 import { Marked } from 'marked'
-import { hasProtocol, joinRelativeURL, parseFilename, parseURL } from 'ufo'
+import { hasProtocol, joinRelativeURL, joinURL, parseFilename, parseURL } from 'ufo'
 import { convertToEmoji } from '#shared/utils/emoji'
 
 // cl = ChangeLog
@@ -96,6 +97,7 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
         processLink,
         toUserContentId,
         lastSemanticLevel,
+        textFilter: createResolveGitTextToLinks(mdRepoInfo),
       }),
       toc,
     }
@@ -103,6 +105,8 @@ export async function changelogRenderer(mdRepoInfo: MarkdownRepoInfo) {
 }
 
 export interface MarkdownRepoInfo {
+  /** base url for the host */
+  hostBaseUrl: string
   /** Raw file URL base (e.g., https://raw.githubusercontent.com/owner/repo/HEAD) */
   rawBaseUrl: string
   /** Blob/rendered file URL base (e.g., https://github.com/owner/repo/blob/HEAD) */
@@ -114,7 +118,7 @@ export interface MarkdownRepoInfo {
   /** base url for a repository issue */
   issueBaseUrl: string
   /** the text char that indicates an issue */
-  issueChar: string
+  issueChar: keyof typeof issuePrRegexes
   /** base url for a repository pull/merge request */
   prBaseUrl: string
   /**
@@ -122,7 +126,7 @@ export interface MarkdownRepoInfo {
    *
    * if it's the same as issueChar, than links will be parsed as issues and repo host is reponsible to redirect to pull/merge request
    x*/
-  prChar: string
+  prChar: keyof typeof issuePrRegexes
   /** base url for a repository compare */
   compareBaseUrl: string
 }
@@ -224,5 +228,43 @@ function resolveGitLinkText(href: string, label: string, repoInfo: MarkdownRepoI
       return lastSegment
     }
     // for account we don't resolve, this is something the git providers also don't do
+  }
+}
+
+const issuePrRegexes = {
+  '#': /\B#\d+\b/g,
+  '!': /\B!\d+\b/g,
+} as const
+
+const accountRegex = /\B@[\w\-.]+\b/g
+
+const tagsToIgnore = new Set(['a', 'code'])
+function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFilter'] {
+  return (text, tag) => {
+    if (tagsToIgnore.has(tag)) return text
+
+    // return text
+
+    // issues
+    text = text
+      .replace(issuePrRegexes[mdInfo.issueChar], match => {
+        const id = match.replace(mdInfo.issueChar, '')
+        return `<a href="${joinURL(mdInfo.issueBaseUrl, id)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
+      })
+      // account
+      .replace(accountRegex, match => {
+        const acc = match.replace('@', '')
+        return `<a href="${joinURL(mdInfo.hostBaseUrl, acc)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
+      })
+
+    // pr/mr
+    if (mdInfo.issueChar != mdInfo.prChar) {
+      text = text.replace(issuePrRegexes[mdInfo.prChar], match => {
+        const id = match.replace(mdInfo.prChar, '')
+        return `<a href="${joinURL(mdInfo.prBaseUrl, id)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
+      })
+    }
+
+    return text
   }
 }

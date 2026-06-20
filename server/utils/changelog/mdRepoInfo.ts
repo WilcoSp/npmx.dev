@@ -1,16 +1,19 @@
 import type { MarkdownRepoInfo } from './markdown'
 
 export function createGithubRepoInfo(owner: string, repo: string, path?: string): MarkdownRepoInfo {
+  const hostBaseUrl = 'https://github.com'
+
   return {
-    blobBaseUrl: `https://github.com/${owner}/${repo}/blob/HEAD`,
+    hostBaseUrl,
+    blobBaseUrl: `${hostBaseUrl}/${owner}/${repo}/blob/HEAD`,
     rawBaseUrl: `https://raw.githubusercontent.com/${owner}/${repo}/HEAD`,
     path,
-    commitBaseUrl: `https://github.com/${owner}/${repo}/commit`,
+    commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/commit`,
     issueChar: '#',
-    issueBaseUrl: `https://github.com/${owner}/${repo}/issues`,
+    issueBaseUrl: `${hostBaseUrl}/${owner}/${repo}/issues`,
     prChar: '#',
-    prBaseUrl: `https://github.com/${owner}/${repo}/pull`,
-    compareBaseUrl: `https://github.com/${owner}/${repo}/compare`,
+    prBaseUrl: `${hostBaseUrl}/${owner}/${repo}/pull`,
+    compareBaseUrl: `${hostBaseUrl}/${owner}/${repo}/compare`,
   }
 }
 
@@ -20,15 +23,18 @@ export function createForgejoRepoInfo(
   repo: string,
   path?: string,
 ): MarkdownRepoInfo {
+  const hostBaseUrl = `https://${host}`
+
   return {
-    blobBaseUrl: `https://${host}/${owner}/${repo}/src/branch/HEAD`,
-    rawBaseUrl: `https://${host}/${owner}/${repo}/raw/branch/HEAD`,
+    hostBaseUrl,
+    blobBaseUrl: `${hostBaseUrl}/${owner}/${repo}/src/branch/HEAD`,
+    rawBaseUrl: `${hostBaseUrl}/${owner}/${repo}/raw/branch/HEAD`,
     path,
-    commitBaseUrl: `https://${host}/${owner}/${repo}/commit`,
+    commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/commit`,
     issueChar: '#',
-    issueBaseUrl: `https://${host}/${owner}/${repo}/issues`,
+    issueBaseUrl: `${hostBaseUrl}/${owner}/${repo}/issues`,
     prChar: '#',
-    prBaseUrl: `https://${host}/${owner}/${repo}/pulls`,
-    compareBaseUrl: `https://${host}/${owner}/${repo}/compare`,
+    prBaseUrl: `${hostBaseUrl}/${owner}/${repo}/pulls`,
+    compareBaseUrl: `${hostBaseUrl}/${owner}/${repo}/compare`,
   }
 }

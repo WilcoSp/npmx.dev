@@ -9,7 +9,7 @@ import {
 import { highlightCodeSync } from './shiki'
 import { decodeHtmlEntities, stripHtmlTags, slugify } from '#shared/utils/html'
 import { escapeHtml } from './docs/text'
-import sanitizeHtml from 'sanitize-html'
+import sanitizeHtml, { type IOptions } from 'sanitize-html'
 import { hasProtocol } from 'ufo'
 
 /// for marked
@@ -171,8 +171,6 @@ export function createMarkedHeadingExtension(exemptIssuePr?: boolean): Tokenizer
     const match = /^ {0,3}(#{1,6})([^\s#][^\n]*)(?:\n+|$)/.exec(src)
     if (!match) return false
     if (exemptIssuePr && /^#\d+\b/.test(match[0])) return false
-
-    console.log({ match, test: /^#\d+\b/.test(match[0]), exemptIssuePr })
 
     let text = match[2]!.trim()
 
@@ -442,11 +440,13 @@ export function sanitizeRawHTML(
     processLink,
     toUserContentId,
     lastSemanticLevel = 2,
+    textFilter,
   }: {
     processImageUrl: ProcessImageUrlFn
     processLink: ProcessLinkFn
     toUserContentId: ToUserContentIdFn
     lastSemanticLevel?: number
+    textFilter?: IOptions['textFilter']
   },
 ) {
   // Helper to prefix id attributes with 'user-content-'
@@ -475,14 +475,8 @@ export function sanitizeRawHTML(
         '--shiki-light': [/^#[0-9a-f]{3,8}$/i],
       },
     },
-    // textFilter(text, tagName) {
-    //   if (tagName == 'a') {
-    //     return text
-    //   }
 
-    //   return text.replace(/\B#\d+\b/g, 'banana')
-    // },
-
+    textFilter,
     transformTags: {
       // Headings are already processed to correct semantic levels by processHeading()
       // during the marked rendering pass. The sanitizer just needs to preserve them.
