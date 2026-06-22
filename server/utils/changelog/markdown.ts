@@ -236,7 +236,8 @@ const issuePrRegexes = {
   '!': /\B!\d+\b/g,
 } as const
 
-const accountRegex = /\B@[\w\-.]+\b/g
+const accountRegex = /\B@(?![.\d])(?![\w.-]*\/)[\w-]+\b/
+const commitRegex = /\b[a-f0-9]{6,40}\b/gi
 
 const tagsToIgnore = new Set(['a', 'code'])
 function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFilter'] {
@@ -256,6 +257,13 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
         const acc = match.replace('@', '')
         return `<a href="${joinURL(mdInfo.hostBaseUrl, acc)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
       })
+      .replace(commitRegex, match => {
+        if (excludeWordsFromCommitMatch.has(match.toLowerCase())) {
+          return match
+        }
+
+        return `<a href="${joinURL(mdInfo.commitBaseUrl, match)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
+      })
 
     // pr/mr
     if (mdInfo.issueChar != mdInfo.prChar) {
@@ -268,3 +276,29 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
     return text
   }
 }
+
+// source https://raw.githubusercontent.com/potch/sowpods/refs/heads/master/SOWPODS.txt and filtered with /^[a-f]{6,40}$/i
+const excludeWordsFromCommitMatch = new Set([
+  'accede',
+  'acceded',
+  'baccae',
+  'baffed',
+  'beaded',
+  'bedded',
+  'beebee',
+  'beefed',
+  'cabbed',
+  'dabbed',
+  'dadded',
+  'daffed',
+  'deaded',
+  'decade',
+  'decaff',
+  'deeded',
+  'deface',
+  'defaced',
+  'efface',
+  'effaced',
+  'facade',
+  'faffed',
+])
