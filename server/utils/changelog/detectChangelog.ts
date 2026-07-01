@@ -3,7 +3,11 @@ import { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
 import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
-import { GithubReleaseSchama, ForgejoReleaseSchama } from '~~/shared/schemas/changelog/release'
+import {
+  GithubReleaseSchama,
+  ForgejoReleaseSchama,
+  GitlabReleaseSchame,
+} from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
 import * as v from 'valibot'
 
@@ -60,11 +64,12 @@ async function checkReleases(
     case 'forgejo': {
       return checkLatestForgejoRelease(ref, directory)
     }
+    case 'gitlab': {
+      return checkLatestGitlabRelease(ref, directory)
+    }
   }
   return [false, null]
 }
-
-/// releases
 
 const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()(.*?)(?=\))/i
 const ROOT_ONLY_REGEX = /^\/[^/]+$/
@@ -184,7 +189,7 @@ async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
         type: 'md',
         provider: ref.provider,
         path: resolveURL(dir ?? '', fileName),
-        repo: `${ref.owner}/${ref.repo}`,
+        repo: `${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}`,
         link: resolveURL(baseUrl.blob, dir ?? '', fileName),
         host: ref.host,
       } satisfies ChangelogMarkdownInfo
@@ -213,6 +218,13 @@ function getBaseFileUrl(ref: RepoRef): RepoFileUrl | null {
         raw: `https://${host}/${ref.owner}/${ref.repo}/raw/branch/HEAD`,
       }
     }
+    case 'gitlab': {
+      const host = ref.host ?? 'gitlab.com'
+      return {
+        blob: `https://${host}/${ref.owner}/${ref.repo}/-/blob/HEAD`,
+        raw: `https://${host}/${ref.owner}/${ref.repo}/-/raw/HEAD`,
+      }
+    }
   }
   return null
 }
@@ -223,9 +235,9 @@ async function checkLatestForgejoRelease(
   ref: RepoRef,
   directory?: string,
 ): Promise<SafeResult<ChangelogInfo | false>> {
-  console.log('hallo')
   try {
     const host = ref.host ?? 'codeberg.org'
+
     const response = await $fetch(
       `https://${host}/api/v1/repos/${ref.owner}/${ref.repo}/releases/latest`,
       {
@@ -270,6 +282,73 @@ async function checkLatestForgejoRelease(
         type: 'md',
         path,
         repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
+        host: ref.host,
+      },
+      null,
+    ]
+  } catch (e) {
+    if (e instanceof Error) {
+      return [null, e]
+    }
+  }
+  return [false, null]
+}
+
+// gitlab
+async function checkLatestGitlabRelease(
+  ref: RepoRef,
+  directory?: string,
+): Promise<SafeResult<ChangelogInfo | false>> {
+  try {
+    const host = ref.host ?? 'gitlab.com'
+    const repoPath = encodeURIComponent(`${ref.owner}/${ref.repo}`)
+
+    const response = await $fetch(
+      `https://${host}/api/v4/projects/${repoPath}/releases/permalink/latest`,
+      {
+        headers: {
+          'User-Agent': 'npmx.dev',
+          'accept': 'application/json',
+        },
+      },
+    )
+    const release = v.parse(GitlabReleaseSchame, response)
+
+    const matchedChangelog = release.description?.match(MD_REGEX)?.at(0)
+
+    if (!matchedChangelog || !matchedChangelog.includes('/-/blob/')) {
+      return [
+        {
+          type: 'release',
+          // I encode both just to be sure
+          link: `https://${host}/${ref.owner}/${ref.repo}/-/releases`,
+          provider: ref.provider,
+          repo: `${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}`,
+          host: ref.host,
+        },
+        null,
+      ]
+    }
+
+    const path = matchedChangelog.replace(/^.*\/-\/blob\/[^/]+\//i, '')
+
+    if (
+      directory &&
+      !(
+        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+        ROOT_ONLY_REGEX.test(path)
+      )
+    ) {
+      return [false, null] as const
+    }
+
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}`,
         link: matchedChangelog,
         host: ref.host,
       },

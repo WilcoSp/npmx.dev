@@ -30,3 +30,11 @@ export const ForgejoReleaseSchama = v.object({
 })
 
 export const ForgejoReleaseCollectionSchema = v.array(ForgejoReleaseSchama)
+
+export const GitlabReleaseSchame = v.object({
+  tag_name: v.string(),
+  name: v.string(),
+  description: v.string(),
+  released_at: v.pipe(v.string(), v.isoTimestamp()),
+  upcoming_release: v.boolean(),
+})

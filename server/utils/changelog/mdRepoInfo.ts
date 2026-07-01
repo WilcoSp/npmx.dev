@@ -38,3 +38,26 @@ export function createForgejoRepoInfo(
     compareBaseUrl: `${hostBaseUrl}/${owner}/${repo}/compare`,
   }
 }
+
+export function createGitLabRepoInfo(
+  host: string,
+  owner: string,
+  repo: string,
+  path?: string,
+): MarkdownRepoInfo {
+  const hostBaseUrl = `https://${host}`
+
+  return {
+    hostBaseUrl,
+    blobBaseUrl: `${hostBaseUrl}/${owner}/${repo}/-/blob/HEAD`,
+    rawBaseUrl: `${hostBaseUrl}/${owner}/${repo}/-/raw/HEAD`,
+    path,
+    commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/-/commit`,
+    issueChar: '#',
+    // it seems that issues are work items in gitlab
+    issueBaseUrl: `${hostBaseUrl}/${owner}/${repo}/-/work_items`,
+    prChar: '!',
+    prBaseUrl: `${hostBaseUrl}/${owner}/${repo}/-/merge_requests`,
+    compareBaseUrl: `${hostBaseUrl}/${owner}/${repo}/-/compare`,
+  }
+}
