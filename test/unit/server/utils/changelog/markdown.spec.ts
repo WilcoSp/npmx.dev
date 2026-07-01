@@ -664,6 +664,19 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
   })
 
+  it('should not format an issue/pr into a commit', async () => {
+    const info = changelogMdinfo()
+    const renderer = await changelogRenderer(info)
+
+    const markdown = `lorem ipsum is fixed in #1234567`
+
+    const result = renderer(markdown)
+
+    expect(result.html).toBe(
+      `<p>lorem ipsum is fixed in <a href="https://github.com/test-owner/test-repo/issues/1234567" rel="nofollow noreferrer noopener" target="_blank">#1234567</a></p>\n`,
+    )
+  })
+
   // TODO add test for gitlab with !pr
 })
 

@@ -237,7 +237,7 @@ const issuePrRegexes = {
 } as const
 
 const accountRegex = /\B@(?![.\d])(?![\w.-]*\/)[\w-]+\b/
-const commitRegex = /\b[a-f0-9]{6,40}\b/gi
+const commitRegex = /(?<![@#!])\b[a-f0-9]{6,40}\b/gi
 
 const tagsToIgnore = new Set(['a', 'code'])
 function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFilter'] {
@@ -248,6 +248,14 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
 
     // issues
     text = text
+      // commits come first to prevent matching issue/pr that has been formatted
+      .replace(commitRegex, match => {
+        if (excludeWordsFromCommitMatch.has(match.toLowerCase())) {
+          return match
+        }
+
+        return `<a href="${joinURL(mdInfo.commitBaseUrl, match)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
+      })
       .replace(issuePrRegexes[mdInfo.issueChar], match => {
         const id = match.replace(mdInfo.issueChar, '')
         return `<a href="${joinURL(mdInfo.issueBaseUrl, id)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
@@ -256,13 +264,6 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
       .replace(accountRegex, match => {
         const acc = match.replace('@', '')
         return `<a href="${joinURL(mdInfo.hostBaseUrl, acc)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
-      })
-      .replace(commitRegex, match => {
-        if (excludeWordsFromCommitMatch.has(match.toLowerCase())) {
-          return match
-        }
-
-        return `<a href="${joinURL(mdInfo.commitBaseUrl, match)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
       })
 
     // pr/mr
