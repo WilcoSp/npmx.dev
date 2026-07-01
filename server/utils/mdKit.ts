@@ -170,7 +170,7 @@ export function createMarkedHeadingExtension(exemptIssuePr?: boolean): Tokenizer
     // Normal headings (with space) return false to fall through to marked's default tokenizer.
     const match = /^ {0,3}(#{1,6})([^\s#][^\n]*)(?:\n+|$)/.exec(src)
     if (!match) return false
-    if (exemptIssuePr && /^#\d+\b/.test(match[0])) return false
+    if (exemptIssuePr && /^#\d+\b/.test(match[0].trim())) return false
 
     let text = match[2]!.trim()
 
