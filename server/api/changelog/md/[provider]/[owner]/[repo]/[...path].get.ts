@@ -29,6 +29,8 @@ export default defineCachedEventHandler(
         case 'codeberg':
         case 'forgejo':
           return await getForgejoMarkdown(owner, repo, path, host ?? 'codeberg.org')
+        case 'gitlab':
+          return await getGitlabMarkdown(owner, repo, path, host ?? 'gitlab.com')
 
         default:
           throw createError({
@@ -71,4 +73,16 @@ async function getForgejoMarkdown(owner: string, repo: string, path: string, hos
   const markdown = v.parse(v.string(), data)
 
   return (await changelogRenderer(createForgejoRepoInfo(host, owner, repo, path)))(markdown)
+}
+
+async function getGitlabMarkdown(owner: string, repo: string, path: string, host: string) {
+  const data = await $fetch(
+    `https://${host}/${decodeURIComponent(owner)}/${repo}/-/raw/HEAD/${path}`,
+  )
+
+  const markdown = v.parse(v.string(), data)
+
+  return (
+    await changelogRenderer(createGitLabRepoInfo(host, decodeURIComponent(owner), repo, path))
+  )(markdown)
 }

@@ -8,6 +8,7 @@ import {
 import {
   GithubReleaseCollectionSchama,
   ForgejoReleaseCollectionSchema,
+  GitlabReleaseCollectionSchema,
 } from '~~/shared/schemas/changelog/release'
 import { parse } from 'valibot'
 import { changelogRenderer } from '~~/server/utils/changelog/markdown'
@@ -36,6 +37,8 @@ export default defineCachedEventHandler(
         case 'codeberg':
         case 'forgejo':
           return await getReleasesFromForgejo(owner, repo, host ?? 'codeberg.org')
+        case 'gitlab':
+          return await getReleasesFromGitlab(owner, repo, host ?? 'gitlab.com')
 
         default:
           throw createError({
@@ -108,6 +111,32 @@ async function getReleasesFromForgejo(owner: string, repo: string, host: string)
       link: r.html_url,
       publishedAt: r.published_at,
       draft: r.draft,
+    } satisfies ReleaseData
+  })
+}
+
+async function getReleasesFromGitlab(owner: string, repo: string, host: string) {
+  owner = decodeURIComponent(owner)
+  repo = decodeURIComponent(repo)
+
+  const repoPath = encodeURIComponent(`${owner}/${repo}`)
+
+  const data = await $fetch(`https://${host}/api/v4/projects/${repoPath}/releases`)
+
+  const releases = parse(GitlabReleaseCollectionSchema, data)
+
+  const render = await changelogRenderer(createGitLabRepoInfo(host, owner, repo))
+
+  return releases.map(r => {
+    const { html, toc } = render(r.description, r.commit.short_id)
+    return {
+      id: r.commit.short_id,
+      html: html?.replace(/(?<!>)\n/g, '<br>') ?? null,
+      title: r.name || r.tag_name,
+      prerelease: r.upcoming_release,
+      toc,
+      publishedAt: r.released_at,
+      link: r._links.self,
     } satisfies ReleaseData
   })
 }

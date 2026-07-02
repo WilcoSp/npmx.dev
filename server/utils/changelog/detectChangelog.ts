@@ -189,7 +189,7 @@ async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
         type: 'md',
         provider: ref.provider,
         path: resolveURL(dir ?? '', fileName),
-        repo: `${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}`,
+        repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
         link: resolveURL(baseUrl.blob, dir ?? '', fileName),
         host: ref.host,
       } satisfies ChangelogMarkdownInfo
@@ -324,7 +324,7 @@ async function checkLatestGitlabRelease(
           // I encode both just to be sure
           link: `https://${host}/${ref.owner}/${ref.repo}/-/releases`,
           provider: ref.provider,
-          repo: `${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}`,
+          repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
           host: ref.host,
         },
         null,
@@ -348,7 +348,7 @@ async function checkLatestGitlabRelease(
         provider: ref.provider,
         type: 'md',
         path,
-        repo: `${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}`,
+        repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
         link: matchedChangelog,
         host: ref.host,
       },

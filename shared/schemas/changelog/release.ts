@@ -37,4 +37,12 @@ export const GitlabReleaseSchame = v.object({
   description: v.string(),
   released_at: v.pipe(v.string(), v.isoTimestamp()),
   upcoming_release: v.boolean(),
+  commit: v.object({
+    short_id: v.string(),
+  }),
+  _links: v.object({
+    self: v.pipe(v.string(), v.url()),
+  }),
 })
+
+export const GitlabReleaseCollectionSchema = v.array(GitlabReleaseSchame)
