@@ -1,4 +1,6 @@
+import { resolveURL } from 'ufo'
 import * as v from 'valibot'
+import { getBaseFileUrl } from '~~/server/utils/changelog/baseFileUrl'
 import { createForgejoRepoInfo, createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
 import {
   ERROR_CHANGELOG_FILE_FAILED,
@@ -7,7 +9,7 @@ import {
 
 export default defineCachedEventHandler(
   async event => {
-    const provider = getRouterParam(event, 'provider')
+    const provider = getRouterParam(event, 'provider') as ProviderId
     const repo = getRouterParam(event, 'repo')
     const owner = getRouterParam(event, 'owner')
     const path = getRouterParam(event, 'path')
@@ -23,21 +25,23 @@ export default defineCachedEventHandler(
     }
 
     try {
-      switch (provider as ProviderId) {
-        case 'github':
-          return await getGithubMarkDown(owner, repo, path)
-        case 'codeberg':
-        case 'forgejo':
-          return await getForgejoMarkdown(owner, repo, path, host ?? 'codeberg.org')
-        case 'gitlab':
-          return await getGitlabMarkdown(owner, repo, path, host ?? 'gitlab.com')
+      const baseUrl = getBaseFileUrl({
+        owner,
+        provider: provider as ProviderId,
+        repo,
+        host,
+      })
+      const mdRepoInfo = getRepoInfo(provider, owner, repo, host, path)
 
-        default:
-          throw createError({
-            status: 404,
-            statusMessage: ERROR_CHANGELOG_NOT_FOUND,
-          })
+      if (!baseUrl || !mdRepoInfo) {
+        throw createError({
+          status: 404,
+          statusMessage: ERROR_CHANGELOG_NOT_FOUND,
+        })
       }
+      const data = await $fetch(resolveURL(baseUrl.raw, path))
+      const markdown = v.parse(v.string(), data)
+      return (await changelogRenderer(mdRepoInfo))(markdown)
     } catch (error) {
       handleApiError(error, {
         statusCode: 500,
@@ -59,30 +63,20 @@ export default defineCachedEventHandler(
   },
 )
 
-async function getGithubMarkDown(owner: string, repo: string, path: string) {
-  const data = await $fetch(`https://raw.githubusercontent.com/${owner}/${repo}/HEAD/${path}`)
-
-  const markdown = v.parse(v.string(), data)
-
-  return (await changelogRenderer(createGithubRepoInfo(owner, repo, path)))(markdown)
-}
-
-async function getForgejoMarkdown(owner: string, repo: string, path: string, host: string) {
-  const data = await $fetch(`https://${host}/${owner}/${repo}/raw/branch/HEAD/${path}`)
-
-  const markdown = v.parse(v.string(), data)
-
-  return (await changelogRenderer(createForgejoRepoInfo(host, owner, repo, path)))(markdown)
-}
-
-async function getGitlabMarkdown(owner: string, repo: string, path: string, host: string) {
-  const data = await $fetch(
-    `https://${host}/${decodeURIComponent(owner)}/${repo}/-/raw/HEAD/${path}`,
-  )
-
-  const markdown = v.parse(v.string(), data)
-
-  return (
-    await changelogRenderer(createGitLabRepoInfo(host, decodeURIComponent(owner), repo, path))
-  )(markdown)
+function getRepoInfo(
+  provider: ProviderId,
+  owner: string,
+  repo: string,
+  host: string | undefined,
+  path?: string,
+) {
+  switch (provider) {
+    case 'github':
+      return createGithubRepoInfo(owner, repo, path)
+    case 'codeberg':
+    case 'forgejo':
+      return createForgejoRepoInfo(host ?? 'codeberg.org', owner, repo, path)
+    case 'gitlab':
+      return createGitLabRepoInfo(host ?? 'gitlab.com', owner, repo, path)
+  }
 }

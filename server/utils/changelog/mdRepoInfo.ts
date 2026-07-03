@@ -61,3 +61,20 @@ export function createGitLabRepoInfo(
     compareBaseUrl: `${hostBaseUrl}/${owner}/${repo}/-/compare`,
   }
 }
+
+export function createTangledInfo(owner: string, repo: string, path?: string): MarkdownRepoInfo {
+  const hostBaseUrl = 'https://tangled.org'
+
+  return {
+    hostBaseUrl,
+    blobBaseUrl: `${hostBaseUrl}/${owner}/${repo}/blob/HEAD`,
+    rawBaseUrl: `${hostBaseUrl}/${owner}/${repo}/raw/HEAD/`,
+    path,
+    commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/commit`,
+    issueChar: '#',
+    issueBaseUrl: `${hostBaseUrl}/${owner}/${repo}/issues`,
+    prChar: '#',
+    prBaseUrl: `${hostBaseUrl}/${owner}/${repo}/pulls`,
+    compareBaseUrl: `${hostBaseUrl}/${owner}/${repo}/compare`,
+  }
+}

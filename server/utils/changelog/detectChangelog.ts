@@ -1,7 +1,8 @@
 import type { ChangelogMarkdownInfo, ChangelogInfo } from '~~/shared/types/changelog'
-import { FetchError } from 'ofetch'
 import type { ExtendedPackageJson } from '~~/shared/utils/package-analysis'
 import { type RepoRef, parseRepoUrl } from '~~/shared/utils/git-providers'
+import { type RepoFileUrl, getBaseFileUrl } from './baseFileUrl'
+import { FetchError } from 'ofetch'
 import { ERROR_CHANGELOG_NOT_FOUND, ERROR_UNGH_API_KEY_EXHAUSTED } from '~~/shared/utils/constants'
 import {
   GithubReleaseSchama,
@@ -24,6 +25,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
   }
 
   const repoRef = parseRepoUrl(pkg.repository.url)
+  console.log({ repoRef })
   if (!repoRef) {
     return false
   }
@@ -70,6 +72,63 @@ async function checkReleases(
   }
   return [false, null]
 }
+
+/// changelog markdown
+
+const EXTENSIONS = ['.md', ''] as const
+
+const CHANGELOG_FILENAMES = ['changelog', 'releases', 'changes', 'history', 'news']
+  .map(fileName => {
+    const fileNameUpperCase = fileName.toUpperCase()
+    return EXTENSIONS.map(ext => [`${fileNameUpperCase}${ext}`, `${fileName}${ext}`])
+  })
+  .flat(3)
+
+async function checkChangelogFile(
+  ref: RepoRef,
+  directory?: string,
+): Promise<ChangelogMarkdownInfo | false> {
+  const baseUrl = getBaseFileUrl(ref)
+  if (!baseUrl) {
+    return false
+  }
+
+  if (directory) {
+    const inDir = await checkFiles(ref, baseUrl, directory)
+    if (inDir) {
+      return inDir
+    }
+  }
+  return checkFiles(ref, baseUrl)
+}
+
+async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
+  for (const fileName of CHANGELOG_FILENAMES) {
+    const exists = await fetch(resolveURL(baseUrl.raw, dir ?? '', fileName), {
+      headers: {
+        // GitHub API requires User-Agent
+        'User-Agent': 'npmx.dev',
+      },
+      method: ref.provider != 'tangled' ? 'HEAD' : 'GET', // we just need to know if it exists or not, tangled doesn't support HEAD
+    })
+      .then(r => r.ok)
+      .catch(() => false)
+    const owner = ref.provider == 'gitlab' ? encodeURIComponent(ref.owner) : ref.owner
+    if (exists) {
+      return {
+        type: 'md',
+        provider: ref.provider,
+        path: resolveURL(dir ?? '', fileName),
+        repo: `${owner}/${ref.repo}`,
+        link: resolveURL(baseUrl.blob, dir ?? '', fileName),
+        host: ref.host,
+      } satisfies ChangelogMarkdownInfo
+    }
+  }
+  return false
+}
+
+// releases
 
 const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()(.*?)(?=\))/i
 const ROOT_ONLY_REGEX = /^\/[^/]+$/
@@ -142,91 +201,6 @@ async function checkLatestGithubRelease(
     console.error('[checkLatestGithubRelease] unexpected error: ', e)
     return [null, e]
   }
-}
-
-/// changelog markdown
-
-const EXTENSIONS = ['.md', ''] as const
-
-const CHANGELOG_FILENAMES = ['changelog', 'releases', 'changes', 'history', 'news']
-  .map(fileName => {
-    const fileNameUpperCase = fileName.toUpperCase()
-    return EXTENSIONS.map(ext => [`${fileNameUpperCase}${ext}`, `${fileName}${ext}`])
-  })
-  .flat(3)
-
-async function checkChangelogFile(
-  ref: RepoRef,
-  directory?: string,
-): Promise<ChangelogMarkdownInfo | false> {
-  const baseUrl = getBaseFileUrl(ref)
-  if (!baseUrl) {
-    return false
-  }
-
-  if (directory) {
-    const inDir = await checkFiles(ref, baseUrl, directory)
-    if (inDir) {
-      return inDir
-    }
-  }
-  return checkFiles(ref, baseUrl)
-}
-
-async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
-  for (const fileName of CHANGELOG_FILENAMES) {
-    const exists = await fetch(resolveURL(baseUrl.raw, dir ?? '', fileName), {
-      headers: {
-        // GitHub API requires User-Agent
-        'User-Agent': 'npmx.dev',
-      },
-      method: 'HEAD', // we just need to know if it exists or not
-    })
-      .then(r => r.ok)
-      .catch(() => false)
-    if (exists) {
-      return {
-        type: 'md',
-        provider: ref.provider,
-        path: resolveURL(dir ?? '', fileName),
-        repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
-        link: resolveURL(baseUrl.blob, dir ?? '', fileName),
-        host: ref.host,
-      } satisfies ChangelogMarkdownInfo
-    }
-  }
-  return false
-}
-
-interface RepoFileUrl {
-  raw: string
-  blob: string
-}
-
-function getBaseFileUrl(ref: RepoRef): RepoFileUrl | null {
-  switch (ref.provider) {
-    case 'github':
-      return {
-        raw: `https://raw.githubusercontent.com/${ref.owner}/${ref.repo}/HEAD`,
-        blob: `https://github.com/${ref.owner}/${ref.repo}/blob/HEAD`,
-      }
-    case 'codeberg':
-    case 'forgejo': {
-      const host = ref.host ?? 'codeberg.org'
-      return {
-        blob: `https://${host}/${ref.owner}/${ref.repo}/src/branch/HEAD`,
-        raw: `https://${host}/${ref.owner}/${ref.repo}/raw/branch/HEAD`,
-      }
-    }
-    case 'gitlab': {
-      const host = ref.host ?? 'gitlab.com'
-      return {
-        blob: `https://${host}/${ref.owner}/${ref.repo}/-/blob/HEAD`,
-        raw: `https://${host}/${ref.owner}/${ref.repo}/-/raw/HEAD`,
-      }
-    }
-  }
-  return null
 }
 
 // codeberg / forgejo
