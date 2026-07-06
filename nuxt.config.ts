@@ -220,6 +220,7 @@ export default defineNuxtConfig({
     '/pds': { isr: 86400 }, // revalidate daily
     '/blog/**': { prerender: true },
     '/noodles/**': { prerender: true },
+    '/sponsors': { prerender: true },
     // proxy for insights
     '/_v/script.js': {
       proxy: 'https://npmx.dev/_vercel/insights/script.js',
@@ -425,6 +426,7 @@ export default defineNuxtConfig({
         'vue-data-ui/vue-ui-xy',
         'vue-data-ui/vue-ui-scatter',
         'vue-data-ui/vue-ui-horizontal-bar',
+        'vue-data-ui/vue-ui-stackbar',
         'virtua/vue',
         'semver',
         'validate-npm-package-name',
