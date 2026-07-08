@@ -274,6 +274,7 @@ import {
   TabList,
   TabItem,
   TabPanel,
+  ButtonCopyMd,
 } from '#components'
 
 // Server variant components must be imported directly to test the server-side render
@@ -2810,6 +2811,21 @@ describe('component accessibility audits', () => {
     })
   })
 
+  describe('ButtonCopyMd', () => {
+    it('should have no accessibility violations', async () => {
+      const component = await mountSuspended(ButtonCopyMd, {
+        props: {
+          fetchMarkdown: () => Promise.resolve(),
+          markdown: '# hallo',
+          status: 'success',
+          text: 'copy test',
+        },
+      })
+      const results = await runAxe(component)
+      expect(results.violations).toEqual([])
+    })
+  })
+
   describe('CallToAction', () => {
     it('should have no accessibility violations', async () => {
       const component = await mountSuspended(CallToAction)
@@ -2848,7 +2864,9 @@ describe('component accessibility audits', () => {
             title: '1.0.0',
             publishedAt: '2026-02-11 10:00:00.000Z',
             link: 'https://github.com/nuxt/nuxt/releases/tag/v4.4.5',
+            tag: 'test',
           },
+          baseUrl: '/api/changelog/releases/test/test',
           tocHeaderClass: 'toc',
         },
       })

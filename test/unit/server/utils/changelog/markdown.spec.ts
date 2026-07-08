@@ -1,6 +1,6 @@
 import type { MarkdownRepoInfo } from '~~/server/utils/changelog/markdown'
 import { describe, expect, it, vi, beforeAll } from 'vitest'
-import { createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
+import { createGithubRepoInfo, createGitLabRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
 
 // testing changelog specific needs, others things are tested at ../readme.spec.ts
 
@@ -677,7 +677,34 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
     )
   })
 
-  // TODO add test for gitlab with !pr
+  it('should format gitlab merge requests', async () => {
+    const info = createGitLabRepoInfo('gitlab.com', 'test', 'test')
+    const renderer = await changelogRenderer(info)
+
+    const markdown = `!123 hallo\n\nhttps://gitlab.com/test/test/-/merge_requests/321 world`
+    const result = renderer(markdown)
+
+    expect(result.html).toBe(
+      `<p><a href="https://gitlab.com/test/test/-/merge_requests/123" rel="nofollow noreferrer noopener" target="_blank">!123</a> hallo</p>
+<p><a href="https://gitlab.com/test/test/-/merge_requests/321" rel="nofollow noreferrer noopener" target="_blank">!321</a> world</p>
+`,
+    )
+  })
+
+  it('should format at proto @account handle but not @version', async () => {
+    const info = changelogMdinfo()
+    const renderer = await changelogRenderer(info)
+
+    const markdown = `nppmx @npmx.dev\n\n3po @3po.at.proto\n\nlorem @1.2.3 ipsum`
+    const result = renderer(markdown)
+
+    expect(result.html).toBe(
+      `<p>nppmx <a href="https://github.com/npmx.dev" rel="nofollow noreferrer noopener" target="_blank">@npmx.dev</a></p>
+<p>3po <a href="https://github.com/3po.at.proto" rel="nofollow noreferrer noopener" target="_blank">@3po.at.proto</a></p>
+<p>lorem @1.2.3 ipsum</p>
+`,
+    )
+  })
 })
 
 describe('format unformatted/auto links to git', () => {
