@@ -15,7 +15,11 @@ export default defineCachedEventHandler(
     const path = getRouterParam(event, 'path')
 
     const rawQuery = getQuery(event)
-    const { host } = v.parse(v.object({ host: v.optional(v.string()) }), rawQuery)
+
+    const { host, raw } = v.parse(
+      v.object({ host: v.optional(v.string()), raw: v.optional(v.string()) }),
+      rawQuery,
+    )
 
     if (!repo || !provider || !owner || !path) {
       throw createError({
@@ -41,6 +45,10 @@ export default defineCachedEventHandler(
       }
       const data = await $fetch(resolveURL(baseUrl.raw, path))
       const markdown = v.parse(v.string(), data)
+      if (raw != undefined) {
+        setHeader(event, 'content-type', 'text/markdown')
+        return markdown
+      }
       return (await changelogRenderer(mdRepoInfo))(markdown)
     } catch (error) {
       handleApiError(error, {
@@ -57,7 +65,19 @@ export default defineCachedEventHandler(
       const repo = getRouterParam(event, 'repo') ?? ''
       const owner = getRouterParam(event, 'owner') ?? ''
       const path = getRouterParam(event, 'path') ?? ''
-      return `changelogMarkdown:v2:${provider}:${owner}:${repo}:${path.replaceAll('/', ':')}`
+
+      const query = getQuery(event)
+
+      const key = [`changelogMarkdown:v2:${provider}:${owner}:${repo}:${path.replaceAll('/', ':')}`]
+
+      if (typeof query.host === 'string') {
+        key.push(query.host)
+      }
+      if ('raw' in query) {
+        key.push('raw')
+      }
+
+      return key.join(':')
     },
     shouldBypassCache: () => import.meta.dev,
   },

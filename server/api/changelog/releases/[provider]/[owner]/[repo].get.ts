@@ -29,6 +29,7 @@ export default defineCachedEventHandler(
         statusMessage: ERROR_THROW_INCOMPLETE_PARAM,
       })
     }
+    setHeader(event, 'content-type', 'text/markdown')
 
     try {
       switch (provider as ProviderId) {
@@ -60,7 +61,14 @@ export default defineCachedEventHandler(
       const provider = getRouterParam(event, 'provider')
       const repo = getRouterParam(event, 'repo')
       const owner = getRouterParam(event, 'owner')
-      return `changelogRelease:v2:${provider}:${owner}:${repo}`
+      const key = [`changelogRelease:v2:${provider}:${owner}:${repo}`]
+
+      const query = getQuery(event)
+
+      if (typeof query.host == 'string') {
+        key.push(query.host)
+      }
+      return key.join(':')
     },
     shouldBypassCache: () => import.meta.dev,
   },
@@ -90,6 +98,7 @@ async function getReleasesFromGithub(owner: string, repo: string) {
       toc,
       publishedAt: r.publishedAt,
       link: `https://github.com/${owner}/${repo}/releases/tag/${r.tag}`,
+      tag: r.tag,
     } satisfies ReleaseData
   })
 }
@@ -111,13 +120,13 @@ async function getReleasesFromForgejo(owner: string, repo: string, host: string)
       link: r.html_url,
       publishedAt: r.published_at,
       draft: r.draft,
+      tag: r.tag_name,
     } satisfies ReleaseData
   })
 }
 
 async function getReleasesFromGitlab(owner: string, repo: string, host: string) {
   owner = decodeURIComponent(owner)
-  repo = decodeURIComponent(repo)
 
   const repoPath = encodeURIComponent(`${owner}/${repo}`)
 
@@ -136,7 +145,9 @@ async function getReleasesFromGitlab(owner: string, repo: string, host: string) 
       prerelease: r.upcoming_release,
       toc,
       publishedAt: r.released_at,
+      // oxlint-disable-next-line no-underscore-dangle
       link: r._links.self,
+      tag: r.tag_name,
     } satisfies ReleaseData
   })
 }
