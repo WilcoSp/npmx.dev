@@ -83,19 +83,22 @@ const playgroundLinks = computed(() => [
 ])
 
 //fetch README file as Markdown to copy
-const { data: readmeMarkdownData, execute: fetchReadmeMarkdown } =
-  useLazyFetch<ReadmeMarkdownResponse>(
-    () => {
-      const base = `/api/registry/readme/markdown/${packageName.value}`
-      const version = resolvedVersion.value
-      return version ? `${base}/v/${version}` : base
-    },
-    {
-      server: false,
-      immediate: false,
-      default: () => ({}),
-    },
-  )
+const {
+  data: readmeMarkdownData,
+  status: readmeMarkdownStatus,
+  execute: fetchReadmeMarkdown,
+} = useLazyFetch<ReadmeMarkdownResponse>(
+  () => {
+    const base = `/api/registry/readme/markdown/${packageName.value}`
+    const version = resolvedVersion.value
+    return version ? `${base}/v/${version}` : base
+  },
+  {
+    server: false,
+    immediate: false,
+    default: () => ({}),
+  },
+)
 
 // Track active TOC item based on scroll position
 const tocItems = computed(() => readmeData.value?.toc ?? [])
@@ -1006,6 +1009,7 @@ const showSkeleton = shallowRef(false)
               <ButtonCopyMd
                 :fetchMarkdown="fetchReadmeMarkdown"
                 :markdown="readmeMarkdownData.markdown"
+                :status="readmeMarkdownStatus"
                 :text="$t('package.readme.copy_as_markdown')"
               />
               <ReadmeTocDropdown

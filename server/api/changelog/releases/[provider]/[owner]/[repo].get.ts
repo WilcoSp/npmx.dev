@@ -29,7 +29,6 @@ export default defineCachedEventHandler(
         statusMessage: ERROR_THROW_INCOMPLETE_PARAM,
       })
     }
-    setHeader(event, 'content-type', 'text/markdown')
 
     try {
       switch (provider as ProviderId) {

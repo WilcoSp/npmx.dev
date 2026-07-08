@@ -3,8 +3,9 @@ import type { IconClass } from '~/types'
 import type { ReleaseData } from '~~/shared/types/changelog'
 import { slugify } from '~~/shared/utils/html'
 
-const { release } = defineProps<{
+const { release, baseUrl } = defineProps<{
   release: ReleaseData
+  baseUrl: string
 }>()
 const formattedDate = computed(() => {
   if (!release.publishedAt) {
@@ -27,6 +28,16 @@ const { providerIcon, viewOnProvider } = inject<{
 }>('changelog-provider-linkattr', {
   providerIcon: 'i-lucide:code',
   viewOnProvider: computed(() => $t('common.view_on.git_repo')),
+})
+
+// fetch markdown to copy
+const {
+  data: markdown,
+  execute: fetchMarkdown,
+  status: mdStatus,
+} = useLazyFetch<string>(() => `${baseUrl}/raw/${encodeURIComponent(release.tag)}`, {
+  immediate: false,
+  server: false,
 })
 </script>
 <template>
@@ -62,6 +73,13 @@ const { providerIcon, viewOnProvider } = inject<{
         :title="viewOnProvider"
         :to="release.link"
         class="size-[0.9em]"
+      />
+      <ButtonCopyMd
+        :fetchMarkdown
+        :markdown
+        :text="$t('changelog.copy_as_markdown')"
+        :status="mdStatus"
+        class="w-27"
       />
       <ReadmeTocDropdown
         v-if="release?.toc && release.toc.length > 1"

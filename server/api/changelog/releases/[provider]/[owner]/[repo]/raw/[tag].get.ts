@@ -30,7 +30,6 @@ export default defineCachedEventHandler(
       switch (provider as ProviderId) {
         case 'github':
           return getMarkdownFromGithub(owner, repo, tag)
-
         case 'codeberg':
         case 'forgejo':
           return await getMarkdownFromForgejo(owner, repo, tag, host)

@@ -57,7 +57,11 @@ if (import.meta.client) {
 }
 
 // fetch raw markdown to copy
-const { data: rawMarkdown, execute: fetchMarkdown } = useLazyFetch<string>(url, {
+const {
+  data: rawMarkdown,
+  execute: fetchMarkdown,
+  status: mdStatus,
+} = useLazyFetch<string>(url, {
   query: {
     host,
     raw: true,
@@ -69,10 +73,12 @@ const { data: rawMarkdown, execute: fetchMarkdown } = useLazyFetch<string>(url, 
 <template>
   <ChangelogSkeleton v-if="pending" />
   <template v-else-if="typeof data == 'object' && data?.html">
-    <Teleport v-if="data?.toc && data.toc.length > 1 && !!tpTarget" :to="tpTarget">
+    <Teleport v-if="data.html && !!tpTarget" :to="tpTarget">
       <ButtonCopyMd
+        v-if="data?.toc && data.toc.length > 1"
         :fetchMarkdown
         :markdown="rawMarkdown"
+        :status="mdStatus"
         :text="$t('changelog.copy_as_markdown')"
       />
       <ReadmeTocDropdown :toc="data.toc" class="justify-self-end" />
