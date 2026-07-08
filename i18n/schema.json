@@ -5565,6 +5565,9 @@
         },
         "version_unavailable": {
           "type": "string"
+        },
+        "copy_as_markdown": {
+          "type": "string"
         }
       },
       "additionalProperties": false

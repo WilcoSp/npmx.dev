@@ -1787,6 +1787,7 @@
       "p2": "Probeer later opnieuw of {viewon}"
     },
     "rate_limit_ungh": "Sorry, de opvraaglimiet (rate limit) van GitHub is bereikt. Probeer het over een ogenblik opnieuw.",
-    "version_unavailable": "De gevraagde is niet beschikbaar."
+    "version_unavailable": "De gevraagde is niet beschikbaar.",
+    "copy_as_markdown": "Kopieer wijzigingen als Markdown"
   }
 }

@@ -1853,6 +1853,7 @@
       "p2": "Please try again later or {viewon}"
     },
     "rate_limit_ungh": "Sorry, Github's rate limit has been hit, try again in a moment",
-    "version_unavailable": "The requested version is not available."
+    "version_unavailable": "The requested version is not available.",
+    "copy_as_markdown": "Copy changelog as Markdown"
   }
 }
