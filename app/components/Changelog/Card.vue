@@ -79,7 +79,7 @@ const {
         :markdown
         :text="$t('changelog.copy_as_markdown')"
         :status="mdStatus"
-        class="w-27"
+        class="min-w-27"
       />
       <ReadmeTocDropdown
         v-if="release?.toc && release.toc.length > 1"
