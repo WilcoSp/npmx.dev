@@ -82,44 +82,20 @@ const playgroundLinks = computed(() => [
     : []),
 ])
 
-const {
-  data: readmeMarkdownData,
-  status: readmeMarkdownStatus,
-  execute: fetchReadmeMarkdown,
-} = useLazyFetch<ReadmeMarkdownResponse>(
-  () => {
-    const base = `/api/registry/readme/markdown/${packageName.value}`
-    const version = resolvedVersion.value
-    return version ? `${base}/v/${version}` : base
-  },
-  {
-    server: false,
-    immediate: false,
-    default: () => ({}),
-  },
-)
-
-//copy README file as Markdown
-const {
-  copied: copiedReadme,
-  copy,
-  copyPending: copyReadmePending,
-} = useClipboard({
-  copiedDuring: 2000,
-})
-
-function copyReadme() {
-  copy(async () => {
-    await fetchReadmeMarkdown()
-    return readmeMarkdownData.value?.markdown ?? ''
-  })
-}
-
-function prefetchReadmeMarkdown() {
-  if (readmeMarkdownStatus.value === 'idle') {
-    fetchReadmeMarkdown()
-  }
-}
+//fetch README file as Markdown to copy
+const { data: readmeMarkdownData, execute: fetchReadmeMarkdown } =
+  useLazyFetch<ReadmeMarkdownResponse>(
+    () => {
+      const base = `/api/registry/readme/markdown/${packageName.value}`
+      const version = resolvedVersion.value
+      return version ? `${base}/v/${version}` : base
+    },
+    {
+      server: false,
+      immediate: false,
+      default: () => ({}),
+    },
+  )
 
 // Track active TOC item based on scroll position
 const tocItems = computed(() => readmeData.value?.toc ?? [])
@@ -1027,28 +1003,11 @@ const showSkeleton = shallowRef(false)
             </h2>
             <div class="flex gap-2">
               <!-- Copy readme as Markdown button -->
-              <TooltipApp
-                v-if="readmeData?.mdExists"
+              <ButtonCopyMd
+                :fetchMarkdown="fetchReadmeMarkdown"
+                :markdown="readmeMarkdownData.markdown"
                 :text="$t('package.readme.copy_as_markdown')"
-                position="bottom"
-              >
-                <ButtonBase
-                  @mouseenter="prefetchReadmeMarkdown"
-                  @focus="prefetchReadmeMarkdown"
-                  @click="copyReadme"
-                  :aria-pressed="copiedReadme"
-                  :aria-label="
-                    copiedReadme ? $t('common.copied') : $t('package.readme.copy_as_markdown')
-                  "
-                  :classicon="copiedReadme ? 'i-lucide:check' : 'i-simple-icons:markdown'"
-                >
-                  <span>{{ copiedReadme ? $t('common.copied') : $t('common.copy') }}</span>
-                  <span
-                    v-if="copyReadmePending"
-                    class="i-lucide:loader-circle animate-spin size-4"
-                  ></span>
-                </ButtonBase>
-              </TooltipApp>
+              />
               <ReadmeTocDropdown
                 v-if="readmeData?.toc && readmeData.toc.length > 1"
                 :toc="readmeData.toc"
