@@ -216,7 +216,7 @@ function resolveGitLinkText(href: string, label: string, repoInfo: MarkdownRepoI
 
   switch (true) {
     case href.startsWith(repoInfo.commitBaseUrl): {
-      return lastSegment.slice(0, 6) // only show the first 6 letters/numbers of a commit
+      return lastSegment.slice(0, 7) // only show the first 6 letters/numbers of a commit
     }
     case href.startsWith(repoInfo.issueBaseUrl): {
       return `${repoInfo.issueChar}${lastSegment}`
@@ -254,7 +254,7 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
           return match
         }
 
-        return `<a href="${joinURL(mdInfo.commitBaseUrl, match)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
+        return `<a href="${joinURL(mdInfo.commitBaseUrl, match)}" rel="nofollow noreferrer noopener" target="_blank">${match.slice(0, 7)}</a>`
       })
       .replace(issuePrRegexes[mdInfo.issueChar], match => {
         const id = match.replace(mdInfo.issueChar, '')

@@ -34,11 +34,25 @@ function copyMarkdown() {
     return markdown ?? ''
   })
 }
+
+const btn = useTemplateRef('btn')
+
+const hover = useElementHover(() => btn.value?.$el, {
+  // prevent fetching while moving the pointer
+  delayEnter: 300,
+})
+
+const stopWatchHover = watch(hover, state => {
+  if (state) {
+    prefetchMarkdown()
+    stopWatchHover()
+  }
+})
 </script>
 <template>
   <TooltipApp :text position="bottom">
     <ButtonBase
-      @mouseenter="prefetchMarkdown"
+      ref="btn"
       @focus="prefetchMarkdown"
       @click="copyMarkdown"
       :aria-pressed="copiedReadme"
