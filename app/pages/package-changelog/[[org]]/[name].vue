@@ -130,8 +130,8 @@ defineOgImage(
         >
           {{ changelog.provider }}
         </LinkBase>
-        <div v-if="changelog?.type === 'md'" ref="tptoc" class="h-8 flex gap-2">
-          <!-- teleport location for toc & copy btn -->
+        <div v-if="changelog?.type === 'md'" ref="tptoc" class="min-w-[150px] h-8 flex gap-2">
+          <!-- Placeholder for toc & copy md -->
         </div>
       </div>
       <section v-if="!changelog && !changelogError" class="flex flex-col gap-2 py-3">

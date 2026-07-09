@@ -236,7 +236,7 @@ const issuePrRegexes = {
   '!': /\B!\d+\b/g,
 } as const
 
-const accountRegex = /\B@(?![\d.]+\b)(?![\w.-]*\/)[\w\-.]+\b/
+const accountRegex = /\B@(?![\d.]+\b)(?![\w.-]*\/)[\w\-.]+\b/g
 const commitRegex = /(?<![@#!])\b[a-f0-9]{6,40}\b/gi
 
 const tagsToIgnore = new Set(['a', 'code'])
