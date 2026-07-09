@@ -16,6 +16,8 @@ export default defineCachedEventHandler(
 
     const rawQuery = getQuery(event)
 
+    setHeader(event, 'x-rawQuery', JSON.stringify(rawQuery))
+
     const { host, raw } = v.parse(
       v.object({ host: v.optional(v.string()), raw: v.optional(v.string()) }),
       rawQuery,
