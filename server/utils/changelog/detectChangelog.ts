@@ -25,7 +25,6 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
   }
 
   const repoRef = parseRepoUrl(pkg.repository.url)
-  console.log({ repoRef })
   if (!repoRef) {
     return false
   }

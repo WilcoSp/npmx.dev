@@ -17,6 +17,9 @@ export default defineCachedEventHandler(
     const rawQuery = getQuery(event)
 
     setHeader(event, 'x-rawQuery', JSON.stringify(rawQuery))
+    setHeader(event, 'x-URL', getRequestURL(event).toJSON())
+
+    // console.log({ rawQuery: JSON.stringify(rawQuery), event: getRequestURL(event).search })
 
     const { host, raw } = v.parse(
       v.object({ host: v.optional(v.string()), raw: v.optional(v.string()) }),
