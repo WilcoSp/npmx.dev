@@ -21,6 +21,7 @@ import { Marked } from 'marked'
 import { hasProtocol, joinRelativeURL, joinURL, parseFilename, parseURL } from 'ufo'
 import { convertToEmoji } from '#shared/utils/emoji'
 import sanitize from 'sanitize-html'
+import { ALLOWED_ATTR } from '../mdKit'
 
 // cl = ChangeLog
 const clMarked = new Marked()
@@ -275,7 +276,10 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
       })
     }
 
-    return sanitize(text)
+    return sanitize(text, {
+      allowedAttributes: ALLOWED_ATTR,
+      allowedSchemes: ['http', 'https', 'mailto'],
+    })
   }
 }
 

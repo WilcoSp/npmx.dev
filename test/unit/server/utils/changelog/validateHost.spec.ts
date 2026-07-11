@@ -21,7 +21,7 @@ describe("shouldn't require 'host' from providers that don't need it", () => {
     expect(safeParse(schema, {}).success).toBeTruthy()
   })
 
-  it('should allow codeberg without host', () => {
+  it('should allow tangled without host', () => {
     const schema = createSchema('tangled')
     expect(safeParse(schema, {}).success).toBeTruthy()
   })
@@ -43,13 +43,13 @@ describe('should require host to be given', () => {
     expect(safeParse(schema, {}).success).toBeFalsy()
   })
 
-  it('shoud require radicle to have a host', () => {
+  it('should require radicle to have a host', () => {
     const schema = createSchema('radicle')
     expect(safeParse(schema, {}).success).toBeFalsy()
   })
 })
 
-describe('should only allow know host for provider', () => {
+describe('should only allow known host for provider', () => {
   describe('gitlab', () => {
     it('should allow gitlab', () => {
       const schema = createSchema('gitlab')
@@ -176,7 +176,7 @@ describe('should only allow know host for provider', () => {
       expect(safeParse(schema, { host: 'next.forgejo.org' }).success).toBeFalsy()
     })
 
-    it('should allow gitea.com', () => {
+    it("shouldn't allow gitea.com", () => {
       const schema = createSchema('radicle')
       expect(safeParse(schema, { host: 'gitea.com' }).success).toBeFalsy()
     })
