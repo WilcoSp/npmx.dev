@@ -13,7 +13,7 @@ export default defineCachedEventHandler(
     const provider = getRouterParam(event, 'provider') as ProviderId
     const repo = getRouterParam(event, 'repo')
     const owner = getRouterParam(event, 'owner')
-    const tag = getRouterParam(event, 'tag')
+    let tag = getRouterParam(event, 'tag')
 
     const rawQuery = getQuery(event)
     const { host } = v.parse(v.object({ host: validateHostWithValibot(provider) }), rawQuery)
@@ -24,18 +24,22 @@ export default defineCachedEventHandler(
         statusMessage: ERROR_THROW_INCOMPLETE_PARAM,
       })
     }
+    // nuxt does decode a tag except for `/`
+    tag = decodeURIComponent(tag)
+    const encodedTag = encodeURIComponent(tag)
 
     setHeader(event, 'content-type', 'text/markdown')
 
     try {
       switch (provider) {
         case 'github':
-          return getMarkdownFromGithub(owner, repo, tag)
+          return getMarkdownFromGithub(owner, repo, tag, encodedTag)
         case 'codeberg':
+          return await getMarkdownFromForgejo(owner, repo, encodedTag, 'codeberg.org')
         case 'forgejo':
-          return await getMarkdownFromForgejo(owner, repo, tag, host)
+          return await getMarkdownFromForgejo(owner, repo, encodedTag, host)
         case 'gitlab':
-          return await getMarkdownFromGitlab(owner, repo, tag, host)
+          return await getMarkdownFromGitlab(owner, repo, encodedTag, host)
         default:
           throw createError({
             status: 404,
@@ -68,12 +72,12 @@ export default defineCachedEventHandler(
   },
 )
 
-async function getMarkdownFromGithub(owner: string, repo: string, tag: string) {
+async function getMarkdownFromGithub(owner: string, repo: string, tag: string, encodedTag: string) {
   // ungh does not yet have an endpoint to get the release by tag, we will first attempt to get it from the github api directly
   // https://github.com/unjs/ungh/pull/162
 
   const responseGithub = await $fetch(
-    `https://api.github.com/repos/${owner}/${repo}/releases/tags/${tag}`,
+    `https://api.github.com/repos/${owner}/${repo}/releases/tags/${encodedTag}`,
     {
       headers: {
         'Accept': 'application/vnd.github+json',
@@ -101,7 +105,7 @@ async function getMarkdownFromGithub(owner: string, repo: string, tag: string) {
 
   const { releases } = v.parse(GithubReleaseCollectionSchama, responseUngh)
 
-  const decodedTag = decodeURIComponent(tag)
+  const decodedTag = tag
   for (const release of releases) {
     if (release.tag == decodedTag) {
       return release.markdown
@@ -117,6 +121,7 @@ async function getMarkdownFromGithub(owner: string, repo: string, tag: string) {
 async function getMarkdownFromForgejo(
   owner: string,
   repo: string,
+  /** tag should be encoded */
   tag: string,
   host: string = 'codeberg.org',
 ) {
@@ -130,6 +135,7 @@ async function getMarkdownFromForgejo(
 async function getMarkdownFromGitlab(
   owner: string,
   repo: string,
+  /** tag should be encoded */
   tag: string,
   host: string = 'gitlab.com',
 ) {

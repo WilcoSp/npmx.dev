@@ -31,10 +31,6 @@ export default defineCachedEventHandler(
       rawQuery,
     )
 
-    // if (needsHost.includes(provider)) {
-    //   if (!validateHost(provider,host))
-    // }
-
     if (!repo || !provider || !owner || !path) {
       throw createError({
         status: 404,
@@ -108,6 +104,7 @@ function getRepoInfo(
     case 'github':
       return createGithubRepoInfo(owner, repo, path)
     case 'codeberg':
+      return createForgejoRepoInfo('codeberg.org', owner, repo, path)
     case 'forgejo':
       return createForgejoRepoInfo(host ?? 'codeberg.org', owner, repo, path)
     case 'gitlab':
