@@ -302,13 +302,13 @@ export function parseRepoUrl(input: string): RepoRef | null {
     for (const provider of providers) {
       if (!provider.matchHost(host)) continue
       const parsed = provider.parsePath(parts)
-      NEED_HOST.includes(provider.id)
       if (parsed) {
+        const needsHost = NEED_HOST.includes(provider.id)
         return {
           provider: provider.id,
           owner: parsed.owner,
           repo: parsed.repo,
-          host: NEED_HOST ? host : undefined,
+          host: needsHost ? host : undefined,
         }
       }
     }
