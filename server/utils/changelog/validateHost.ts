@@ -1,6 +1,7 @@
 import { NEED_HOST, type ProviderId } from '~~/shared/utils/git-providers'
 import { custom, optional } from 'valibot'
 import { ERROR_UNKNOWN_GIT_HOST } from '~~/shared/utils/constants'
+import { validateHost } from '~~/shared/utils/git-providers'
 
 export function validateHostWithValibot(provider: ProviderId) {
   return optional(
