@@ -130,7 +130,7 @@ async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
 // releases
 
 const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()(.*?)(?=\))/i
-const ROOT_ONLY_REGEX = /^\/[^/]+$/
+const ROOT_ONLY_REGEX = /^\/?[^/]+$/
 
 async function checkLatestGithubRelease(
   ref: RepoRef,
