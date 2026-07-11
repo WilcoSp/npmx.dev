@@ -2,10 +2,17 @@ import { resolveURL } from 'ufo'
 import * as v from 'valibot'
 import { getBaseFileUrl } from '~~/server/utils/changelog/baseFileUrl'
 import { createForgejoRepoInfo, createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
+import { validateHostWithValibot } from '~~/server/utils/changelog/validateHost'
 import {
   ERROR_CHANGELOG_FILE_FAILED,
   ERROR_THROW_INCOMPLETE_PARAM,
 } from '~~/shared/utils/constants'
+
+// v.custom(input => {
+//   if (!needsHost.includes(provider)) return true
+//   if (typeof input !== 'string') return false
+//   return validateHost(provider, input)
+// }, ERROR_UNKNOWN_GIT_HOST)
 
 export default defineCachedEventHandler(
   async event => {
@@ -17,9 +24,16 @@ export default defineCachedEventHandler(
     const rawQuery = getQuery(event)
 
     const { host, raw } = v.parse(
-      v.object({ host: v.optional(v.string()), raw: v.optional(v.string()) }),
+      v.object({
+        host: validateHostWithValibot(provider),
+        raw: v.optional(v.string()),
+      }),
       rawQuery,
     )
+
+    // if (needsHost.includes(provider)) {
+    //   if (!validateHost(provider,host))
+    // }
 
     if (!repo || !provider || !owner || !path) {
       throw createError({
@@ -98,5 +112,7 @@ function getRepoInfo(
       return createForgejoRepoInfo(host ?? 'codeberg.org', owner, repo, path)
     case 'gitlab':
       return createGitLabRepoInfo(host ?? 'gitlab.com', owner, repo, path)
+    case 'tangled':
+      return createTangledInfo(owner, repo, path)
   }
 }

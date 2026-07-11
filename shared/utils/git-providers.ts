@@ -288,6 +288,8 @@ export function normalizeGitUrl(input: string): string | null {
   return url.includes('://') ? url : `https://${url}`
 }
 
+export const NEED_HOST = ['gitlab', 'gitea', 'forgejo', 'radicle']
+
 export function parseRepoUrl(input: string): RepoRef | null {
   const normalized = normalizeGitUrl(input)
   if (!normalized) return null
@@ -300,13 +302,13 @@ export function parseRepoUrl(input: string): RepoRef | null {
     for (const provider of providers) {
       if (!provider.matchHost(host)) continue
       const parsed = provider.parsePath(parts)
+      NEED_HOST.includes(provider.id)
       if (parsed) {
-        const needsHost = ['gitlab', 'gitea', 'forgejo', 'radicle'].includes(provider.id)
         return {
           provider: provider.id,
           owner: parsed.owner,
           repo: parsed.repo,
-          host: needsHost ? host : undefined,
+          host: NEED_HOST ? host : undefined,
         }
       }
     }
@@ -393,3 +395,11 @@ export const ALL_KNOWN_GIT_API_ORIGINS: readonly string[] = [
   ...FORGEJO_HOSTS.map(host => `https://${host}`),
   ...GITEA_HOSTS.map(host => `https://${host}`),
 ]
+
+/**
+ * validates whether the given host is part of the known hosts of a provider
+ */
+export function validateHost(provider: ProviderId, host: string) {
+  const providerConfig = providers.find(config => config.id == provider)
+  return !!providerConfig?.matchHost(host)
+}

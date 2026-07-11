@@ -84,7 +84,13 @@ prefetchComponents('ChangelogCard')
 <template>
   <ChangelogSkeleton v-if="pending" />
   <div class="flex flex-col gap-2 py-3" v-else-if="releases">
-    <ChangelogCard v-for="release of releases" :release :key="release.id" :baseUrl="url" />
+    <ChangelogCard
+      v-for="release of releases"
+      :release
+      :key="release.id"
+      :baseUrl="url"
+      :host="info.host"
+    />
   </div>
   <slot v-else-if="error" name="error"></slot>
 </template>

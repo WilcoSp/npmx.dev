@@ -3,9 +3,10 @@ import type { IconClass } from '~/types'
 import type { ReleaseData } from '~~/shared/types/changelog'
 import { slugify } from '~~/shared/utils/html'
 
-const { release, baseUrl } = defineProps<{
+const { release, baseUrl, host } = defineProps<{
   release: ReleaseData
   baseUrl: string
+  host?: string
 }>()
 const formattedDate = computed(() => {
   if (!release.publishedAt) {
@@ -38,6 +39,9 @@ const {
 } = useLazyFetch<string>(() => `${baseUrl}/raw/${encodeURIComponent(release.tag)}`, {
   immediate: false,
   server: false,
+  query: {
+    host: computed(() => host),
+  },
 })
 </script>
 <template>

@@ -13,15 +13,13 @@ import {
 import { parse } from 'valibot'
 import { changelogRenderer } from '~~/server/utils/changelog/markdown'
 import { createForgejoRepoInfo, createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
+import { validateHostWithValibot } from '~~/server/utils/changelog/validateHost'
 
 export default defineCachedEventHandler(
   async event => {
-    const provider = getRouterParam(event, 'provider')
+    const provider = getRouterParam(event, 'provider') as ProviderId
     const repo = getRouterParam(event, 'repo')
     const owner = getRouterParam(event, 'owner')
-
-    const rawQuery = getQuery(event)
-    const { host } = v.parse(v.object({ host: v.optional(v.string()) }), rawQuery)
 
     if (!repo || !provider || !owner) {
       throw createError({
@@ -29,16 +27,19 @@ export default defineCachedEventHandler(
         statusMessage: ERROR_THROW_INCOMPLETE_PARAM,
       })
     }
+    const rawQuery = getQuery(event)
+    const { host } = v.parse(v.object({ host: validateHostWithValibot(provider) }), rawQuery)
 
     try {
-      switch (provider as ProviderId) {
+      switch (provider) {
         case 'github':
           return await getReleasesFromGithub(owner, repo)
         case 'codeberg':
+          return await getReleasesFromForgejo(owner, repo, 'codeberg.org')
         case 'forgejo':
-          return await getReleasesFromForgejo(owner, repo, host ?? 'codeberg.org')
+          return await getReleasesFromForgejo(owner, repo, host)
         case 'gitlab':
-          return await getReleasesFromGitlab(owner, repo, host ?? 'gitlab.com')
+          return await getReleasesFromGitlab(owner, repo, host)
 
         default:
           throw createError({

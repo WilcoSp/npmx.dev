@@ -705,6 +705,30 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `,
     )
   })
+
+  it("shouldn't format package@version", async () => {
+    const info = changelogMdinfo()
+    const renderer = await changelogRenderer(info)
+    const markdown = `install package with package@latest or specific version like package@1.2.3`
+
+    const result = renderer(markdown)
+    expect(result.html).toBe(
+      `<p>install package with package@latest or specific version like package@1.2.3</p>
+`,
+    )
+  })
+
+  it("shouldn't format email as git link", async () => {
+    const info = changelogMdinfo()
+    const renderer = await changelogRenderer(info)
+    const markdown = `email to test@package.test to get in contact`
+
+    const result = renderer(markdown)
+    expect(result.html).toBe(
+      `<p>email to <a href="mailto:test@package.test" rel="nofollow noreferrer noopener" target="_blank">test@package.test</a> to get in contact</p>
+`,
+    )
+  })
 })
 
 describe('format unformatted/auto links to git', () => {

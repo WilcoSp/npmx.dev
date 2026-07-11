@@ -6,16 +6,17 @@ import {
   GithubReleaseCollectionSchama,
   GitlabReleaseSchame,
 } from '~~/shared/schemas/changelog/release'
+import { validateHostWithValibot } from '~~/server/utils/changelog/validateHost'
 
 export default defineCachedEventHandler(
   async event => {
-    const provider = getRouterParam(event, 'provider')
+    const provider = getRouterParam(event, 'provider') as ProviderId
     const repo = getRouterParam(event, 'repo')
     const owner = getRouterParam(event, 'owner')
     const tag = getRouterParam(event, 'tag')
 
     const rawQuery = getQuery(event)
-    const { host } = v.parse(v.object({ host: v.optional(v.string()) }), rawQuery)
+    const { host } = v.parse(v.object({ host: validateHostWithValibot(provider) }), rawQuery)
 
     if (!repo || !provider || !owner || !tag) {
       throw createError({
@@ -27,7 +28,7 @@ export default defineCachedEventHandler(
     setHeader(event, 'content-type', 'text/markdown')
 
     try {
-      switch (provider as ProviderId) {
+      switch (provider) {
         case 'github':
           return getMarkdownFromGithub(owner, repo, tag)
         case 'codeberg':
