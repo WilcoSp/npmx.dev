@@ -20,6 +20,7 @@ import { slugify } from '#shared/utils/html'
 import { Marked } from 'marked'
 import { hasProtocol, joinRelativeURL, joinURL, parseFilename, parseURL } from 'ufo'
 import { convertToEmoji } from '#shared/utils/emoji'
+import sanitize from 'sanitize-html'
 
 // cl = ChangeLog
 const clMarked = new Marked()
@@ -274,7 +275,7 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
       })
     }
 
-    return text
+    return sanitize(text)
   }
 }
 
