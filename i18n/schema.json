@@ -1161,6 +1161,9 @@
         },
         "expand_with_name": {
           "type": "string"
+        },
+        "copyMdError": {
+          "type": "string"
         }
       },
       "additionalProperties": false
