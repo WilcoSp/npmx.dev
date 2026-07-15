@@ -108,6 +108,7 @@ async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
         // GitHub API requires User-Agent
         'User-Agent': 'npmx.dev',
       },
+
       method: ref.provider != 'tangled' ? 'HEAD' : 'GET', // we just need to know if it exists or not, tangled doesn't support HEAD
     })
       .then(r => r.ok)
@@ -137,7 +138,14 @@ async function checkLatestGithubRelease(
   directory?: string,
 ): Promise<SafeResult<ChangelogInfo | false>> {
   try {
-    const response = await $fetch(`https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`)
+    const response = await $fetch(
+      `https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`,
+      {
+        headers: {
+          'User-Agent': 'npmx.dev',
+        },
+      },
+    )
 
     const { release } = v.parse(v.object({ release: GithubReleaseSchama }), response)
 

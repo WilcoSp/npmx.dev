@@ -125,7 +125,11 @@ async function getMarkdownFromForgejo(
   tag: string,
   host: string = 'codeberg.org',
 ) {
-  const data = await $fetch(`https://${host}/api/v1/repos/${owner}/${repo}/releases/tags/${tag}`)
+  const data = await $fetch(`https://${host}/api/v1/repos/${owner}/${repo}/releases/tags/${tag}`, {
+    headers: {
+      'User-Agent': 'npmx.dev',
+    },
+  })
 
   const release = v.parse(ForgejoReleaseSchama, data)
 
@@ -142,7 +146,11 @@ async function getMarkdownFromGitlab(
   owner = decodeURIComponent(owner)
 
   const repoPath = encodeURIComponent(`${owner}/${repo}`)
-  const data = await $fetch(`https://${host}/api/v4/projects/${repoPath}/releases/${tag}`)
+  const data = await $fetch(`https://${host}/api/v4/projects/${repoPath}/releases/${tag}`, {
+    headers: {
+      'User-Agent': 'npmx.dev',
+    },
+  })
 
   const release = v.parse(GitlabReleaseSchame, data)
 

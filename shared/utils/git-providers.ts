@@ -288,7 +288,7 @@ export function normalizeGitUrl(input: string): string | null {
   return url.includes('://') ? url : `https://${url}`
 }
 
-export const NEED_HOST = ['gitlab', 'gitea', 'forgejo', 'radicle']
+export const NEED_HOST: ProviderId[] = ['gitlab', 'gitea', 'forgejo', 'radicle']
 
 export function parseRepoUrl(input: string): RepoRef | null {
   const normalized = normalizeGitUrl(input)

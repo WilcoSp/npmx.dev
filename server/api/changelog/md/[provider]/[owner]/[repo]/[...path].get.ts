@@ -53,7 +53,11 @@ export default defineCachedEventHandler(
           statusMessage: ERROR_CHANGELOG_NOT_FOUND,
         })
       }
-      const data = await $fetch(resolveURL(baseUrl.raw, path))
+      const data = await $fetch(resolveURL(baseUrl.raw, path), {
+        headers: {
+          'User-Agent': 'npmx.dev',
+        },
+      })
       const markdown = v.parse(v.string(), data)
       if (raw != undefined) {
         setHeader(event, 'content-type', 'text/markdown')

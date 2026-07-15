@@ -104,7 +104,11 @@ async function getReleasesFromGithub(owner: string, repo: string) {
 }
 
 async function getReleasesFromForgejo(owner: string, repo: string, host: string) {
-  const data = await $fetch(`https://${host}/api/v1/repos/${owner}/${repo}/releases?draft=false`)
+  const data = await $fetch(`https://${host}/api/v1/repos/${owner}/${repo}/releases?draft=false`, {
+    headers: {
+      'User-Agent': 'npmx.dev',
+    },
+  })
   const releases = parse(ForgejoReleaseCollectionSchema, data)
 
   const render = await changelogRenderer(createForgejoRepoInfo(host, owner, repo))
@@ -130,7 +134,11 @@ async function getReleasesFromGitlab(owner: string, repo: string, host: string) 
 
   const repoPath = encodeURIComponent(`${owner}/${repo}`)
 
-  const data = await $fetch(`https://${host}/api/v4/projects/${repoPath}/releases`)
+  const data = await $fetch(`https://${host}/api/v4/projects/${repoPath}/releases`, {
+    headers: {
+      'User-Agent': 'npmx.dev',
+    },
+  })
 
   const releases = parse(GitlabReleaseCollectionSchema, data)
 
