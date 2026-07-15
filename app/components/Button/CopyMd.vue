@@ -26,10 +26,18 @@ const {
   copiedDuring: 2000,
 })
 
-function copyMarkdown() {
+const { isPending: showError, start: startErrorTimer } = useTimeoutFn(() => {}, 3000, {
+  immediate: false,
+})
+
+async function copyMarkdown() {
   copy(async () => {
-    if (status === 'idle' || status === 'pending') {
+    if (status !== 'success') {
       await fetchMarkdown()
+    }
+    if (status === 'error') {
+      startErrorTimer()
+      return ''
     }
     return markdown ?? ''
   })
@@ -48,20 +56,32 @@ const stopWatchHover = watch(hover, state => {
     stopWatchHover()
   }
 })
+
+const icon = computed(() => {
+  switch (true) {
+    case showError.value:
+      return 'i-lucide:x c-red size-4'
+    case copiedReadme.value:
+      return 'i-lucide:check'
+  }
+  return 'i-simple-icons:markdown'
+})
 </script>
 <template>
-  <TooltipApp :text position="bottom">
-    <ButtonBase
-      ref="btn"
-      @focus="prefetchMarkdown"
-      @click="copyMarkdown"
-      :aria-pressed="copiedReadme"
-      :aria-label="copiedReadme ? $t('common.copied') : text"
-      :classicon="copiedReadme ? 'i-lucide:check' : 'i-simple-icons:markdown'"
-      v-bind="$attrs"
-    >
-      <span>{{ copiedReadme ? $t('common.copied') : $t('common.copy') }}</span>
-      <span v-if="copyReadmePending" class="i-lucide:loader-circle animate-spin size-4"></span>
-    </ButtonBase>
-  </TooltipApp>
+  <TooltipAnnounce :is-visible="showError" :text="$t('common.copyMdError')">
+    <TooltipApp :text position="bottom">
+      <ButtonBase
+        ref="btn"
+        @focus="prefetchMarkdown"
+        @click="copyMarkdown"
+        :aria-pressed="copiedReadme"
+        :aria-label="copiedReadme && !showError ? $t('common.copied') : text"
+        :classicon="icon"
+        v-bind="$attrs"
+      >
+        <span>{{ copiedReadme && !showError ? $t('common.copied') : $t('common.copy') }}</span>
+        <span v-if="copyReadmePending" class="i-lucide:loader-circle animate-spin size-4"></span>
+      </ButtonBase>
+    </TooltipApp>
+  </TooltipAnnounce>
 </template>
