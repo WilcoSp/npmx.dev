@@ -29,6 +29,7 @@ export const theme = {
       DEFAULT: 'var(--border)',
       subtle: 'var(--border-subtle)',
       hover: 'var(--border-hover)',
+      elevated: 'var(--border-elevated)',
     },
     accent: {
       DEFAULT: 'var(--accent)',
