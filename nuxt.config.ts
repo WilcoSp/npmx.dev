@@ -335,6 +335,11 @@ export default defineNuxtConfig({
         global: true,
         subsets: ['arabic'],
       },
+      {
+        name: 'Baloo 2',
+        weights: [800],
+        global: true,
+      },
     ],
   },
 
