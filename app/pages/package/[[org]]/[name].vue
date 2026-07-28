@@ -82,7 +82,7 @@ const playgroundLinks = computed(() => [
     : []),
 ])
 
-//fetch README file as Markdown to copy
+// fetch README file as Markdown to copy
 const {
   data: readmeMarkdownData,
   status: readmeMarkdownStatus,

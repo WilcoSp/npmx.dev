@@ -10,7 +10,6 @@ import {
   ForgejoReleaseCollectionSchema,
   GitlabReleaseCollectionSchema,
 } from '~~/shared/schemas/changelog/release'
-import { parse } from 'valibot'
 import { changelogRenderer } from '~~/server/utils/changelog/markdown'
 import { createForgejoRepoInfo, createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
 import { validateHostWithValibot } from '~~/server/utils/changelog/validateHost'
@@ -82,7 +81,7 @@ async function getReleasesFromGithub(owner: string, repo: string) {
     },
   })
 
-  const { releases } = parse(GithubReleaseCollectionSchama, data)
+  const { releases } = v.parse(GithubReleaseCollectionSchama, data)
 
   const render = await changelogRenderer(createGithubRepoInfo(owner, repo))
 
@@ -109,7 +108,7 @@ async function getReleasesFromForgejo(owner: string, repo: string, host: string)
       'User-Agent': 'npmx.dev',
     },
   })
-  const releases = parse(ForgejoReleaseCollectionSchema, data)
+  const releases = v.parse(ForgejoReleaseCollectionSchema, data)
 
   const render = await changelogRenderer(createForgejoRepoInfo(host, owner, repo))
 
@@ -140,7 +139,7 @@ async function getReleasesFromGitlab(owner: string, repo: string, host: string) 
     },
   })
 
-  const releases = parse(GitlabReleaseCollectionSchema, data)
+  const releases = v.parse(GitlabReleaseCollectionSchema, data)
 
   const render = await changelogRenderer(createGitLabRepoInfo(host, owner, repo))
 

@@ -70,6 +70,7 @@ const {
   server: false,
 })
 </script>
+
 <template>
   <ChangelogSkeleton v-if="pending" />
   <template v-else-if="typeof data == 'object' && data?.html">

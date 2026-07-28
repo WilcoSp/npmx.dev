@@ -67,6 +67,7 @@ const icon = computed(() => {
   return 'i-simple-icons:markdown'
 })
 </script>
+
 <template>
   <TooltipAnnounce :is-visible="showError" :text="$t('common.copyMdError')">
     <TooltipApp :text position="bottom">

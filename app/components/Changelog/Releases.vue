@@ -81,6 +81,7 @@ if (import.meta.client) {
 
 prefetchComponents('ChangelogCard')
 </script>
+
 <template>
   <ChangelogSkeleton v-if="pending" />
   <div class="flex flex-col gap-2 py-3" v-else-if="releases">

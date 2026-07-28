@@ -1,18 +1,17 @@
 import { resolveURL } from 'ufo'
 import * as v from 'valibot'
 import { getBaseFileUrl } from '~~/server/utils/changelog/baseFileUrl'
-import { createForgejoRepoInfo, createGithubRepoInfo } from '~~/server/utils/changelog/mdRepoInfo'
+import {
+  createForgejoRepoInfo,
+  createGithubRepoInfo,
+  createGitLabRepoInfo,
+  createTangledInfo,
+} from '~~/server/utils/changelog/mdRepoInfo'
 import { validateHostWithValibot } from '~~/server/utils/changelog/validateHost'
 import {
   ERROR_CHANGELOG_FILE_FAILED,
   ERROR_THROW_INCOMPLETE_PARAM,
 } from '~~/shared/utils/constants'
-
-// v.custom(input => {
-//   if (!needsHost.includes(provider)) return true
-//   if (typeof input !== 'string') return false
-//   return validateHost(provider, input)
-// }, ERROR_UNKNOWN_GIT_HOST)
 
 export default defineCachedEventHandler(
   async event => {

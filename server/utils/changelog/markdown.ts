@@ -246,8 +246,6 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
   return (text, tag) => {
     if (tagsToIgnore.has(tag)) return text
 
-    // return text
-
     // issues
     text = text
       // commits come first to prevent matching issue/pr that has been formatted
