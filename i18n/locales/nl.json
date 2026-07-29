@@ -191,6 +191,7 @@
       "theme_changed": "Thema ingesteld op {theme}.",
       "accent_color_changed": "Accentkleur ingesteld op {color}.",
       "background_theme_changed": "Achtergrondkleur ingesteld op {theme}.",
+      "foreground_theme_changed": "Voorgrondkleur ingesteld op {theme}.",
       "download_started": "Downloaden {package} tarball.",
       "copied_to_clipboard": "Gekopieerd naar klembord.",
       "npm_disconnected": "npm CLI ontkoppeld.",
@@ -261,7 +262,8 @@
     "back_to_archive": "Terug naar alle noodles",
     "missing": {
       "title": "Deze noodle heeft de kom nooit verlaten.",
-      "body": "We hebben geen \"{slug}\"-noodle op het menu. Hij is misschien nog in de maak, of hij heeft nooit bestaan. Hoe dan ook — terug naar het archief."
+      "body": "We hebben geen \"{slug}\"-noodle op het menu. Hij is misschien nog in de maak, of hij heeft nooit bestaan. Hoe dan ook — terug naar het archief.",
+      "empty_bowl": "lege kom"
     }
   },
   "settings": {
@@ -318,6 +320,12 @@
       "zinc": "Zink",
       "slate": "Leisteen",
       "black": "Zwart"
+    },
+    "foreground_themes": {
+      "label": "Voorgrondkleur",
+      "contrast": "Contrast",
+      "standard": "Standaard",
+      "muted": "Zacht"
     },
     "keyboard_shortcuts_enabled": "toetsenbordnavigatie inschakelen",
     "keyboard_shortcuts_enabled_description": "toetsenbordnavigatie kan worden uitgeschakeld als ze conflicteren met andere sneltoetsen van de browser of het systeem.",
@@ -411,6 +419,7 @@
     "verified_provenance": "Geverifieerde herkomst",
     "navigation": "Pakket",
     "copy_name": "Kopieer pakket naam",
+    "copy_version": "Kopieer pakket versie",
     "deprecation": {
       "package": "Dit pakket wordt afgeraden.",
       "version": "Deze versie wordt afgeraden.",
