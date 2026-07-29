@@ -41,7 +41,7 @@
     "settings": "Open instellingen",
     "compare": "Open vergelijken",
     "compare_from_package": "Vergelijking openen (vooraf ingevuld met het huidige pakket)",
-    "changelog": "Open wijziging",
+    "changelog": "Open wijzigingen",
     "navigate_results": "Navigeer resultaten",
     "go_to_result": "Ga naar resultaten",
     "open_code_view": "Open code weergaven",
@@ -1091,7 +1091,7 @@
     },
     "file_path": "Bestand pad",
     "binary_file": "Binair bestand",
-    "binary_rendering_warning": "Bestand type \"{contentType}\" wordt niet ondersteund om te weergeven.",
+    "binary_rendering_warning": "Bestandstype \"{contentType}\" wordt niet ondersteund om te weergeven.",
     "possibly_unnecessary": "Is mogelijk overbodig in een gepubliceerd pakket"
   },
   "badges": {
@@ -1298,13 +1298,13 @@
     },
     "what_support_means": {
       "title": "Wat uw steun betekent",
-      "description": "Onze plannen en connecties blijven groeien, net zoals onze drive om onze kennis te delen en van anderen te leren. Met jouw support financier je het project, lezingen, conferenties en het bredere ecosysteem en help je ons vooral om onze community verder uit te bouwen."
+      "description": "Onze plannen en connecties blijven groeien, net zoals onze drive om onze kennis te delen en van anderen te leren. Met jouw support financier u het project, lezingen, conferenties en het bredere ecosysteem en help u ons vooral om onze community verder uit te bouwen."
     },
     "cta": "Sponsorpakketten",
     "community_growth_footnote": "* volgens onderzoek van {link} (Q1 2026).",
     "what_this_means_for_you": {
       "title": "Wat dit voor u betekent",
-      "description": "npmx draait niet alleen om een betere ontwikkelaarservaring en het oplossen van dagelijkse knelpunten. In de eerste zes maanden is npmx al uitgegroeid tot de standaardbron voor duizenden teams en een groot aantal ontwikkelaars. Je krijgt niet alleen een stabielere tool voor je teams, maar vergroot ook je zichtbaarheid binnen een snelgroeiende community van ervaren ontwikkelaars.",
+      "description": "npmx draait niet alleen om een betere ontwikkelaarservaring en het oplossen van dagelijkse knelpunten. In de eerste zes maanden is npmx al uitgegroeid tot de standaardbron voor duizenden teams en een groot aantal ontwikkelaars. U krijgt niet alleen een stabielere tool voor uw teams, maar vergroot ook uw zichtbaarheid binnen een snelgroeiende community van ervaren ontwikkelaars.",
       "cards": {
         "people": {
           "contributors": "bijdragers",
