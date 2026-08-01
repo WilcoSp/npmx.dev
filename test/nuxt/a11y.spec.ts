@@ -1427,6 +1427,7 @@ describe('component accessibility audits', () => {
   })
 
   describe('TabRoot + TabList + TabItem + TabPanel', () => {
+    // oxlint-disable-next-line unicorn/consistent-function-scoping
     function createTabsFixture(modelValue: string, idPrefix: string) {
       return defineComponent({
         setup() {
