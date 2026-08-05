@@ -73,25 +73,24 @@ const {
         {{ $t('changelog.draft') }}
       </TagStatic>
       <div class="flex-1" aria-hidden="true"></div>
-      <LinkBase
-        :classicon="providerIcon"
-        :title="viewOnProvider"
-        :to="release.link"
-        class="size-[0.9em]"
-      />
       <ButtonCopyMd
         :fetchMarkdown
         :markdown
         :text="$t('changelog.copy_as_markdown')"
         :status="mdStatus"
-        class="min-w-27"
+        class="h-9"
       />
       <ReadmeTocDropdown
         v-if="release?.toc && release.toc.length > 1"
         :toc="release.toc"
-        class="ms-auto"
+        class="h-9"
       />
-      <!-- :active-id="activeTocId" -->
+      <LinkBase
+        :classicon="providerIcon"
+        :title="viewOnProvider"
+        :to="release.link"
+        class="size-[1em]"
+      />
     </div>
     <DateTime
       v-if="release.publishedAt"
