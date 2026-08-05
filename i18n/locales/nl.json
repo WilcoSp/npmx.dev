@@ -723,6 +723,7 @@
       "date_range": "{start} t/m {end}",
       "date_range_multiline": "{start}\nt/m {end}",
       "download_file": "Download {fileType}",
+      "copy_file": "Kopieer {fileType}",
       "toggle_annotator": "Schakel annotator aan/uit",
       "toggle_stack_mode": "Schakel stapelen aan/uit",
       "open_options": "Open opties",
