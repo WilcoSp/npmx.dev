@@ -1326,7 +1326,7 @@
           "description": "Grafieken op conferenties, in presentaties en in artikelen maken gebruik van onze data"
         },
         "default_source": {
-          "title": "standaard bron",
+          "title": "standaardbron",
           "description": "pnpm heeft van npmx de standaardbron gemaakt, veel packages zijn geconfigureerd om naar npmx te linken."
         }
       }
