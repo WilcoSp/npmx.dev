@@ -2176,6 +2176,9 @@
             "download_file": {
               "type": "string"
             },
+            "copy_file": {
+              "type": "string"
+            },
             "toggle_annotator": {
               "type": "string"
             },
