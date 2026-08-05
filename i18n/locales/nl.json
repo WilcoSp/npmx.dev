@@ -649,7 +649,7 @@
       "chart": {
         "tab_aria_label": "Selecteer statistiek",
         "dependency_size": "Dependency grootte",
-        "other_dependencies": "Anderen",
+        "other_dependencies": "Overig",
         "base_scale": "y-as op nul beginnen",
         "zoom": "zoom",
         "reset_minimap": "minimap resetten",
