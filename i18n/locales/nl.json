@@ -772,7 +772,7 @@
         "chart": "Deze grafiek insluiten",
         "copy_url": "Kopieer deze URL om de grafiek in uw website in te sluiten",
         "preview": "Voorbeeld",
-        "tip": "Als startDate en endDate niet zijn opgegeven in de url, toont de grafiek de laatste 12 maanden."
+        "tip": "Als startDate en endDate niet zijn opgegeven in de URL, toont de grafiek de laatste 12 maanden."
       }
     },
     "downloads": {
