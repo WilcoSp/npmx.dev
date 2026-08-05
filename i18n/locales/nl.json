@@ -648,7 +648,7 @@
       "provenance_removed": "Herkomst verificatie gedeactiveerd",
       "chart": {
         "tab_aria_label": "Selecteer statistiek",
-        "dependency_size": "Dependency grootte",
+        "dependency_size": "Dependencygrootte",
         "other_dependencies": "Overig",
         "base_scale": "y-as op nul beginnen",
         "zoom": "zoom",
