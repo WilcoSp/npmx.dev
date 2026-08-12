@@ -25,12 +25,14 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return false
   }
 
-  const [releases, releasesError] = await checkReleases(repoRef, pkg.repository?.directory)
+  const directory = typeof pkg.repository === 'object' ? pkg.repository.directory : undefined
+
+  const [releases, releasesError] = await checkReleases(repoRef, directory)
   if (releases) {
     return releases
   }
 
-  const changelog = await checkChangelogFile(repoRef, pkg.repository?.directory)
+  const changelog = await checkChangelogFile(repoRef, directory)
   if (changelog) {
     return changelog
   }
