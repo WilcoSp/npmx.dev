@@ -68,7 +68,7 @@ export default defineCachedEventHandler(
 /** Package metadata needed for association validation */
 interface PackageWithMeta {
   maintainers?: Array<{ name: string }>
-  repository?: { url?: string }
+  repository?: { url?: string } | string
   deprecated?: string
 }
 
