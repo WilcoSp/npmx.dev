@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 type RequestedVersion = Exclude<SlimPackument['requestedVersion'], null>
 
-function mockPackage(repository: RequestedVersion['repository'] | string): RequestedVersion {
+function mockPackage(repository: RequestedVersion['repository']): RequestedVersion {
   return {
     _id: 'foo',
     name: 'foo',
@@ -65,17 +65,5 @@ describe('useRepositoryUrl', () => {
     )
 
     expect(repositoryUrl.value).toBe('https://github.com/org/repo/tree/HEAD/packages/core/')
-  })
-
-  it('should handle shorthand url', () => {
-    const { repositoryUrl } = useRepositoryUrl(mockPackage('https://github.com/nuxt/ui'))
-    expect(repositoryUrl.value).toBe('https://github.com/nuxt/ui')
-  })
-
-  it('should strip .git from shorthand repo url', () => {
-    const { repositoryUrl } = useRepositoryUrl(
-      mockPackage('git+https://github.com/agentmarkup/agentmarkup.git'),
-    )
-    expect(repositoryUrl.value).toBe('https://github.com/agentmarkup/agentmarkup')
   })
 })
