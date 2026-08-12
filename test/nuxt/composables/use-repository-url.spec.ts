@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 type RequestedVersion = Exclude<SlimPackument['requestedVersion'], null>
 
-function mockPackage(repository: RequestedVersion['repository']): RequestedVersion {
+function mockPackage(repository: RequestedVersion['repository'] | string): RequestedVersion {
   return {
     _id: 'foo',
     name: 'foo',
