@@ -12,10 +12,14 @@ export function useRepositoryUrl(
   const repositoryUrl = computed<string | null>(() => {
     const repo = toValue(requestedVersion)?.repository
 
+    if (typeof repo === 'string') {
+      // sometimes repo can be a string due to not being normalized during publishing
+      return normalizeGitUrl(repo)
+    }
+
     if (!repo?.url) {
       return null
     }
-
     let url = normalizeGitUrl(repo.url)
     if (!url) {
       return null
