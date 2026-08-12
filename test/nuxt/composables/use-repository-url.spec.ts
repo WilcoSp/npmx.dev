@@ -1,8 +1,11 @@
+import type { Repository } from '@npm/types'
 import { describe, expect, it } from 'vitest'
 
-type RequestedVersion = Exclude<SlimPackument['requestedVersion'], null>
+type RequestedVersion = Omit<Exclude<SlimPackument['requestedVersion'], null>, 'repository'> & {
+  repository?: string | Repository
+}
 
-function mockPackage(repository: RequestedVersion['repository']): RequestedVersion {
+function mockPackage(repository: RequestedVersion['repository'] | string): RequestedVersion {
   return {
     _id: 'foo',
     name: 'foo',

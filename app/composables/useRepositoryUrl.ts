@@ -1,6 +1,9 @@
+import type { Repository } from '@npm/types'
 import { joinURL } from 'ufo'
 
-type RequestedVersion = SlimPackument['requestedVersion'] | null
+export type RequestedVersion =
+  | (Omit<SlimPackument['requestedVersion'], 'repository'> & { repository?: string | Repository })
+  | null
 
 type UseRepositoryUrlReturn = {
   repositoryUrl: ComputedRef<string | null>
