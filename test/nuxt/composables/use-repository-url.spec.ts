@@ -1,11 +1,9 @@
-import type { Repository } from '@npm/types'
+import type { RequestedVersion as RequestedVersionNullable } from '~/composables/useRepositoryUrl'
 import { describe, expect, it } from 'vitest'
 
-type RequestedVersion = Omit<Exclude<SlimPackument['requestedVersion'], null>, 'repository'> & {
-  repository?: string | Repository
-}
+type RequestedVersion = NonNullable<RequestedVersionNullable>
 
-function mockPackage(repository: RequestedVersion['repository'] | string): RequestedVersion {
+function mockPackage(repository: RequestedVersion['repository']): RequestedVersion {
   return {
     _id: 'foo',
     name: 'foo',
