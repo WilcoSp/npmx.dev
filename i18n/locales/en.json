@@ -535,7 +535,16 @@
     },
     "run": {
       "title": "Run",
-      "locally": "Run locally"
+      "locally": "Run locally",
+      "copy_command": "Copy command to run locally"
+    },
+    "command": {
+      "copied_install": "Install command copied",
+      "copied_dev_install": "Dev install command copied",
+      "copied_run": "Run command copied",
+      "copied_create": "Create command copied",
+      "copied_execute": "Execute command copied",
+      "copied_skills": "Skills command copied"
     },
     "readme": {
       "title": "Readme",
@@ -647,6 +656,7 @@
       "trusted_publisher_removed": "Trusted publishing removed",
       "provenance_added": "Provenance enabled",
       "provenance_removed": "Provenance removed",
+      "deprecated": "Deprecated",
       "chart": {
         "tab_aria_label": "Metric selection",
         "dependency_size": "Dependency Size",
