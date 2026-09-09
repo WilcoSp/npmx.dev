@@ -127,8 +127,8 @@ export function createSourcehutRepoInfo(
   const hostBaseUrl = 'https://git.sr.ht'
   return {
     hostBaseUrl,
-    blobBaseUrl: `${hostBaseUrl}/${owner}/${repo}/src/HEAD`,
-    rawBaseUrl: `${hostBaseUrl}/${owner}/${repo}/raw/HEAD`,
+    blobBaseUrl: `https://git.sr.ht/${owner}/${repo}/tree/HEAD/item`,
+    rawBaseUrl: `https://git.sr.ht/${owner}/${repo}/blob/HEAD`,
     path,
     commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/commit`,
     // bitbucket uses jira instead of normal issues which can't be resolved, further the compare page also seems to be different
