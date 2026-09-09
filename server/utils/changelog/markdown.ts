@@ -122,13 +122,13 @@ export interface MarkdownRepoInfo {
   /** the text char that indicates an issue */
   issueChar?: keyof typeof issuePrRegexes
   /** base url for a repository pull/merge request */
-  prBaseUrl: string
+  prBaseUrl?: string
   /**
    * the text char that indicates a pull/merge request
    *
    * if it's the same as issueChar, than links will be parsed as issues and repo host is reponsible to redirect to pull/merge request
    x*/
-  prChar: keyof typeof issuePrRegexes
+  prChar?: keyof typeof issuePrRegexes
   /** base url for a repository compare */
   compareBaseUrl?: string
 }
@@ -220,10 +220,12 @@ function resolveGitLinkText(href: string, label: string, repoInfo: MarkdownRepoI
     case href.startsWith(repoInfo.commitBaseUrl): {
       return lastSegment.slice(0, 7) // only show the first 6 letters/numbers of a commit
     }
-    case !!repoInfo.issueBaseUrl && href.startsWith(repoInfo.issueBaseUrl): {
+    case !!repoInfo.issueChar &&
+      !!repoInfo.issueBaseUrl &&
+      href.startsWith(repoInfo.issueBaseUrl): {
       return `${repoInfo.issueChar}${lastSegment}`
     }
-    case href.startsWith(repoInfo.prBaseUrl): {
+    case !!repoInfo.prChar && !!repoInfo.prBaseUrl && href.startsWith(repoInfo.prBaseUrl): {
       return `${repoInfo.prChar}${lastSegment}`
     }
     case !!repoInfo.compareBaseUrl && href.startsWith(repoInfo.compareBaseUrl): {
@@ -270,10 +272,10 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
     }
 
     // pr/mr
-    if (mdInfo.issueChar != mdInfo.prChar) {
+    if (mdInfo.issueChar != mdInfo.prChar && mdInfo.prChar && mdInfo.prBaseUrl) {
       text = text.replace(issuePrRegexes[mdInfo.prChar], match => {
-        const id = match.replace(mdInfo.prChar, '')
-        return `<a href="${joinURL(mdInfo.prBaseUrl, id)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
+        const id = match.replace(mdInfo.prChar!, '')
+        return `<a href="${joinURL(mdInfo.prBaseUrl!, id)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
       })
     }
 

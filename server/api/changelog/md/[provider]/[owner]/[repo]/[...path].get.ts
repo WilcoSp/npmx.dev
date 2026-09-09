@@ -7,6 +7,7 @@ import {
   createGiteaRepoInfo,
   createGithubRepoInfo,
   createGitLabRepoInfo,
+  createSourcehutRepoInfo,
   createTangledInfo,
 } from '~~/server/utils/changelog/mdRepoInfo'
 import { validateHostWithValibot } from '~~/server/utils/changelog/validateHost'
@@ -121,5 +122,7 @@ function getRepoInfo(
       return createGiteaRepoInfo(host ?? 'gitea.com', owner, repo, path)
     case 'bitbucket':
       return createBitbucketRepoInfo(owner, repo, path)
+    case 'sourcehut':
+      return createSourcehutRepoInfo(owner, repo, path)
   }
 }

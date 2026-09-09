@@ -48,6 +48,12 @@ export function getBaseFileUrl(ref: RepoRef): RepoFileUrl | null {
         raw: `https://bitbucket.org/${ref.owner}/${ref.repo}/raw/HEAD`,
       }
     }
+    case 'sourcehut': {
+      return {
+        blob: `https://git.sr.ht/${ref.owner}/${ref.repo}/tree/HEAD/item`,
+        raw: `https://git.sr.ht/${ref.owner}/${ref.repo}/blob/HEAD`,
+      }
+    }
   }
   return null
 }
