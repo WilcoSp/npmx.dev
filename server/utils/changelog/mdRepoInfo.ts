@@ -131,6 +131,6 @@ export function createSourcehutRepoInfo(
     rawBaseUrl: `${hostBaseUrl}/${owner}/${repo}/blob/HEAD`,
     path,
     commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/commit`,
-    // bitbucket uses jira instead of normal issues which can't be resolved, further the compare page also seems to be different
+    // source hut doesn't have/support issues,pr & compare
   }
 }
