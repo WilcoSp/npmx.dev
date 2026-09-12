@@ -3,6 +3,8 @@ import * as v from 'valibot'
 import { ERROR_THROW_INCOMPLETE_PARAM } from '~~/shared/utils/constants'
 import {
   ForgejoReleaseSchama,
+  GiteaReleaseSchema,
+  GiteeReleaseSchema,
   GithubReleaseCollectionSchama,
   GitlabReleaseSchame,
 } from '~~/shared/schemas/changelog/release'
@@ -42,6 +44,10 @@ export default defineCachedEventHandler(
           return await getMarkdownFromForgejo(owner, repo, encodedTag, host)
         case 'gitlab':
           return await getMarkdownFromGitlab(owner, repo, encodedTag, host)
+        case 'gitea':
+          return await getMarkdownFromGitea(owner, repo, encodedTag, host)
+        case 'gitee':
+          return await getMarkdownFromGitee(owner, repo, encodedTag)
         default:
           throw createError({
             status: 404,
@@ -161,4 +167,44 @@ async function getMarkdownFromGitlab(
   const release = v.parse(GitlabReleaseSchame, data)
 
   return release.description
+}
+
+async function getMarkdownFromGitea(
+  owner: string,
+  repo: string,
+  /** tag should be encoded */
+  tag: string,
+  host: string = 'gitea.com',
+) {
+  const data = await $fetch(`https://${host}/api/v1/repos/${owner}/${repo}/releases/tags/${tag}`, {
+    headers: {
+      'User-Agent': 'npmx.dev',
+    },
+    timeout: TIMEOUT_TIME,
+  })
+
+  const release = v.parse(GiteaReleaseSchema, data)
+
+  return release.body
+}
+
+async function getMarkdownFromGitee(
+  owner: string,
+  repo: string,
+  /** tag should be encoded */
+  tag: string,
+) {
+  const data = await $fetch(
+    `https://gitee.com/api/v5/repos/${owner}/${repo}/releases/tags/${tag}`,
+    {
+      headers: {
+        'User-Agent': 'npmx.dev',
+      },
+      timeout: TIMEOUT_TIME,
+    },
+  )
+
+  const release = v.parse(GiteeReleaseSchema, data)
+
+  return release.body
 }
