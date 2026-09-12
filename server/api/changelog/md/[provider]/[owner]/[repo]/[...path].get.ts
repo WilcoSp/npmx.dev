@@ -5,6 +5,7 @@ import {
   createBitbucketRepoInfo,
   createForgejoRepoInfo,
   createGiteaRepoInfo,
+  createGiteeRepoInfo,
   createGithubRepoInfo,
   createGitLabRepoInfo,
   createSourcehutRepoInfo,
@@ -124,5 +125,7 @@ function getRepoInfo(
       return createBitbucketRepoInfo(owner, repo, path)
     case 'sourcehut':
       return createSourcehutRepoInfo(owner, repo, path)
+    case 'gitee':
+      return createGiteeRepoInfo(owner, repo, path)
   }
 }

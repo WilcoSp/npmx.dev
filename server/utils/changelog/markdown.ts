@@ -121,6 +121,8 @@ export interface MarkdownRepoInfo {
   issueBaseUrl?: string
   /** the text char that indicates an issue */
   issueChar?: keyof typeof issuePrRegexes
+  /** custom regex in case the git provider's issues uses a different format */
+  issueRegex?: RegExp
   /** base url for a repository pull/merge request */
   prBaseUrl?: string
   /**
@@ -218,7 +220,7 @@ function resolveGitLinkText(href: string, label: string, repoInfo: MarkdownRepoI
 
   switch (true) {
     case href.startsWith(repoInfo.commitBaseUrl): {
-      return lastSegment.slice(0, 7) // only show the first 6 letters/numbers of a commit
+      return lastSegment.slice(0, 7) // only show the first 7 letters/numbers of a commit
     }
     case !!repoInfo.issueChar &&
       !!repoInfo.issueBaseUrl &&
@@ -265,7 +267,7 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
       })
 
     if (mdInfo.issueChar && mdInfo.issueBaseUrl) {
-      text = text.replace(issuePrRegexes[mdInfo.issueChar], match => {
+      text = text.replace(mdInfo.issueRegex ?? issuePrRegexes[mdInfo.issueChar], match => {
         const id = match.replace(mdInfo.issueChar!, '')
         return `<a href="${joinURL(mdInfo.issueBaseUrl!, id)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
       })

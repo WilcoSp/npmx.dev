@@ -54,6 +54,12 @@ export function getBaseFileUrl(ref: RepoRef): RepoFileUrl | null {
         raw: `https://git.sr.ht/${ref.owner}/${ref.repo}/blob/HEAD`,
       }
     }
+    case 'gitee': {
+      return {
+        blob: `https://gitee.com/${ref.owner}/${ref.repo}/blob/main`,
+        raw: `https://gitee.com/${ref.owner}/${ref.repo}/raw/main`,
+      }
+    }
   }
   return null
 }

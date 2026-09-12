@@ -9,6 +9,7 @@ import {
   ForgejoReleaseSchama,
   GitlabReleaseSchame,
   GiteaReleaseSchema,
+  GiteeReleaseSchema,
 } from '~~/shared/schemas/changelog/release'
 import { resolveURL } from 'ufo'
 import * as v from 'valibot'
@@ -69,6 +70,9 @@ async function checkReleases(
     }
     case 'gitea': {
       return checkLatestGiteaRelease(ref, directory)
+    }
+    case 'gitee': {
+      return checkLatestGiteeRelease(ref, directory)
     }
   }
   return [false, null]
@@ -399,6 +403,68 @@ async function checkLatestGiteaRelease(
         repo: `${ref.owner}/${ref.repo}`,
         link: matchedChangelog,
         host: ref.host,
+      },
+      null,
+    ]
+  } catch (e) {
+    if (e instanceof Error) {
+      return [null, e]
+    }
+  }
+  return [false, null]
+}
+
+async function checkLatestGiteeRelease(
+  ref: RepoRef,
+  directory?: string,
+): Promise<SafeResult<ChangelogInfo | false>> {
+  try {
+    const response = await $fetch(
+      `https://gitee.com/api/v5/repos/${ref.owner}/${ref.repo}/releases/latest`,
+      {
+        headers: {
+          'User-Agent': 'npmx.dev',
+          'accept': 'application/json',
+        },
+      },
+    )
+
+    const release = v.parse(GiteeReleaseSchema, response)
+
+    const matchedChangelog = release.body?.match(MD_REGEX)?.at(0)
+
+    // if no changelog.md or the url doesn't contain /blob/
+    if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
+      return [
+        {
+          provider: ref.provider,
+          type: 'release',
+          repo: `${ref.owner}/${ref.repo}`,
+          link: `https://gitee.com/${ref.owner}/${ref.repo}/releases`,
+        },
+        null,
+      ]
+    }
+
+    const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
+
+    // makes sure that the correct directory is matched
+    if (
+      directory &&
+      !(
+        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+        ROOT_ONLY_REGEX.test(path)
+      )
+    ) {
+      return [false, null]
+    }
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
       },
       null,
     ]

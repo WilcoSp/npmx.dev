@@ -59,3 +59,14 @@ export const GiteaReleaseSchema = v.object({
 })
 
 export const GiteaReleaseCollectionSchema = v.array(GiteaReleaseSchema)
+
+export const GiteeReleaseSchema = v.object({
+  id: v.number(),
+  tag_name: v.string(),
+  name: v.string(),
+  body: v.string(),
+  prerelease: v.boolean(),
+  created_at: v.pipe(v.string(), v.isoTimestamp()),
+})
+
+export const GiteeReleaseCollectionSchema = v.array(GiteeReleaseSchema)

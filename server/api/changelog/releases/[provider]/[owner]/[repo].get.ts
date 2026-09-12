@@ -10,6 +10,7 @@ import {
   ForgejoReleaseCollectionSchema,
   GitlabReleaseCollectionSchema,
   GiteaReleaseCollectionSchema,
+  GiteeReleaseCollectionSchema,
 } from '~~/shared/schemas/changelog/release'
 import { changelogRenderer } from '~~/server/utils/changelog/markdown'
 import {
@@ -48,6 +49,8 @@ export default defineCachedEventHandler(
           return await getReleasesFromGitlab(owner, repo, host)
         case 'gitea':
           return await getReleasesFromGitea(owner, repo, host)
+        case 'gitee':
+          return await getReleasesFromGitee(owner, repo)
 
         default:
           throw createError({
@@ -193,6 +196,36 @@ async function getReleasesFromGitea(owner: string, repo: string, host: string) {
       link: r.html_url,
       publishedAt: r.published_at,
       draft: r.draft,
+      tag: r.tag_name,
+    } satisfies ReleaseData
+  })
+}
+
+async function getReleasesFromGitee(owner: string, repo: string) {
+  const data = await $fetch(
+    `https://gitee.com/api/v5/repos/${owner}/${repo}/releases?per_page=30`,
+    {
+      headers: {
+        'User-Agent': 'npmx.dev',
+      },
+      timeout: TIMEOUT_TIME,
+    },
+  )
+
+  const releases = v.parse(GiteeReleaseCollectionSchema, data)
+
+  const render = await changelogRenderer(createGiteeRepoInfo(owner, repo))
+
+  return releases.map(r => {
+    const { html, toc } = render(r.body, r.id)
+    return {
+      id: r.id,
+      html: html?.replace(/(?<!>)\n/g, '<br>') ?? null,
+      title: r.name || r.tag_name,
+      prerelease: r.prerelease,
+      toc,
+      link: `https://gitee.com/${owner}/${repo}/releases/tag/${r.tag_name}`,
+      publishedAt: r.created_at,
       tag: r.tag_name,
     } satisfies ReleaseData
   })
