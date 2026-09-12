@@ -752,7 +752,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('should turn issue/pr into links between ()', async () => {
+    it('should turn issue into links between ()', async () => {
       const info = createGiteeRepoInfo('test-owner', 'test-repo')
       const renderer = await changelogRenderer(info)
       // text comes from npmx release 0.15.0
