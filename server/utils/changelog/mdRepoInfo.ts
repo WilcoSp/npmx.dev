@@ -115,6 +115,7 @@ export function createBitbucketRepoInfo(
     commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/commits`,
     prChar: '#',
     prBaseUrl: `${hostBaseUrl}/${owner}/${repo}/pull-requests`,
+    accountChar: false,
     // bitbucket uses jira instead of normal issues which can't be resolved, further the compare page also seems to be different
   }
 }
@@ -131,7 +132,11 @@ export function createSourcehutRepoInfo(
     rawBaseUrl: `${hostBaseUrl}/${owner}/${repo}/blob/HEAD`,
     path,
     commitBaseUrl: `${hostBaseUrl}/${owner}/${repo}/commit`,
-    // source hut doesn't have/support issues,pr & compare
+    issueChar: '#',
+    issueBaseUrl: `https://todo.sr.ht/${owner}/${repo}`,
+    accountChar: '~',
+    keepAccountChar: true,
+    // source hut doesn't have/support pr & compare
   }
 }
 

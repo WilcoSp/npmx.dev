@@ -4,8 +4,15 @@ import {
   createGithubRepoInfo,
   createGitLabRepoInfo,
   createGiteeRepoInfo,
+  createBitbucketRepoInfo,
+  createForgejoRepoInfo,
+  createGiteaRepoInfo,
+  createSourcehutRepoInfo,
+  createTangledInfo,
 } from '~~/server/utils/changelog/mdRepoInfo'
 
+const TEST_OWNER = 'test-owner'
+const TEST_REPO = 'test-repo'
 // testing changelog specific needs, others things are tested at ../readme.spec.ts
 
 beforeAll(() => {
@@ -27,11 +34,11 @@ beforeAll(() => {
 const { changelogRenderer } = await import('#server/utils/changelog/markdown')
 
 function changelogMdinfo(): MarkdownRepoInfo {
-  return createGithubRepoInfo('test-owner', 'test-repo')
+  return createGithubRepoInfo(TEST_OWNER, TEST_REPO)
 }
 
 function changelogMdInfoWithPath() {
-  return createGithubRepoInfo('test-owner', 'test-repo', 'packages/test/changelog.md')
+  return createGithubRepoInfo(TEST_OWNER, TEST_REPO, 'packages/test/changelog.md')
 }
 
 describe('URL Resolution', () => {
@@ -544,20 +551,136 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
     })
   })
 
-  it('should turn issue/pr & account into links', async () => {
-    const info = changelogMdinfo()
-    const renderer = await changelogRenderer(info)
-    // text from date-fns v4.3.0
-    const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
+  describe('should turn issue/pr & account into links', () => {
+    // in this test we check all providers to make sure they give the correct link, other tests won't as it's almost the same test n amount of time
+    it('github', async () => {
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
 - Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #4194 by @puneetdixit200.
 `
-    const result = renderer(markdown)
+      const result = renderer(markdown)
 
-    expect(result.html).toBe(`<ul>
+      expect(result.html).toBe(`<ul>
 <li>Fixed pt locale first day of week to be Sunday. See <a href="https://github.com/test-owner/test-repo/issues/4195" rel="nofollow noreferrer noopener" target="_blank">#4195</a> by <a href="https://github.com/ImRodry" rel="nofollow noreferrer noopener" target="_blank">@ImRodry</a>.</li>
 <li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://github.com/test-owner/test-repo/issues/4194" rel="nofollow noreferrer noopener" target="_blank">#4194</a> by <a href="https://github.com/puneetdixit200" rel="nofollow noreferrer noopener" target="_blank">@puneetdixit200</a>.</li>
 </ul>
 `)
+    })
+
+    it('gitlab', async () => {
+      const info = createGitLabRepoInfo('gitlab.com', TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
+- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See !4194 by @puneetdixit200.
+`
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li>Fixed pt locale first day of week to be Sunday. See <a href="https://gitlab.com/test-owner/test-repo/-/work_items/4195" rel="nofollow noreferrer noopener" target="_blank">#4195</a> by <a href="https://gitlab.com/ImRodry" rel="nofollow noreferrer noopener" target="_blank">@ImRodry</a>.</li>
+<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://gitlab.com/test-owner/test-repo/-/merge_requests/4194" rel="nofollow noreferrer noopener" target="_blank">!4194</a> by <a href="https://gitlab.com/puneetdixit200" rel="nofollow noreferrer noopener" target="_blank">@puneetdixit200</a>.</li>
+</ul>
+`)
+    })
+
+    it('codeberg/forgejo', async () => {
+      const info = createForgejoRepoInfo('codeberg.org', TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
+- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #4194 by @puneetdixit200.
+`
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li>Fixed pt locale first day of week to be Sunday. See <a href="https://codeberg.org/test-owner/test-repo/issues/4195" rel="nofollow noreferrer noopener" target="_blank">#4195</a> by <a href="https://codeberg.org/ImRodry" rel="nofollow noreferrer noopener" target="_blank">@ImRodry</a>.</li>
+<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://codeberg.org/test-owner/test-repo/issues/4194" rel="nofollow noreferrer noopener" target="_blank">#4194</a> by <a href="https://codeberg.org/puneetdixit200" rel="nofollow noreferrer noopener" target="_blank">@puneetdixit200</a>.</li>
+</ul>
+`)
+    })
+
+    it('tangled', async () => {
+      const info = createTangledInfo(TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
+- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #4194 by @puneetdixit200.
+`
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li>Fixed pt locale first day of week to be Sunday. See <a href="https://tangled.org/test-owner/test-repo/issues/4195" rel="nofollow noreferrer noopener" target="_blank">#4195</a> by <a href="https://tangled.org/ImRodry" rel="nofollow noreferrer noopener" target="_blank">@ImRodry</a>.</li>
+<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://tangled.org/test-owner/test-repo/issues/4194" rel="nofollow noreferrer noopener" target="_blank">#4194</a> by <a href="https://tangled.org/puneetdixit200" rel="nofollow noreferrer noopener" target="_blank">@puneetdixit200</a>.</li>
+</ul>
+`)
+    })
+
+    it('gitea', async () => {
+      const info = createGiteaRepoInfo('gitea.com', TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
+- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #4194 by @puneetdixit200.
+`
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li>Fixed pt locale first day of week to be Sunday. See <a href="https://gitea.com/test-owner/test-repo/issues/4195" rel="nofollow noreferrer noopener" target="_blank">#4195</a> by <a href="https://gitea.com/ImRodry" rel="nofollow noreferrer noopener" target="_blank">@ImRodry</a>.</li>
+<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://gitea.com/test-owner/test-repo/issues/4194" rel="nofollow noreferrer noopener" target="_blank">#4194</a> by <a href="https://gitea.com/puneetdixit200" rel="nofollow noreferrer noopener" target="_blank">@puneetdixit200</a>.</li>
+</ul>
+`)
+    })
+
+    it('bitbucket', async () => {
+      // for bitbucket the support is only pull requests. Jira & accounts are external and not offline resolveable
+      const info = createBitbucketRepoInfo(TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
+- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #4194 by @puneetdixit200.
+`
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li>Fixed pt locale first day of week to be Sunday. See <a href="https://bitbucket.org/test-owner/test-repo/pull-requests/4195" rel="nofollow noreferrer noopener" target="_blank">#4195</a> by @ImRodry.</li>
+<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://bitbucket.org/test-owner/test-repo/pull-requests/4194" rel="nofollow noreferrer noopener" target="_blank">#4194</a> by @puneetdixit200.</li>
+</ul>
+`)
+    })
+
+    it('sourcehut', async () => {
+      const info = createSourcehutRepoInfo(`~${TEST_OWNER}`, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by ~ImRodry.
+- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #4194 by ~puneetdixit200.
+`
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li>Fixed pt locale first day of week to be Sunday. See <a href="https://todo.sr.ht/~test-owner/test-repo/4195" rel="nofollow noreferrer noopener" target="_blank">#4195</a> by <a href="https://git.sr.ht/~ImRodry" rel="nofollow noreferrer noopener" target="_blank">~ImRodry</a>.</li>
+<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://todo.sr.ht/~test-owner/test-repo/4194" rel="nofollow noreferrer noopener" target="_blank">#4194</a> by <a href="https://git.sr.ht/~puneetdixit200" rel="nofollow noreferrer noopener" target="_blank">~puneetdixit200</a>.</li>
+</ul>
+`)
+    })
+
+    it('gitee', async () => {
+      const info = createGiteeRepoInfo('test-owner', 'test-repo')
+      const renderer = await changelogRenderer(info)
+      // text from date-fns v4.3.0
+      const markdown = `- Fixed pt locale first day of week to be Sunday. See #IKF9K6 by @ImRodry
+- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #I9T5LW by @ImRodry
+`
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li>Fixed pt locale first day of week to be Sunday. See <a href="https://gitee.com/test-owner/test-repo/issues/IKF9K6" rel="nofollow noreferrer noopener" target="_blank">#IKF9K6</a> by <a href="https://gitee.com/ImRodry" rel="nofollow noreferrer noopener" target="_blank">@ImRodry</a></li>
+<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://gitee.com/test-owner/test-repo/issues/I9T5LW" rel="nofollow noreferrer noopener" target="_blank">#I9T5LW</a> by <a href="https://gitee.com/ImRodry" rel="nofollow noreferrer noopener" target="_blank">@ImRodry</a></li>
+</ul>
+`)
+    })
   })
 
   it('should turn issue/pr into links between ()', async () => {
@@ -681,20 +804,6 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
     )
   })
 
-  it('should format gitlab merge requests', async () => {
-    const info = createGitLabRepoInfo('gitlab.com', 'test', 'test')
-    const renderer = await changelogRenderer(info)
-
-    const markdown = `!123 hallo\n\nhttps://gitlab.com/test/test/-/merge_requests/321 world`
-    const result = renderer(markdown)
-
-    expect(result.html).toBe(
-      `<p><a href="https://gitlab.com/test/test/-/merge_requests/123" rel="nofollow noreferrer noopener" target="_blank">!123</a> hallo</p>
-<p><a href="https://gitlab.com/test/test/-/merge_requests/321" rel="nofollow noreferrer noopener" target="_blank">!321</a> world</p>
-`,
-    )
-  })
-
   it('should format at proto @account handle but not @version', async () => {
     const info = changelogMdinfo()
     const renderer = await changelogRenderer(info)
@@ -732,43 +841,6 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
       `<p>email to <a href="mailto:test@package.test" rel="nofollow noreferrer noopener" target="_blank">test@package.test</a> to get in contact</p>
 `,
     )
-  })
-
-  // gitee
-  describe('gitee issue formatting', () => {
-    it('should turn issue into formatted links', async () => {
-      const info = createGiteeRepoInfo('test-owner', 'test-repo')
-      const renderer = await changelogRenderer(info)
-      // text from date-fns v4.3.0
-      const markdown = `- Fixed pt locale first day of week to be Sunday. See #IKF9K6
-- Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See #I9T5LW
-`
-      const result = renderer(markdown)
-
-      expect(result.html).toBe(`<ul>
-<li>Fixed pt locale first day of week to be Sunday. See <a href="https://gitee.com/test-owner/test-repo/issues/IKF9K6" rel="nofollow noreferrer noopener" target="_blank">#IKF9K6</a></li>
-<li>Fixed zh-CN, zh-HK, and zh-TW locale month parsing for October, November, and December. See <a href="https://gitee.com/test-owner/test-repo/issues/I9T5LW" rel="nofollow noreferrer noopener" target="_blank">#I9T5LW</a></li>
-</ul>
-`)
-    })
-
-    it('should turn issue into links between ()', async () => {
-      const info = createGiteeRepoInfo('test-owner', 'test-repo')
-      const renderer = await changelogRenderer(info)
-      // text comes from npmx release 0.15.0
-      const markdown = `- Minor ui improvements (#IKF9K6)
-- deps: Update module-replacements (#I9T5LW)
-- Release v0.15.0 (#IKEIK1)`
-
-      const result = renderer(markdown)
-
-      expect(result.html).toBe(`<ul>
-<li>Minor ui improvements (<a href="https://gitee.com/test-owner/test-repo/issues/IKF9K6" rel="nofollow noreferrer noopener" target="_blank">#IKF9K6</a>)</li>
-<li>deps: Update module-replacements (<a href="https://gitee.com/test-owner/test-repo/issues/I9T5LW" rel="nofollow noreferrer noopener" target="_blank">#I9T5LW</a>)</li>
-<li>Release v0.15.0 (<a href="https://gitee.com/test-owner/test-repo/issues/IKEIK1" rel="nofollow noreferrer noopener" target="_blank">#IKEIK1</a>)</li>
-</ul>
-`)
-    })
   })
 })
 

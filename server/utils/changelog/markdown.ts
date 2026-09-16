@@ -133,6 +133,18 @@ export interface MarkdownRepoInfo {
   prChar?: keyof typeof issuePrRegexes
   /** base url for a repository compare */
   compareBaseUrl?: string
+  /**
+   * the character that should be used to indicate an account.
+   *
+   * if it's not supported than set this to false
+   *
+   * @default '@' if left empty
+   */
+  accountChar?: false | keyof typeof accountRegexes
+  /**
+   * keep account character in the url
+   */
+  keepAccountChar?: true
 }
 
 function resolveUrl(url: string, repoInfo: MarkdownRepoInfo, toUserContentId: ToUserContentIdFn) {
@@ -242,7 +254,11 @@ const issuePrRegexes = {
   '!': /\B!\d+\b/g,
 } as const
 
-const accountRegex = /\B@(?![\d.]+\b)(?![\w.-]*\/)[\w\-.]+\b/g
+const accountRegexes = {
+  '@': /\B@(?![\d.]+\b)(?![\w.-]*\/)[\w\-.]+\b/g,
+  '~': /\B~(?![\d.]+\b)(?![\w.-]*\/)[\w\-.]+\b/g,
+} as const
+
 const commitRegex = /(?<![@#!])\b[a-f0-9]{6,40}\b/gi
 
 const tagsToIgnore = new Set(['a', 'code'])
@@ -260,11 +276,15 @@ function createResolveGitTextToLinks(mdInfo: MarkdownRepoInfo): IOptions['textFi
 
         return `<a href="${joinURL(mdInfo.commitBaseUrl, match)}" rel="nofollow noreferrer noopener" target="_blank">${match.slice(0, 7)}</a>`
       })
+    if (mdInfo.accountChar !== false) {
       // account
-      .replace(accountRegex, match => {
-        const acc = match.replace('@', '')
+      text = text.replace(accountRegexes[mdInfo.accountChar ?? '@'], match => {
+        const acc = mdInfo.keepAccountChar
+          ? match
+          : match.replace((mdInfo.accountChar as string) ?? '@', '')
         return `<a href="${joinURL(mdInfo.hostBaseUrl, acc)}" rel="nofollow noreferrer noopener" target="_blank">${match}</a>`
       })
+    }
 
     if (mdInfo.issueChar && mdInfo.issueBaseUrl) {
       text = text.replace(mdInfo.issueRegex ?? issuePrRegexes[mdInfo.issueChar], match => {
