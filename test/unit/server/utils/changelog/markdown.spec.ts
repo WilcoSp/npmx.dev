@@ -8,13 +8,14 @@ import {
   createForgejoRepoInfo,
   createGiteaRepoInfo,
   createSourcehutRepoInfo,
-  createTangledInfo,
+  createTangledRepoInfo,
 } from '~~/server/utils/changelog/mdRepoInfo'
 
 const TEST_OWNER = 'test-owner'
 const TEST_REPO = 'test-repo'
 // testing changelog specific needs, others things are tested at ../readme.spec.ts
 
+// some tests test with all git providers, other only the logic of the changelog markdown parser
 beforeAll(() => {
   vi.stubGlobal(
     'getShikiHighlighter',
@@ -552,7 +553,6 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
   })
 
   describe('should turn issue/pr & account into links', () => {
-    // in this test we check all providers to make sure they give the correct link, other tests won't as it's almost the same test n amount of time
     test('github', async () => {
       const info = changelogMdinfo()
       const renderer = await changelogRenderer(info)
@@ -602,7 +602,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
     })
 
     test('tangled', async () => {
-      const info = createTangledInfo(TEST_OWNER, TEST_REPO)
+      const info = createTangledRepoInfo(TEST_OWNER, TEST_REPO)
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
       const markdown = `- Fixed pt locale first day of week to be Sunday. See #4195 by @ImRodry.
@@ -836,7 +836,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
     })
 
     test('tangled', async () => {
-      const info = createTangledInfo(TEST_OWNER, TEST_REPO)
+      const info = createTangledRepoInfo(TEST_OWNER, TEST_REPO)
       const renderer = await changelogRenderer(info)
       // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
       const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
@@ -1001,26 +1001,176 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 
 describe('format unformatted/auto links to git', () => {
   // links to account won't be formatted, this is something also git providers don't do
-  it('should turn issue, pr, commit & compare links to formatted links', async () => {
-    const info = createGithubRepoInfo('vueuse', 'vueuse')
-    const renderer = await changelogRenderer(info)
-    // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
-    const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://github.com/vueuse/vueuse/issues/5295 https://github.com/vueuse/vueuse/commit/b1688bd2
+  describe('should turn issue, pr, commit & compare links to formatted links', () => {
+    test('github', async () => {
+      const info = createGithubRepoInfo('vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://github.com/vueuse/vueuse/issues/5295 https://github.com/vueuse/vueuse/commit/b1688bd2
 - createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://github.com/vueuse/vueuse/issues/5306 https://github.com/vueuse/vueuse/commit/b0c51c27
 - createReusableTemplate: Add support for specifying component names  -  by wbolster in https://github.com/vueuse/vueuse/pull/5300 https://github.com/vueuse/vueuse/commit/ea29d5cb
-- nuxt: Add composable variants to auto imports  -  by OrbisK in https://github.com/vueuse/vueuse/issues/5285 https://github.com/vueuse/vueuse/commit/ac2ef95d
-
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://github.com/vueuse/vueuse/pull/5285 https://github.com/vueuse/vueuse/commit/ac2ef95d
+  
 https://github.com/vueuse/vueuse/compare/v14.2.1...v14.3.0`
 
-    const result = renderer(markdown)
-    expect(result.html).toBe(`<ul>
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
 <li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://github.com/vueuse/vueuse/issues/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://github.com/vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
 <li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://github.com/vueuse/vueuse/issues/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://github.com/vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
 <li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://github.com/vueuse/vueuse/pull/5300" rel="nofollow noreferrer noopener" target="_blank">#5300</a> <a href="https://github.com/vueuse/vueuse/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
-<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://github.com/vueuse/vueuse/issues/5285" rel="nofollow noreferrer noopener" target="_blank">#5285</a> <a href="https://github.com/vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://github.com/vueuse/vueuse/pull/5285" rel="nofollow noreferrer noopener" target="_blank">#5285</a> <a href="https://github.com/vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
 </ul>
 <p><a href="https://github.com/vueuse/vueuse/compare/v14.2.1...v14.3.0" rel="nofollow noreferrer noopener" target="_blank">v14.2.1...v14.3.0</a></p>
 `)
+    })
+
+    test('gitlab', async () => {
+      const info = createGitLabRepoInfo('gitlab.com', 'vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://gitlab.com/vueuse/vueuse/-/work_items/5295 https://gitlab.com/vueuse/vueuse/-/commit/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://gitlab.com/vueuse/vueuse/-/work_items/5306 https://gitlab.com/vueuse/vueuse/-/commit/b0c51c27
+- createReusableTemplate: Add support for specifying component names  -  by wbolster in https://gitlab.com/vueuse/vueuse/-/merge_requests/5300 https://gitlab.com/vueuse/vueuse/-/commit/ea29d5cb
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://gitlab.com/vueuse/vueuse/-/merge_requests/5285 https://gitlab.com/vueuse/vueuse/-/commit/ac2ef95d
+  
+https://gitlab.com/vueuse/vueuse/-/compare/v14.2.1...v14.3.0`
+
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://gitlab.com/vueuse/vueuse/-/work_items/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://gitlab.com/vueuse/vueuse/-/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://gitlab.com/vueuse/vueuse/-/work_items/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://gitlab.com/vueuse/vueuse/-/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://gitlab.com/vueuse/vueuse/-/merge_requests/5300" rel="nofollow noreferrer noopener" target="_blank">!5300</a> <a href="https://gitlab.com/vueuse/vueuse/-/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://gitlab.com/vueuse/vueuse/-/merge_requests/5285" rel="nofollow noreferrer noopener" target="_blank">!5285</a> <a href="https://gitlab.com/vueuse/vueuse/-/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+</ul>
+<p><a href="https://gitlab.com/vueuse/vueuse/-/compare/v14.2.1...v14.3.0" rel="nofollow noreferrer noopener" target="_blank">v14.2.1...v14.3.0</a></p>
+`)
+    })
+
+    test('codeberg/forgejo', async () => {
+      const info = createForgejoRepoInfo('codeberg.org', 'vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://codeberg.org/vueuse/vueuse/issues/5295 https://codeberg.org/vueuse/vueuse/commit/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://codeberg.org/vueuse/vueuse/issues/5306 https://codeberg.org/vueuse/vueuse/commit/b0c51c27
+- createReusableTemplate: Add support for specifying component names  -  by wbolster in https://codeberg.org/vueuse/vueuse/pulls/5300 https://codeberg.org/vueuse/vueuse/commit/ea29d5cb
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://codeberg.org/vueuse/vueuse/pulls/5285 https://codeberg.org/vueuse/vueuse/commit/ac2ef95d
+  
+https://codeberg.org/vueuse/vueuse/compare/v14.2.1...v14.3.0`
+
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://codeberg.org/vueuse/vueuse/issues/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://codeberg.org/vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://codeberg.org/vueuse/vueuse/issues/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://codeberg.org/vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://codeberg.org/vueuse/vueuse/pulls/5300" rel="nofollow noreferrer noopener" target="_blank">#5300</a> <a href="https://codeberg.org/vueuse/vueuse/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://codeberg.org/vueuse/vueuse/pulls/5285" rel="nofollow noreferrer noopener" target="_blank">#5285</a> <a href="https://codeberg.org/vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+</ul>
+<p><a href="https://codeberg.org/vueuse/vueuse/compare/v14.2.1...v14.3.0" rel="nofollow noreferrer noopener" target="_blank">v14.2.1...v14.3.0</a></p>
+`)
+    })
+
+    test('tangled', async () => {
+      const info = createTangledRepoInfo('vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://tangled.org/vueuse/vueuse/issues/5295 https://tangled.org/vueuse/vueuse/commit/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://tangled.org/vueuse/vueuse/issues/5306 https://tangled.org/vueuse/vueuse/commit/b0c51c27
+- createReusableTemplate: Add support for specifying component names  -  by wbolster in https://tangled.org/vueuse/vueuse/pulls/5300 https://tangled.org/vueuse/vueuse/commit/ea29d5cb
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://tangled.org/vueuse/vueuse/pulls/5285 https://tangled.org/vueuse/vueuse/commit/ac2ef95d
+  
+https://tangled.org/vueuse/vueuse/compare/v14.2.1...v14.3.0`
+
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://tangled.org/vueuse/vueuse/issues/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://tangled.org/vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://tangled.org/vueuse/vueuse/issues/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://tangled.org/vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://tangled.org/vueuse/vueuse/pulls/5300" rel="nofollow noreferrer noopener" target="_blank">#5300</a> <a href="https://tangled.org/vueuse/vueuse/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://tangled.org/vueuse/vueuse/pulls/5285" rel="nofollow noreferrer noopener" target="_blank">#5285</a> <a href="https://tangled.org/vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+</ul>
+<p><a href="https://tangled.org/vueuse/vueuse/compare/v14.2.1...v14.3.0" rel="nofollow noreferrer noopener" target="_blank">v14.2.1...v14.3.0</a></p>
+`)
+    })
+
+    test('gitea', async () => {
+      const info = createGiteaRepoInfo('gitea.com', 'vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://gitea.com/vueuse/vueuse/issues/5295 https://gitea.com/vueuse/vueuse/commit/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://gitea.com/vueuse/vueuse/issues/5306 https://gitea.com/vueuse/vueuse/commit/b0c51c27
+- createReusableTemplate: Add support for specifying component names  -  by wbolster in https://gitea.com/vueuse/vueuse/pulls/5300 https://gitea.com/vueuse/vueuse/commit/ea29d5cb
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://gitea.com/vueuse/vueuse/pulls/5285 https://gitea.com/vueuse/vueuse/commit/ac2ef95d
+  
+https://gitea.com/vueuse/vueuse/compare/v14.2.1...v14.3.0`
+
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://gitea.com/vueuse/vueuse/issues/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://gitea.com/vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://gitea.com/vueuse/vueuse/issues/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://gitea.com/vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://gitea.com/vueuse/vueuse/pulls/5300" rel="nofollow noreferrer noopener" target="_blank">#5300</a> <a href="https://gitea.com/vueuse/vueuse/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://gitea.com/vueuse/vueuse/pulls/5285" rel="nofollow noreferrer noopener" target="_blank">#5285</a> <a href="https://gitea.com/vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+</ul>
+<p><a href="https://gitea.com/vueuse/vueuse/compare/v14.2.1...v14.3.0" rel="nofollow noreferrer noopener" target="_blank">v14.2.1...v14.3.0</a></p>
+`)
+    })
+
+    test('bitbucket', async () => {
+      const info = createBitbucketRepoInfo('vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://bitbucket.org/vueuse/vueuse/pull-requests/5295 https://bitbucket.org/vueuse/vueuse/commits/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://bitbucket.org/vueuse/vueuse/pull-requests/5306 https://bitbucket.org/vueuse/vueuse/commits/b0c51c27
+- createReusableTemplate: Add support for specifying component names  -  by wbolster in https://bitbucket.org/vueuse/vueuse/pull-requests/5300 https://bitbucket.org/vueuse/vueuse/commits/ea29d5cb
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://bitbucket.org/vueuse/vueuse/pull-requests/5285 https://bitbucket.org/vueuse/vueuse/commits/ac2ef95d`
+      // compare is not supported
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://bitbucket.org/vueuse/vueuse/pull-requests/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://bitbucket.org/vueuse/vueuse/commits/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://bitbucket.org/vueuse/vueuse/pull-requests/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://bitbucket.org/vueuse/vueuse/commits/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://bitbucket.org/vueuse/vueuse/pull-requests/5300" rel="nofollow noreferrer noopener" target="_blank">#5300</a> <a href="https://bitbucket.org/vueuse/vueuse/commits/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://bitbucket.org/vueuse/vueuse/pull-requests/5285" rel="nofollow noreferrer noopener" target="_blank">#5285</a> <a href="https://bitbucket.org/vueuse/vueuse/commits/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+</ul>
+`)
+    })
+
+    test('sourcehut', async () => {
+      const info = createSourcehutRepoInfo('~vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://todo.sr.ht/~vueuse/vueuse/5295 https://git.sr.ht/~vueuse/vueuse/commit/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://todo.sr.ht/~vueuse/vueuse/5306 https://git.sr.ht/~vueuse/vueuse/commit/b0c51c27
+- createReusableTemplate: Add support for specifying component names  -  by wbolster in https://todo.sr.ht/~vueuse/vueuse/5300 https://git.sr.ht/~vueuse/vueuse/commit/ea29d5cb
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://todo.sr.ht/~vueuse/vueuse/5285 https://git.sr.ht/~vueuse/vueuse/commit/ac2ef95d`
+
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://todo.sr.ht/~vueuse/vueuse/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://git.sr.ht/~vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://todo.sr.ht/~vueuse/vueuse/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://git.sr.ht/~vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://todo.sr.ht/~vueuse/vueuse/5300" rel="nofollow noreferrer noopener" target="_blank">#5300</a> <a href="https://git.sr.ht/~vueuse/vueuse/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://todo.sr.ht/~vueuse/vueuse/5285" rel="nofollow noreferrer noopener" target="_blank">#5285</a> <a href="https://git.sr.ht/~vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+</ul>
+`)
+    })
+
+    test('gitee', async () => {
+      const info = createGiteeRepoInfo('vueuse', 'vueuse')
+      const renderer = await changelogRenderer(info)
+      // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://gitee.com/vueuse/vueuse/issues/5295 https://gitee.com/vueuse/vueuse/commit/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://gitee.com/vueuse/vueuse/issues/5306 https://gitee.com/vueuse/vueuse/commit/b0c51c27
+- createReusableTemplate: Add support for specifying component names  -  by wbolster in https://gitee.com/vueuse/vueuse/pulls/5300 https://gitee.com/vueuse/vueuse/commit/ea29d5cb
+- nuxt: Add composable variants to auto imports  -  by OrbisK in https://gitee.com/vueuse/vueuse/pulls/5285 https://gitee.com/vueuse/vueuse/commit/ac2ef95d
+  
+https://gitee.com/vueuse/vueuse/compare/v14.2.1...v14.3.0`
+
+      const result = renderer(markdown)
+      expect(result.html).toBe(`<ul>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://gitee.com/vueuse/vueuse/issues/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://gitee.com/vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://gitee.com/vueuse/vueuse/issues/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://gitee.com/vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://gitee.com/vueuse/vueuse/pulls/5300" rel="nofollow noreferrer noopener" target="_blank">!5300</a> <a href="https://gitee.com/vueuse/vueuse/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
+<li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://gitee.com/vueuse/vueuse/pulls/5285" rel="nofollow noreferrer noopener" target="_blank">!5285</a> <a href="https://gitee.com/vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
+</ul>
+<p><a href="https://gitee.com/vueuse/vueuse/compare/v14.2.1...v14.3.0" rel="nofollow noreferrer noopener" target="_blank">v14.2.1...v14.3.0</a></p>
+`)
+    })
   })
 
   it('should ignore formatted links', async () => {

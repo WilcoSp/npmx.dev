@@ -62,7 +62,11 @@ export function createGitLabRepoInfo(
   }
 }
 
-export function createTangledInfo(owner: string, repo: string, path?: string): MarkdownRepoInfo {
+export function createTangledRepoInfo(
+  owner: string,
+  repo: string,
+  path?: string,
+): MarkdownRepoInfo {
   const hostBaseUrl = 'https://tangled.org'
 
   return {
