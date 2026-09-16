@@ -1,5 +1,5 @@
 import type { MarkdownRepoInfo } from '~~/server/utils/changelog/markdown'
-import { describe, expect, it, vi, beforeAll } from 'vitest'
+import { describe, expect, it, vi, beforeAll, test } from 'vitest'
 import {
   createGithubRepoInfo,
   createGitLabRepoInfo,
@@ -553,7 +553,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 
   describe('should turn issue/pr & account into links', () => {
     // in this test we check all providers to make sure they give the correct link, other tests won't as it's almost the same test n amount of time
-    it('github', async () => {
+    test('github', async () => {
       const info = changelogMdinfo()
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
@@ -569,7 +569,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('gitlab', async () => {
+    test('gitlab', async () => {
       const info = createGitLabRepoInfo('gitlab.com', TEST_OWNER, TEST_REPO)
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
@@ -585,7 +585,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('codeberg/forgejo', async () => {
+    test('codeberg/forgejo', async () => {
       const info = createForgejoRepoInfo('codeberg.org', TEST_OWNER, TEST_REPO)
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
@@ -601,7 +601,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('tangled', async () => {
+    test('tangled', async () => {
       const info = createTangledInfo(TEST_OWNER, TEST_REPO)
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
@@ -617,7 +617,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('gitea', async () => {
+    test('gitea', async () => {
       const info = createGiteaRepoInfo('gitea.com', TEST_OWNER, TEST_REPO)
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
@@ -633,7 +633,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('bitbucket', async () => {
+    test('bitbucket', async () => {
       // for bitbucket the support is only pull requests. Jira & accounts are external and not offline resolveable
       const info = createBitbucketRepoInfo(TEST_OWNER, TEST_REPO)
       const renderer = await changelogRenderer(info)
@@ -650,7 +650,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('sourcehut', async () => {
+    test('sourcehut', async () => {
       const info = createSourcehutRepoInfo(`~${TEST_OWNER}`, TEST_REPO)
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
@@ -666,7 +666,7 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 `)
     })
 
-    it('gitee', async () => {
+    test('gitee', async () => {
       const info = createGiteeRepoInfo('test-owner', 'test-repo')
       const renderer = await changelogRenderer(info)
       // text from date-fns v4.3.0
@@ -768,20 +768,20 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 </ul>
 `)
   })
-
-  it('should turn commits into links', async () => {
-    const info = changelogMdinfo()
-    const renderer = await changelogRenderer(info)
-    // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
-    const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+  describe('should turn commits into links', () => {
+    test('github', async () => {
+      const info = changelogMdinfo()
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
 - Updated dependencies [6270b99]
 - 7fb19eb: Only add hash attributes to nodes, not to marks.
 - Release v0.14.0 36128a54
 - Empty (4cab893c)`
 
-    const result = renderer(markdown)
+      const result = renderer(markdown)
 
-    expect(result.html).toBe(`<ul>
+      expect(result.html).toBe(`<ul>
 <li><a href="https://github.com/test-owner/test-repo/commit/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
 <li>Updated dependencies [<a href="https://github.com/test-owner/test-repo/commit/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
 <li><a href="https://github.com/test-owner/test-repo/commit/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
@@ -789,6 +789,161 @@ describe('Turn plaintext #isssue/#pr, !pr, @account & commmit into links', () =>
 <li>Empty (<a href="https://github.com/test-owner/test-repo/commit/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
 </ul>
 `)
+    })
+
+    test('gitlab', async () => {
+      const info = createGitLabRepoInfo('gitlab.com', TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+- Updated dependencies [6270b99]
+- 7fb19eb: Only add hash attributes to nodes, not to marks.
+- Release v0.14.0 36128a54
+- Empty (4cab893c)`
+
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li><a href="https://gitlab.com/test-owner/test-repo/-/commit/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
+<li>Updated dependencies [<a href="https://gitlab.com/test-owner/test-repo/-/commit/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
+<li><a href="https://gitlab.com/test-owner/test-repo/-/commit/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
+<li>Release v0.14.0 <a href="https://gitlab.com/test-owner/test-repo/-/commit/36128a54" rel="nofollow noreferrer noopener" target="_blank">36128a5</a></li>
+<li>Empty (<a href="https://gitlab.com/test-owner/test-repo/-/commit/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
+</ul>
+`)
+    })
+
+    test('codeberg/forgejo', async () => {
+      const info = createForgejoRepoInfo('codeberg.org', TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+- Updated dependencies [6270b99]
+- 7fb19eb: Only add hash attributes to nodes, not to marks.
+- Release v0.14.0 36128a54
+- Empty (4cab893c)`
+
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li><a href="https://codeberg.org/test-owner/test-repo/commit/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
+<li>Updated dependencies [<a href="https://codeberg.org/test-owner/test-repo/commit/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
+<li><a href="https://codeberg.org/test-owner/test-repo/commit/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
+<li>Release v0.14.0 <a href="https://codeberg.org/test-owner/test-repo/commit/36128a54" rel="nofollow noreferrer noopener" target="_blank">36128a5</a></li>
+<li>Empty (<a href="https://codeberg.org/test-owner/test-repo/commit/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
+</ul>
+`)
+    })
+
+    test('tangled', async () => {
+      const info = createTangledInfo(TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+- Updated dependencies [6270b99]
+- 7fb19eb: Only add hash attributes to nodes, not to marks.
+- Release v0.14.0 36128a54
+- Empty (4cab893c)`
+
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li><a href="https://tangled.org/test-owner/test-repo/commit/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
+<li>Updated dependencies [<a href="https://tangled.org/test-owner/test-repo/commit/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
+<li><a href="https://tangled.org/test-owner/test-repo/commit/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
+<li>Release v0.14.0 <a href="https://tangled.org/test-owner/test-repo/commit/36128a54" rel="nofollow noreferrer noopener" target="_blank">36128a5</a></li>
+<li>Empty (<a href="https://tangled.org/test-owner/test-repo/commit/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
+</ul>
+`)
+    })
+
+    test('gitea', async () => {
+      const info = createGiteaRepoInfo('gitea.com', TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+- Updated dependencies [6270b99]
+- 7fb19eb: Only add hash attributes to nodes, not to marks.
+- Release v0.14.0 36128a54
+- Empty (4cab893c)`
+
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li><a href="https://gitea.com/test-owner/test-repo/commit/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
+<li>Updated dependencies [<a href="https://gitea.com/test-owner/test-repo/commit/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
+<li><a href="https://gitea.com/test-owner/test-repo/commit/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
+<li>Release v0.14.0 <a href="https://gitea.com/test-owner/test-repo/commit/36128a54" rel="nofollow noreferrer noopener" target="_blank">36128a5</a></li>
+<li>Empty (<a href="https://gitea.com/test-owner/test-repo/commit/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
+</ul>
+`)
+    })
+
+    test('bitbucket', async () => {
+      const info = createBitbucketRepoInfo(TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+- Updated dependencies [6270b99]
+- 7fb19eb: Only add hash attributes to nodes, not to marks.
+- Release v0.14.0 36128a54
+- Empty (4cab893c)`
+
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li><a href="https://bitbucket.org/test-owner/test-repo/commits/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
+<li>Updated dependencies [<a href="https://bitbucket.org/test-owner/test-repo/commits/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
+<li><a href="https://bitbucket.org/test-owner/test-repo/commits/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
+<li>Release v0.14.0 <a href="https://bitbucket.org/test-owner/test-repo/commits/36128a54" rel="nofollow noreferrer noopener" target="_blank">36128a5</a></li>
+<li>Empty (<a href="https://bitbucket.org/test-owner/test-repo/commits/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
+</ul>
+`)
+    })
+
+    test('sourcehut', async () => {
+      const info = createSourcehutRepoInfo(`~${TEST_OWNER}`, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+- Updated dependencies [6270b99]
+- 7fb19eb: Only add hash attributes to nodes, not to marks.
+- Release v0.14.0 36128a54
+- Empty (4cab893c)`
+
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li><a href="https://git.sr.ht/~test-owner/test-repo/commit/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
+<li>Updated dependencies [<a href="https://git.sr.ht/~test-owner/test-repo/commit/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
+<li><a href="https://git.sr.ht/~test-owner/test-repo/commit/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
+<li>Release v0.14.0 <a href="https://git.sr.ht/~test-owner/test-repo/commit/36128a54" rel="nofollow noreferrer noopener" target="_blank">36128a5</a></li>
+<li>Empty (<a href="https://git.sr.ht/~test-owner/test-repo/commit/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
+</ul>
+`)
+    })
+
+    test('gitee', async () => {
+      const info = createGiteeRepoInfo(TEST_OWNER, TEST_REPO)
+      const renderer = await changelogRenderer(info)
+      // from tiptap 3.27.1, 3.27.0, 3.26.0 & npmx 0.14.0 & 0.14.1
+      const markdown = `- a16901d: Fix ordered list parsing so under-indented continuation lines preserve their first character
+- Updated dependencies [6270b99]
+- 7fb19eb: Only add hash attributes to nodes, not to marks.
+- Release v0.14.0 36128a54
+- Empty (4cab893c)`
+
+      const result = renderer(markdown)
+
+      expect(result.html).toBe(`<ul>
+<li><a href="https://gitee.com/test-owner/test-repo/commit/a16901d" rel="nofollow noreferrer noopener" target="_blank">a16901d</a>: Fix ordered list parsing so under-indented continuation lines preserve their first character</li>
+<li>Updated dependencies [<a href="https://gitee.com/test-owner/test-repo/commit/6270b99" rel="nofollow noreferrer noopener" target="_blank">6270b99</a>]</li>
+<li><a href="https://gitee.com/test-owner/test-repo/commit/7fb19eb" rel="nofollow noreferrer noopener" target="_blank">7fb19eb</a>: Only add hash attributes to nodes, not to marks.</li>
+<li>Release v0.14.0 <a href="https://gitee.com/test-owner/test-repo/commit/36128a54" rel="nofollow noreferrer noopener" target="_blank">36128a5</a></li>
+<li>Empty (<a href="https://gitee.com/test-owner/test-repo/commit/4cab893c" rel="nofollow noreferrer noopener" target="_blank">4cab893</a>)</li>
+</ul>
+`)
+    })
   })
 
   it('should not format an issue/pr into a commit', async () => {
