@@ -1154,8 +1154,8 @@ https://gitea.com/vueuse/vueuse/compare/v14.2.1...v14.3.0`
       const info = createGiteeRepoInfo('vueuse', 'vueuse')
       const renderer = await changelogRenderer(info)
       // from vueuse 14.3.0 (last 2 links changed from `issues` -> `pull`)
-      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://gitee.com/vueuse/vueuse/issues/5295 https://gitee.com/vueuse/vueuse/commit/b1688bd2
-- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://gitee.com/vueuse/vueuse/issues/5306 https://gitee.com/vueuse/vueuse/commit/b0c51c27
+      const markdown = `- Expose pointer event onLongPress  -  by mrcwbr in https://gitee.com/vueuse/vueuse/issues/ImRodry https://gitee.com/vueuse/vueuse/commit/b1688bd2
+- createInjectionState: Non-undefined return when default specified  -  by Laupetin in https://gitee.com/vueuse/vueuse/issues/I9T5LW https://gitee.com/vueuse/vueuse/commit/b0c51c27
 - createReusableTemplate: Add support for specifying component names  -  by wbolster in https://gitee.com/vueuse/vueuse/pulls/5300 https://gitee.com/vueuse/vueuse/commit/ea29d5cb
 - nuxt: Add composable variants to auto imports  -  by OrbisK in https://gitee.com/vueuse/vueuse/pulls/5285 https://gitee.com/vueuse/vueuse/commit/ac2ef95d
   
@@ -1163,8 +1163,8 @@ https://gitee.com/vueuse/vueuse/compare/v14.2.1...v14.3.0`
 
       const result = renderer(markdown)
       expect(result.html).toBe(`<ul>
-<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://gitee.com/vueuse/vueuse/issues/5295" rel="nofollow noreferrer noopener" target="_blank">#5295</a> <a href="https://gitee.com/vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
-<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://gitee.com/vueuse/vueuse/issues/5306" rel="nofollow noreferrer noopener" target="_blank">#5306</a> <a href="https://gitee.com/vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
+<li>Expose pointer event onLongPress  -  by mrcwbr in <a href="https://gitee.com/vueuse/vueuse/issues/ImRodry" rel="nofollow noreferrer noopener" target="_blank">#ImRodry</a> <a href="https://gitee.com/vueuse/vueuse/commit/b1688bd2" rel="nofollow noreferrer noopener" target="_blank">b1688bd</a></li>
+<li>createInjectionState: Non-undefined return when default specified  -  by Laupetin in <a href="https://gitee.com/vueuse/vueuse/issues/I9T5LW" rel="nofollow noreferrer noopener" target="_blank">#I9T5LW</a> <a href="https://gitee.com/vueuse/vueuse/commit/b0c51c27" rel="nofollow noreferrer noopener" target="_blank">b0c51c2</a></li>
 <li>createReusableTemplate: Add support for specifying component names  -  by wbolster in <a href="https://gitee.com/vueuse/vueuse/pulls/5300" rel="nofollow noreferrer noopener" target="_blank">!5300</a> <a href="https://gitee.com/vueuse/vueuse/commit/ea29d5cb" rel="nofollow noreferrer noopener" target="_blank">ea29d5c</a></li>
 <li>nuxt: Add composable variants to auto imports  -  by OrbisK in <a href="https://gitee.com/vueuse/vueuse/pulls/5285" rel="nofollow noreferrer noopener" target="_blank">!5285</a> <a href="https://gitee.com/vueuse/vueuse/commit/ac2ef95d" rel="nofollow noreferrer noopener" target="_blank">ac2ef95</a></li>
 </ul>
