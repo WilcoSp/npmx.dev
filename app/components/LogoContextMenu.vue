@@ -72,6 +72,7 @@ function goToBrand() {
 }
 
 function openNewTab() {
+  close()
   window.open('/', '_blank')
 }
 
