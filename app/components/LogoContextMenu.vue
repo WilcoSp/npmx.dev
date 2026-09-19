@@ -107,7 +107,7 @@ onKeyStroke('Escape', () => {
           <ButtonBase
             role="menuitem"
             size="sm"
-            class="text-start gap-x-2 border-none !px-3 !py-1.5 hover:text-accent"
+            class="text-start gap-x-2 border-none !px-3 !py-1.5 hover:text-accent focus:text-accent"
             :classicon="copied ? 'i-lucide:check text-badge-green' : 'i-lucide:copy'"
             @click="copySvg"
           >
@@ -116,7 +116,7 @@ onKeyStroke('Escape', () => {
           <ButtonBase
             role="menuitem"
             size="sm"
-            class="text-start gap-x-2 border-none !px-3 !py-1.5 hover:text-accent"
+            class="text-start gap-x-2 border-none !px-3 !py-1.5 hover:text-accent focus:text-accent"
             classicon="i-lucide:palette"
             @click="goToBrand"
           >
@@ -125,7 +125,7 @@ onKeyStroke('Escape', () => {
           <ButtonBase
             role="menuitem"
             size="sm"
-            class="text-start gap-x-2 border-none !px-3 !py-1.5 hover:text-accent"
+            class="text-start gap-x-2 border-none !px-3 !py-1.5 hover:text-accent focus:text-accent"
             classicon="i-lucide:external-link"
             @click="openNewTab"
           >
