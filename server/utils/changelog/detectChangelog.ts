@@ -16,23 +16,7 @@ import * as v from 'valibot'
 
 type SafeResult<R, E = Error> = [R, null] | [null, E]
 
-const CACHE_OPTIONS_CHECK_RELEASE: Parameters<
-  typeof defineCachedFunction<any, [ref: RepoRef, directory?: string | undefined]>
->[1] = {
-  swr: true,
-  maxAge: CACHE_MAX_AGE_ONE_HOUR,
-  staleMaxAge: CACHE_MAX_AGE_ONE_MINUTE * 30,
-  group: 'changelog:checkLatestReleaseV1',
-  // name is defined at the function as the provider
-  shouldBypassCache: () => import.meta.dev,
-  getKey: (ref, directory) => {
-    const base = [ref.host ?? '', ref.owner, ref.repo]
-    if (directory) {
-      base.push(directory.replaceAll('/', '_'))
-    }
-    return base.join(':')
-  },
-}
+const TIMEOUT = 15_000
 
 /**
  * Detect whether changelogs/releases are available for this package
@@ -113,36 +97,68 @@ const CHANGELOG_FILENAMES = ['changelog', 'releases', 'changes', 'history', 'new
   })
   .flat(3)
 
-async function checkChangelogFile(
-  ref: RepoRef,
-  directory?: string,
-): Promise<ChangelogMarkdownInfo | false> {
-  const baseUrl = getBaseFileUrl(ref)
-  if (!baseUrl) {
-    return false
-  }
-
-  if (directory) {
-    const inDir = await checkFiles(ref, baseUrl, directory)
-    if (inDir) {
-      return inDir
+const checkChangelogFile = defineCachedFunction(
+  async function (ref: RepoRef, directory?: string): Promise<ChangelogMarkdownInfo | false> {
+    const baseUrl = getBaseFileUrl(ref)
+    if (!baseUrl) {
+      return false
     }
-  }
-  return checkFiles(ref, baseUrl)
-}
+
+    if (directory) {
+      const inDir = await checkFiles(ref, baseUrl, directory)
+      if (inDir) {
+        return inDir
+      }
+    }
+    return checkFiles(ref, baseUrl)
+  },
+  {
+    swr: true,
+    maxAge: CACHE_MAX_AGE_ONE_HOUR,
+    staleMaxAge: CACHE_MAX_AGE_ONE_MINUTE * 30,
+    name: 'checkChangelogFileV1',
+    shouldBypassCache: () => import.meta.dev,
+    getKey: (ref, directory) => {
+      const base = [ref.provider, ref.host ?? '', ref.owner, ref.repo]
+      if (directory) {
+        base.push(directory.replaceAll('/', '_'))
+      }
+      return base.join(':')
+    },
+  },
+)
 
 async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
   for (const fileName of CHANGELOG_FILENAMES) {
-    const exists = await fetch(resolveURL(baseUrl.raw, dir ?? '', fileName), {
+    //
+    const exists = await $fetch(resolveURL(baseUrl.raw, dir ?? '', fileName), {
       headers: {
         // GitHub API requires User-Agent
         'User-Agent': 'npmx.dev',
       },
-
+      timeout: TIMEOUT,
       method: ref.provider != 'tangled' ? 'HEAD' : 'GET', // we just need to know if it exists or not, tangled doesn't support HEAD
     })
-      .then(r => r.ok)
-      .catch(() => false)
+      .then(() => true)
+      .catch(e => {
+        if (e instanceof FetchError) {
+          // early throw in case the providers is having troubles, is rate limiting us or doesn't allow us
+          // in case of not being available or timeout we also early return as the provider might struggle
+          if (e.statusCode == null || e.statusCode >= 500) {
+            throw e
+          }
+          switch (e.statusCode) {
+            case 401:
+            case 403:
+            case 429:
+            case undefined:
+            case null:
+              throw e
+          }
+        }
+
+        return false
+      })
     const owner = ref.provider == 'gitlab' ? encodeURIComponent(ref.owner) : ref.owner
     if (exists) {
       return {
@@ -160,6 +176,24 @@ async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
 
 // releases
 
+const CACHE_OPTIONS_CHECK_RELEASE: Parameters<
+  typeof defineCachedFunction<any, [ref: RepoRef, directory?: string | undefined]>
+>[1] = {
+  swr: true,
+  maxAge: CACHE_MAX_AGE_ONE_HOUR,
+  staleMaxAge: CACHE_MAX_AGE_ONE_MINUTE * 30,
+  group: 'changelog:checkLatestReleaseV1',
+  // name is defined at the function as the provider
+  shouldBypassCache: () => import.meta.dev,
+  getKey: (ref, directory) => {
+    const base = [ref.host ?? '', ref.owner, ref.repo]
+    if (directory) {
+      base.push(directory.replaceAll('/', '_'))
+    }
+    return base.join(':')
+  },
+}
+
 const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()(.*?)(?=\))/i
 const ROOT_ONLY_REGEX = /^\/?[^/]+$/
 
@@ -175,6 +209,7 @@ async function checkLatestGithubRelease(
         headers: {
           'User-Agent': 'npmx.dev',
         },
+        timeout: TIMEOUT,
       },
     )
 
@@ -245,6 +280,7 @@ const checkLatestForgejoRelease = defineCachedFunction(
           'User-Agent': 'npmx.dev',
           'accept': 'application/json',
         },
+        timeout: TIMEOUT,
       },
     )
 
@@ -301,6 +337,7 @@ const checkLatestGitlabRelease = defineCachedFunction(
           'User-Agent': 'npmx.dev',
           'accept': 'application/json',
         },
+        timeout: TIMEOUT,
       },
     )
     const release = v.parse(GitlabReleaseSchame, response)
@@ -357,6 +394,7 @@ const checkLatestGiteaRelease = defineCachedFunction(
           'User-Agent': 'npmx.dev',
           'accept': 'application/json',
         },
+        timeout: TIMEOUT,
       },
     )
 
@@ -409,6 +447,7 @@ const checkLatestGiteeRelease = defineCachedFunction(
           'User-Agent': 'npmx.dev',
           'accept': 'application/json',
         },
+        timeout: TIMEOUT,
       },
     )
 
