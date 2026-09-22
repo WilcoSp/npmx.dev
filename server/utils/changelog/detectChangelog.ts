@@ -116,7 +116,7 @@ const checkChangelogFile = defineCachedFunction(
     swr: true,
     maxAge: CACHE_MAX_AGE_ONE_HOUR,
     staleMaxAge: CACHE_MAX_AGE_ONE_MINUTE * 30,
-    name: 'checkChangelogFileV1',
+    name: 'checkChangelogFile:v1',
     shouldBypassCache: () => import.meta.dev,
     getKey: (ref, directory) => {
       const base = [ref.provider, ref.host ?? '', ref.owner, ref.repo]
@@ -182,7 +182,7 @@ const CACHE_OPTIONS_CHECK_RELEASE: Parameters<
   swr: true,
   maxAge: CACHE_MAX_AGE_ONE_HOUR,
   staleMaxAge: CACHE_MAX_AGE_ONE_MINUTE * 30,
-  group: 'changelog:checkLatestReleaseV1',
+  group: 'changelog:checkLatestRelease:v1',
   // name is defined at the function as the provider
   shouldBypassCache: () => import.meta.dev,
   getKey: (ref, directory) => {
