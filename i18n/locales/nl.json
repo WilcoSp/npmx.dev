@@ -686,7 +686,7 @@
     "timeline": {
       "load_more": "Laad meer",
       "load_error": "De tijdlijn kan niet worden geladen. Probeer het later nog eens.",
-      "no_stable_versions": "EN TEXT TO REPLACE: No stable versions to show. Turn off “stable only” to include pre-releases.",
+      "no_stable_versions": "Er zijn geen stabiele versies om weer te geven. Schakel ‘alleen stabiele versies’ uit om Ontwikkelversies mee te nemen.",
       "size_increase": "De installatiegrootte is toegenomen met {percent}% ({size})",
       "size_decrease": "De installatiegrootte is afgenomen met {percent}% ({size})",
       "dep_increase": "{count} dependency toegevoegd | {count} dependencies toegevoegd",
