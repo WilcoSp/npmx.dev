@@ -16,24 +16,6 @@ import * as v from 'valibot'
 
 type SafeResult<R, E = Error> = [R, null] | [null, E]
 
-const CACHE_OPTIONS_CHECK_RELEASE: Parameters<
-  typeof defineCachedFunction<any, [ref: RepoRef, directory?: string | undefined]>
->[1] = {
-  swr: true,
-  maxAge: CACHE_MAX_AGE_ONE_HOUR,
-  staleMaxAge: CACHE_MAX_AGE_ONE_MINUTE * 30,
-  group: 'changelog:checkLatestReleaseV1',
-  // name is defined at the function as the provider
-  shouldBypassCache: () => import.meta.dev,
-  getKey: (ref, directory) => {
-    const base = [ref.host ?? '', ref.owner, ref.repo]
-    if (directory) {
-      base.push(directory.replaceAll('/', '_'))
-    }
-    return base.join(':')
-  },
-}
-
 /**
  * Detect whether changelogs/releases are available for this package
  *
@@ -45,7 +27,7 @@ export async function detectChangelog(pkg: ExtendedPackageJson) {
     return false
   }
 
-  const { directory } = repoRef
+  const directory = typeof pkg.repository === 'object' ? pkg.repository.directory : undefined
 
   const [releases, releasesError] = await checkReleases(repoRef, directory)
   if (releases) {
@@ -75,28 +57,22 @@ async function checkReleases(
   ref: RepoRef,
   directory?: string,
 ): Promise<SafeResult<ChangelogInfo | false>> {
-  try {
-    switch (ref.provider) {
-      case 'github': {
-        return [await checkLatestGithubRelease(ref, directory), null]
-      }
-      case 'codeberg':
-      case 'forgejo': {
-        return [await checkLatestForgejoRelease(ref, directory), null]
-      }
-      case 'gitlab': {
-        return [await checkLatestGitlabRelease(ref, directory), null]
-      }
-      case 'gitea': {
-        return [await checkLatestGiteaRelease(ref, directory), null]
-      }
-      case 'gitee': {
-        return [await checkLatestGiteeRelease(ref, directory), null]
-      }
+  switch (ref.provider) {
+    case 'github': {
+      return checkLatestGithubRelease(ref, directory)
     }
-  } catch (error) {
-    if (error instanceof Error) {
-      return [null, error]
+    case 'codeberg':
+    case 'forgejo': {
+      return checkLatestForgejoRelease(ref, directory)
+    }
+    case 'gitlab': {
+      return checkLatestGitlabRelease(ref, directory)
+    }
+    case 'gitea': {
+      return checkLatestGiteaRelease(ref, directory)
+    }
+    case 'gitee': {
+      return checkLatestGiteeRelease(ref, directory)
     }
   }
   return [false, null]
@@ -163,11 +139,10 @@ async function checkFiles(ref: RepoRef, baseUrl: RepoFileUrl, dir?: string) {
 const MD_REGEX = /(?<=\[.*?(changelog|releases|changes|history|news)\.md.*?\]\()(.*?)(?=\))/i
 const ROOT_ONLY_REGEX = /^\/?[^/]+$/
 
-// this function doesn't use `defineCachedFunction` due to ungh also caching the results from github and I don't want to many cache layers
 async function checkLatestGithubRelease(
   ref: RepoRef,
   directory?: string,
-): Promise<ChangelogInfo | false> {
+): Promise<SafeResult<ChangelogInfo | false>> {
   try {
     const response = await $fetch(
       `https://ungh.cc/repos/${ref.owner}/${ref.repo}/releases/latest`,
@@ -184,12 +159,15 @@ async function checkLatestGithubRelease(
 
     // if no changelog.md or the url doesn't contain /blob/
     if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
-      return {
-        provider: ref.provider,
-        type: 'release',
-        repo: `${ref.owner}/${ref.repo}`,
-        link: `https://github.com/${ref.owner}/${ref.repo}/releases`,
-      }
+      return [
+        {
+          provider: ref.provider,
+          type: 'release',
+          repo: `${ref.owner}/${ref.repo}`,
+          link: `https://github.com/${ref.owner}/${ref.repo}/releases`,
+        },
+        null,
+      ]
     }
 
     const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
@@ -202,40 +180,49 @@ async function checkLatestGithubRelease(
         ROOT_ONLY_REGEX.test(path)
       )
     ) {
-      return false
+      return [false, null]
     }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
-    }
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
+      },
+      null,
+    ]
   } catch (e) {
     if (!(e instanceof Error)) {
       // shouldn't be reachable, but is here for type safety
-      return false
+      return [false, null]
     }
     if (e instanceof FetchError) {
       if (e.statusCode == 404) {
-        return false
+        return [false, null]
       }
       if (e.statusCode === 403 || e.statusCode === 429) {
-        throw createError({
-          statusCode: 502,
-          statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
-        })
+        return [
+          null,
+          createError({
+            statusCode: 502,
+            statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
+          }),
+        ]
       }
     }
     console.error('[checkLatestGithubRelease] unexpected error: ', e)
-    throw e
+    return [null, e]
   }
 }
 
 // codeberg / forgejo
 
-const checkLatestForgejoRelease = defineCachedFunction(
-  async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
+async function checkLatestForgejoRelease(
+  ref: RepoRef,
+  directory?: string,
+): Promise<SafeResult<ChangelogInfo | false>> {
+  try {
     const host = ref.host ?? 'codeberg.org'
 
     const response = await $fetch(
@@ -254,13 +241,16 @@ const checkLatestForgejoRelease = defineCachedFunction(
 
     // /src/branch/ can be similar to /blob/
     if (!matchedChangelog || !matchedChangelog.includes('/src/branch/')) {
-      return {
-        type: 'release',
-        link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
-        provider: ref.provider,
-        repo: `${ref.owner}/${ref.repo}`,
-        host: ref.host,
-      }
+      return [
+        {
+          type: 'release',
+          link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
+          provider: ref.provider,
+          repo: `${ref.owner}/${ref.repo}`,
+          host: ref.host,
+        },
+        null,
+      ]
     }
 
     const path = matchedChangelog.replace(/^.*\/src\/branch\/[^/]+\//i, '')
@@ -271,26 +261,33 @@ const checkLatestForgejoRelease = defineCachedFunction(
         ROOT_ONLY_REGEX.test(path)
       )
     ) {
-      return false
+      return [false, null] as const
     }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
-      host: ref.host,
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
+        host: ref.host,
+      },
+      null,
+    ]
+  } catch (e) {
+    if (e instanceof Error) {
+      return [null, e]
     }
-  },
-  {
-    name: 'forgejo',
-    ...CACHE_OPTIONS_CHECK_RELEASE,
-  },
-)
+  }
+  return [false, null]
+}
 
 // gitlab
-const checkLatestGitlabRelease = defineCachedFunction(
-  async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
+async function checkLatestGitlabRelease(
+  ref: RepoRef,
+  directory?: string,
+): Promise<SafeResult<ChangelogInfo | false>> {
+  try {
     const host = ref.host ?? 'gitlab.com'
     const repoPath = encodeURIComponent(`${ref.owner}/${ref.repo}`)
 
@@ -308,14 +305,17 @@ const checkLatestGitlabRelease = defineCachedFunction(
     const matchedChangelog = release.description?.match(MD_REGEX)?.at(0)
 
     if (!matchedChangelog || !matchedChangelog.includes('/-/blob/')) {
-      return {
-        type: 'release',
-        // I encode both just to be sure
-        link: `https://${host}/${ref.owner}/${ref.repo}/-/releases`,
-        provider: ref.provider,
-        repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
-        host: ref.host,
-      }
+      return [
+        {
+          type: 'release',
+          // I encode both just to be sure
+          link: `https://${host}/${ref.owner}/${ref.repo}/-/releases`,
+          provider: ref.provider,
+          repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
+          host: ref.host,
+        },
+        null,
+      ]
     }
 
     const path = matchedChangelog.replace(/^.*\/-\/blob\/[^/]+\//i, '')
@@ -327,27 +327,34 @@ const checkLatestGitlabRelease = defineCachedFunction(
         ROOT_ONLY_REGEX.test(path)
       )
     ) {
-      return false
+      return [false, null] as const
     }
 
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
-      link: matchedChangelog,
-      host: ref.host,
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
+        link: matchedChangelog,
+        host: ref.host,
+      },
+      null,
+    ]
+  } catch (e) {
+    if (e instanceof Error) {
+      return [null, e]
     }
-  },
-  {
-    name: 'gitlab',
-    ...CACHE_OPTIONS_CHECK_RELEASE,
-  },
-)
+  }
+  return [false, null]
+}
 
 // gitea
-const checkLatestGiteaRelease = defineCachedFunction(
-  async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
+async function checkLatestGiteaRelease(
+  ref: RepoRef,
+  directory?: string,
+): Promise<SafeResult<ChangelogInfo | false>> {
+  try {
     const host = ref.host ?? 'gitea.com'
 
     const response = await $fetch(
@@ -366,13 +373,16 @@ const checkLatestGiteaRelease = defineCachedFunction(
 
     // /src/branch/ can be similar to /blob/
     if (!matchedChangelog || !matchedChangelog.includes('/src/branch/')) {
-      return {
-        type: 'release',
-        link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
-        provider: ref.provider,
-        repo: `${ref.owner}/${ref.repo}`,
-        host: ref.host,
-      }
+      return [
+        {
+          type: 'release',
+          link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
+          provider: ref.provider,
+          repo: `${ref.owner}/${ref.repo}`,
+          host: ref.host,
+        },
+        null,
+      ]
     }
 
     const path = matchedChangelog.replace(/^.*\/src\/branch\/[^/]+\//i, '')
@@ -383,25 +393,32 @@ const checkLatestGiteaRelease = defineCachedFunction(
         ROOT_ONLY_REGEX.test(path)
       )
     ) {
-      return false
+      return [false, null] as const
     }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
-      host: ref.host,
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
+        host: ref.host,
+      },
+      null,
+    ]
+  } catch (e) {
+    if (e instanceof Error) {
+      return [null, e]
     }
-  },
-  {
-    name: 'Gitea',
-    ...CACHE_OPTIONS_CHECK_RELEASE,
-  },
-)
+  }
+  return [false, null]
+}
 
-const checkLatestGiteeRelease = defineCachedFunction(
-  async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
+async function checkLatestGiteeRelease(
+  ref: RepoRef,
+  directory?: string,
+): Promise<SafeResult<ChangelogInfo | false>> {
+  try {
     const response = await $fetch(
       `https://gitee.com/api/v5/repos/${ref.owner}/${ref.repo}/releases/latest`,
       {
@@ -418,12 +435,15 @@ const checkLatestGiteeRelease = defineCachedFunction(
 
     // if no changelog.md or the url doesn't contain /blob/
     if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
-      return {
-        provider: ref.provider,
-        type: 'release',
-        repo: `${ref.owner}/${ref.repo}`,
-        link: `https://gitee.com/${ref.owner}/${ref.repo}/releases`,
-      }
+      return [
+        {
+          provider: ref.provider,
+          type: 'release',
+          repo: `${ref.owner}/${ref.repo}`,
+          link: `https://gitee.com/${ref.owner}/${ref.repo}/releases`,
+        },
+        null,
+      ]
     }
 
     const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
@@ -436,18 +456,22 @@ const checkLatestGiteeRelease = defineCachedFunction(
         ROOT_ONLY_REGEX.test(path)
       )
     ) {
-      return false
+      return [false, null]
     }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
+    return [
+      {
+        provider: ref.provider,
+        type: 'md',
+        path,
+        repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
+      },
+      null,
+    ]
+  } catch (e) {
+    if (e instanceof Error) {
+      return [null, e]
     }
-  },
-  {
-    name: 'gitee',
-    ...CACHE_OPTIONS_CHECK_RELEASE,
-  },
-)
+  }
+  return [false, null]
+}
