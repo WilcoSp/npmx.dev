@@ -240,7 +240,7 @@
     },
     "dependencies": {
       "title": "Dependencies",
-      "count": "No deps | 1 dep | {count} deps",
+      "count": "Geen deps | 1 dep | {count} deps",
       "filter_label": "Filter dependencies",
       "filter_placeholder": "Filter dependencies...",
       "empty": "Geen dependencies gevonden in deze package.json",
