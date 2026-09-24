@@ -271,51 +271,58 @@ async function checkLatestGithubRelease(
 
 const checkLatestForgejoRelease = defineCachedFunction(
   async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
-    const host = ref.host ?? 'codeberg.org'
+    try {
+      const host = ref.host ?? 'codeberg.org'
 
-    const response = await $fetch(
-      `https://${host}/api/v1/repos/${ref.owner}/${ref.repo}/releases/latest`,
-      {
-        headers: {
-          'User-Agent': 'npmx.dev',
-          'accept': 'application/json',
+      const response = await $fetch(
+        `https://${host}/api/v1/repos/${ref.owner}/${ref.repo}/releases/latest`,
+        {
+          headers: {
+            'User-Agent': 'npmx.dev',
+            'accept': 'application/json',
+          },
+          timeout: TIMEOUT,
         },
-        timeout: TIMEOUT,
-      },
-    )
+      )
 
-    const release = v.parse(ForgejoReleaseSchama, response)
+      const release = v.parse(ForgejoReleaseSchama, response)
 
-    const matchedChangelog = release.body.match(MD_REGEX)?.at(0)
+      const matchedChangelog = release.body.match(MD_REGEX)?.at(0)
 
-    // /src/branch/ can be similar to /blob/
-    if (!matchedChangelog || !matchedChangelog.includes('/src/branch/')) {
+      // /src/branch/ can be similar to /blob/
+      if (!matchedChangelog || !matchedChangelog.includes('/src/branch/')) {
+        return {
+          type: 'release',
+          link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
+          provider: ref.provider,
+          repo: `${ref.owner}/${ref.repo}`,
+          host: ref.host,
+        }
+      }
+
+      const path = matchedChangelog.replace(/^.*\/src\/branch\/[^/]+\//i, '')
+      if (
+        directory &&
+        !(
+          path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+          ROOT_ONLY_REGEX.test(path)
+        )
+      ) {
+        return false
+      }
       return {
-        type: 'release',
-        link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
         provider: ref.provider,
+        type: 'md',
+        path,
         repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
         host: ref.host,
       }
-    }
-
-    const path = matchedChangelog.replace(/^.*\/src\/branch\/[^/]+\//i, '')
-    if (
-      directory &&
-      !(
-        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
-        ROOT_ONLY_REGEX.test(path)
-      )
-    ) {
-      return false
-    }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
-      host: ref.host,
+    } catch (e) {
+      if (e instanceof FetchError && e.statusCode == 404) {
+        return false
+      }
+      throw e
     }
   },
   {
@@ -327,53 +334,64 @@ const checkLatestForgejoRelease = defineCachedFunction(
 // gitlab
 const checkLatestGitlabRelease = defineCachedFunction(
   async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
-    const host = ref.host ?? 'gitlab.com'
-    const repoPath = encodeURIComponent(`${ref.owner}/${ref.repo}`)
+    try {
+      const host = ref.host ?? 'gitlab.com'
+      const repoPath = encodeURIComponent(`${ref.owner}/${ref.repo}`)
 
-    const response = await $fetch(
-      `https://${host}/api/v4/projects/${repoPath}/releases/permalink/latest`,
-      {
-        headers: {
-          'User-Agent': 'npmx.dev',
-          'accept': 'application/json',
+      const response = await $fetch(
+        `https://${host}/api/v4/projects/${repoPath}/releases/permalink/latest`,
+        {
+          headers: {
+            'User-Agent': 'npmx.dev',
+            'accept': 'application/json',
+          },
+          timeout: TIMEOUT,
         },
-        timeout: TIMEOUT,
-      },
-    )
-    const release = v.parse(GitlabReleaseSchame, response)
+      )
+      const release = v.parse(GitlabReleaseSchame, response)
 
-    const matchedChangelog = release.description?.match(MD_REGEX)?.at(0)
+      const matchedChangelog = release.description?.match(MD_REGEX)?.at(0)
 
-    if (!matchedChangelog || !matchedChangelog.includes('/-/blob/')) {
+      if (!matchedChangelog || !matchedChangelog.includes('/-/blob/')) {
+        return {
+          type: 'release',
+          // I encode both just to be sure
+          link: `https://${host}/${ref.owner}/${ref.repo}/-/releases`,
+          provider: ref.provider,
+          repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
+          host: ref.host,
+        }
+      }
+
+      const path = matchedChangelog.replace(/^.*\/-\/blob\/[^/]+\//i, '')
+
+      if (
+        directory &&
+        !(
+          path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+          ROOT_ONLY_REGEX.test(path)
+        )
+      ) {
+        return false
+      }
+
       return {
-        type: 'release',
-        // I encode both just to be sure
-        link: `https://${host}/${ref.owner}/${ref.repo}/-/releases`,
         provider: ref.provider,
+        type: 'md',
+        path,
         repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
+        link: matchedChangelog,
         host: ref.host,
       }
-    }
-
-    const path = matchedChangelog.replace(/^.*\/-\/blob\/[^/]+\//i, '')
-
-    if (
-      directory &&
-      !(
-        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
-        ROOT_ONLY_REGEX.test(path)
-      )
-    ) {
-      return false
-    }
-
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${encodeURIComponent(ref.owner)}/${ref.repo}`,
-      link: matchedChangelog,
-      host: ref.host,
+    } catch (e) {
+      if (
+        e instanceof FetchError &&
+        // if a repo doesn't use releases, gitlab can sometimes also return 403, 401 is checked just in case
+        (e.statusCode == 404 || e.statusCode == 403 || e.statusCode == 401)
+      ) {
+        return false
+      }
+      throw e
     }
   },
   {
@@ -385,51 +403,58 @@ const checkLatestGitlabRelease = defineCachedFunction(
 // gitea
 const checkLatestGiteaRelease = defineCachedFunction(
   async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
-    const host = ref.host ?? 'gitea.com'
+    try {
+      const host = ref.host ?? 'gitea.com'
 
-    const response = await $fetch(
-      `https://${host}/api/v1/repos/${ref.owner}/${ref.repo}/releases/latest`,
-      {
-        headers: {
-          'User-Agent': 'npmx.dev',
-          'accept': 'application/json',
+      const response = await $fetch(
+        `https://${host}/api/v1/repos/${ref.owner}/${ref.repo}/releases/latest`,
+        {
+          headers: {
+            'User-Agent': 'npmx.dev',
+            'accept': 'application/json',
+          },
+          timeout: TIMEOUT,
         },
-        timeout: TIMEOUT,
-      },
-    )
+      )
 
-    const release = v.parse(GiteaReleaseSchema, response)
+      const release = v.parse(GiteaReleaseSchema, response)
 
-    const matchedChangelog = release.body.match(MD_REGEX)?.at(0)
+      const matchedChangelog = release.body.match(MD_REGEX)?.at(0)
 
-    // /src/branch/ can be similar to /blob/
-    if (!matchedChangelog || !matchedChangelog.includes('/src/branch/')) {
+      // /src/branch/ can be similar to /blob/
+      if (!matchedChangelog || !matchedChangelog.includes('/src/branch/')) {
+        return {
+          type: 'release',
+          link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
+          provider: ref.provider,
+          repo: `${ref.owner}/${ref.repo}`,
+          host: ref.host,
+        }
+      }
+
+      const path = matchedChangelog.replace(/^.*\/src\/branch\/[^/]+\//i, '')
+      if (
+        directory &&
+        !(
+          path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+          ROOT_ONLY_REGEX.test(path)
+        )
+      ) {
+        return false
+      }
       return {
-        type: 'release',
-        link: `https://${host}/${ref.owner}/${ref.repo}/releases`,
         provider: ref.provider,
+        type: 'md',
+        path,
         repo: `${ref.owner}/${ref.repo}`,
+        link: matchedChangelog,
         host: ref.host,
       }
-    }
-
-    const path = matchedChangelog.replace(/^.*\/src\/branch\/[^/]+\//i, '')
-    if (
-      directory &&
-      !(
-        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
-        ROOT_ONLY_REGEX.test(path)
-      )
-    ) {
-      return false
-    }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
-      host: ref.host,
+    } catch (e) {
+      if (e instanceof FetchError && e.statusCode == 404) {
+        return false
+      }
+      throw e
     }
   },
   {
@@ -440,49 +465,56 @@ const checkLatestGiteaRelease = defineCachedFunction(
 
 const checkLatestGiteeRelease = defineCachedFunction(
   async function (ref: RepoRef, directory?: string): Promise<ChangelogInfo | false> {
-    const response = await $fetch(
-      `https://gitee.com/api/v5/repos/${ref.owner}/${ref.repo}/releases/latest`,
-      {
-        headers: {
-          'User-Agent': 'npmx.dev',
-          'accept': 'application/json',
+    try {
+      const response = await $fetch(
+        `https://gitee.com/api/v5/repos/${ref.owner}/${ref.repo}/releases/latest`,
+        {
+          headers: {
+            'User-Agent': 'npmx.dev',
+            'accept': 'application/json',
+          },
+          timeout: TIMEOUT,
         },
-        timeout: TIMEOUT,
-      },
-    )
+      )
 
-    const release = v.parse(GiteeReleaseSchema, response)
+      const release = v.parse(GiteeReleaseSchema, response)
 
-    const matchedChangelog = release.body.match(MD_REGEX)?.at(0)
+      const matchedChangelog = release.body.match(MD_REGEX)?.at(0)
 
-    // if no changelog.md or the url doesn't contain /blob/
-    if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
+      // if no changelog.md or the url doesn't contain /blob/
+      if (!matchedChangelog || !matchedChangelog.includes('/blob/')) {
+        return {
+          provider: ref.provider,
+          type: 'release',
+          repo: `${ref.owner}/${ref.repo}`,
+          link: `https://gitee.com/${ref.owner}/${ref.repo}/releases`,
+        }
+      }
+
+      const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
+
+      // makes sure that the correct directory is matched
+      if (
+        directory &&
+        !(
+          path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
+          ROOT_ONLY_REGEX.test(path)
+        )
+      ) {
+        return false
+      }
       return {
         provider: ref.provider,
-        type: 'release',
+        type: 'md',
+        path,
         repo: `${ref.owner}/${ref.repo}`,
-        link: `https://gitee.com/${ref.owner}/${ref.repo}/releases`,
+        link: matchedChangelog,
       }
-    }
-
-    const path = matchedChangelog.replace(/^.*\/blob\/[^/]+\//i, '')
-
-    // makes sure that the correct directory is matched
-    if (
-      directory &&
-      !(
-        path.startsWith(directory.endsWith('/') ? directory : `${directory}/`) ||
-        ROOT_ONLY_REGEX.test(path)
-      )
-    ) {
-      return false
-    }
-    return {
-      provider: ref.provider,
-      type: 'md',
-      path,
-      repo: `${ref.owner}/${ref.repo}`,
-      link: matchedChangelog,
+    } catch (e) {
+      if (e instanceof FetchError && e.statusCode == 404) {
+        return false
+      }
+      throw e
     }
   },
   {
