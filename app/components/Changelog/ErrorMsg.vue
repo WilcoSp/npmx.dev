@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NuxtError } from 'nuxt/app'
+
 const { pkgName, changelogLink, viewOnGit, error } = defineProps<{
   pkgName?: string
   changelogLink: string
