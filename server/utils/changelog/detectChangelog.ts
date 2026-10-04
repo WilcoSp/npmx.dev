@@ -211,7 +211,7 @@ async function checkLatestGithubRelease(
           null,
           createError({
             statusCode: 502,
-            statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
+            statusText: ERROR_UNGH_API_KEY_EXHAUSTED,
           }),
         ]
       }
