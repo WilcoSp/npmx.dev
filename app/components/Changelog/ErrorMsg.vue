@@ -11,7 +11,7 @@ const { pkgName, changelogLink, viewOnGit, error } = defineProps<{
 
 <template>
   <div class="w-full flex items-center flex-col gap-2 mt-4">
-    <template v-if="error?.message == ERROR_UNGH_API_KEY_EXHAUSTED || true">
+    <template v-if="error?.message == ERROR_UNGH_API_KEY_EXHAUSTED">
       <p>{{ $t('changelog.ungh.rate_limit') }}</p>
       <p>{{ $t('changelog.ungh.hint') }}</p>
       <LinkBase
