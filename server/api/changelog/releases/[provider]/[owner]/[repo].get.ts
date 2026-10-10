@@ -125,7 +125,7 @@ async function getReleasesFromGithub(owner: string, repo: string) {
       throw createError({
         statusCode: 502,
         message: ERROR_UNGH_API_KEY_EXHAUSTED,
-        statusText: ERROR_UNGH_API_KEY_EXHAUSTED,
+        statusMessage: ERROR_UNGH_API_KEY_EXHAUSTED,
       })
     }
     throw error

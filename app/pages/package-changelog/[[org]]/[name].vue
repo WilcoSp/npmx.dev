@@ -181,7 +181,7 @@ defineOgImage(
 
       <!-- error handling -->
       <template v-else-if="!changelogPending">
-        <template v-if="changelogError?.statusText == ERROR_UNGH_API_KEY_EXHAUSTED">
+        <div v-if="changelogError?.statusText == ERROR_UNGH_API_KEY_EXHAUSTED" class="items-center flex flec-col">
           <p class="mt-5">{{ $t('changelog.ungh.rate_limit') }}</p>
           <p>{{ $t('changelog.ungh.hint') }}</p>
           <LinkBase
@@ -190,7 +190,7 @@ defineOgImage(
             classicon="i-simple-icons:github"
             >{{ $t('changelog.ungh.install') }}</LinkBase
           >
-        </template>
+        </div>
         <p class="mt-5" v-else-if="!version || !pkg?.versions[version]">
           {{ $t('changelog.version_unavailable') }}
         </p>
