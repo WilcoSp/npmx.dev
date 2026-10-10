@@ -17,7 +17,7 @@ allowBuilds:
 
 catalogs:
   msw:
-    'msw': '^2.13.2'
+    'msw': '^3.0.0'
 
   storybook:
     '@storybook-vue/nuxt': 'https://pkg.pr.new/@storybook-vue/nuxt@1021'
@@ -48,7 +48,7 @@ minimumReleaseAgeExclude:
   - '@nuxt/nitro-server@4.5.2'
   - '@nuxt/schema@4.5.2'
   - '@nuxt/vite-builder@4.5.2'
-  - vue-data-ui@3.25.9
+  - vue-data-ui@3.26.1
 
 minimumReleaseAgeExcludePrune: true
 
