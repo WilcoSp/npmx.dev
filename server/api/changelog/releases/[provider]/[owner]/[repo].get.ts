@@ -124,6 +124,7 @@ async function getReleasesFromGithub(owner: string, repo: string) {
     if (error instanceof FetchError && (error.statusCode == 403 || error.statusCode == 429)) {
       throw createError({
         statusCode: 502,
+        message: ERROR_UNGH_API_KEY_EXHAUSTED,
         statusText: ERROR_UNGH_API_KEY_EXHAUSTED,
       })
     }

@@ -263,6 +263,7 @@ async function checkLatestGithubRelease(
       if (e.statusCode === 403 || e.statusCode === 429) {
         throw createError({
           statusCode: 502,
+          message: ERROR_UNGH_API_KEY_EXHAUSTED,
           statusText: ERROR_UNGH_API_KEY_EXHAUSTED,
         })
       }
