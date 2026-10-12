@@ -79,7 +79,7 @@ export default defineCachedEventHandler(
       if (typeof query.host == 'string') {
         key.push(query.host)
       }
-      return key.join(':')
+      return toCacheKey(key.join(':'))
     },
     shouldBypassCache: () => import.meta.dev,
   },

@@ -86,7 +86,7 @@ export default defineCachedEventHandler(
 
       const query = getQuery(event)
 
-      const key = [`changelogMarkdown:v2:${provider}:${owner}:${repo}:${path.replaceAll('/', ':')}`]
+      const key = [`changelogMarkdown:v2:${provider}:${owner}:${repo}:${path}`]
 
       if (typeof query.host === 'string') {
         key.push(query.host)
@@ -95,7 +95,7 @@ export default defineCachedEventHandler(
         key.push('raw')
       }
 
-      return key.join(':')
+      return toCacheKey(key.join(':'))
     },
     shouldBypassCache: () => import.meta.dev,
   },

@@ -123,7 +123,7 @@ const checkChangelogFile = defineCachedFunction(
       if (directory) {
         base.push(directory.replaceAll('/', '_'))
       }
-      return base.join(':')
+      return toCacheKey(base.join(':'))
     },
   },
 )
@@ -188,9 +188,9 @@ const CACHE_OPTIONS_CHECK_RELEASE: Parameters<
   getKey: (ref, directory) => {
     const base = [ref.host ?? '', ref.owner, ref.repo]
     if (directory) {
-      base.push(directory.replaceAll('/', '_'))
+      base.push(directory)
     }
-    return base.join(':')
+    return toCacheKey(base.join(':'))
   },
 }
 
